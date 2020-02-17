@@ -1,9 +1,8 @@
-#pragma once 
-
-//	All library includes go here
-
+#pragma once
 #include <iostream>
+#include <vector>
 
-//	All header includes go here.
-
+#include "Symbols.hpp"
 #include "Helper.hpp"
+#include "Lexer/Pair.hpp"
+#include "Lexer/Lexer.cpp"

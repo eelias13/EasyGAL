@@ -20,4 +20,3 @@ struct TableData
     vector<bool> m_Table;
     bool m_EnableFlipFlop;
 };
-
