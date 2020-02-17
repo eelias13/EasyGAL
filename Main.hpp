@@ -1,5 +1,9 @@
 #pragma once 
 
-//	All includes for Main.cpp go here!
+//	All library includes go here
 
 #include <iostream>
+
+//	All header includes go here.
+
+#include "Helper.hpp"
