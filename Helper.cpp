@@ -1,16 +1,11 @@
 #include "Helper.hpp"
 
-using namespace std;
-
-namespace Helper
-{
-
-void print(string str)
+void Helper::print(string str)
 {
     cout << str << endl;
 }
 
-string getTokenName(Token t)
+string Helper::getTokenName(Token t)
 {
     switch (t)
     {
@@ -43,15 +38,14 @@ string getTokenName(Token t)
     }
 }
 
-void printPare(vector<Pair> p)
+void Helper::printPare(vector<Pair> p)
 {
     for (int i = 0; i < p.size(); i++)
         print(getTokenName(p.at(i).key) + ":" + p.at(i).value);
 }
 
-void printStrVec(vector<string> strVec)
+void Helper::printStrVec(vector<string> strVec)
 {
     for (int i = 0; i < strVec.size(); i++)
         print(strVec.at(i));
 }
-} // namespace Helper
