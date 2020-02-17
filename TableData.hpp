@@ -16,7 +16,7 @@ using namespace std;
 struct TableData 
 {
     vector<uint32_t> m_InputPins;
-    uint32_t m_OutputPin;   
+    uint32_t m_OutputPin;
     vector<bool> m_Table;
     bool m_EnableFlipFlop;
 };
