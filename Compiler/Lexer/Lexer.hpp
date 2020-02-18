@@ -5,12 +5,12 @@
 #include "Token.hpp"
 #include "Helper.cpp"
 #include "Pair.hpp"
-
+using namespace std;
 namespace Lexer
 {
-std::vector<std::string> spit(std::vector<std::string>);
-std::vector<std::string> splitBy(std::vector<std::string>, char);
-std::vector<Pair> tokenize(std::vector<std::string>);
-bool isNum(std::string);
+vector<string> spit(vector<string>);
+vector<string> splitBy(vector<string>, char);
+vector<Pair> tokenize(vector<string>);
+bool isNum(string);
 bool charIsNum(char);
 } // namespace Lexer

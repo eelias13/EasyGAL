@@ -3,10 +3,15 @@
 #include <vector>
 #include "../Symbols.hpp"
 
+using namespace std;
+
+void ERROR(string);
+
 namespace Preproces
 {
-std::string preProcessing(std::string);
-std::string removeSpace(std::string);
+
+string preProcessing(string);
+string removeSpace(string);
 bool validChar(char c);
 
 } // namespace Preproces

@@ -1,9 +1,6 @@
 #include "Xor.hpp"
 
-using namespace std;
-namespace Xor
-{
-string simplifyOne(string exp)
+string Xor::simplifyOne(string exp)
 {
     if (exp.length() < 3)
         return exp;
@@ -15,11 +12,11 @@ string simplifyOne(string exp)
         temp += exp.at(i);
         temp += exp.at(i + 1);
         temp += exp.at(i + 2);
-        if (truthTable(temp) == SPACE)
+        if (Xor::truthTable(temp) == SPACE)
             out += exp.at(i);
         else
         {
-            out += truthTable(temp);
+            out += Xor::truthTable(temp);
             i += 2;
         }
     }
@@ -32,19 +29,20 @@ string simplifyOne(string exp)
         out += exp.at(exp.length() - 1);
     return out;
 }
-string simplify(string exp)
+string Xor::simplify(string exp)
 {
-    if (exp.length() == 1)
+    if (exp.length() < 3)
         return exp;
     int len = exp.length();
-    exp = simplifyOne(exp);
+    exp = Xor::simplifyOne(exp);
     if (exp.length() == 1)
         return exp;
     if (exp.length() != len)
-        return simplify(exp);
+        return Xor::simplify(exp);
     return exp;
 }
-char truthTable(string exp)
+
+char Xor::truthTable(string exp)
 {
     if (exp.at(1) == XOR)
         if (exp.at(0) == ZERO && exp.at(2) == ZERO)
@@ -57,4 +55,3 @@ char truthTable(string exp)
         return ZERO;
     return SPACE;
 }
-} // namespace Xor

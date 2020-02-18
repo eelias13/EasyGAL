@@ -1,19 +1,18 @@
 
 #include "Parentheses.hpp"
-using namespace std;
-namespace Parentheses
-{
 
-string simplefy(string exp)
+string Parentheses::simplify(string exp)
 {
+    if (exp.length() < 3)
+        return exp;
     int len = exp.length();
-    exp = simplefyOne(exp);
+    exp = Parentheses::simplifyOne(exp);
     if (exp.length() != len)
-        return simplefy(exp);
+        return Parentheses::simplify(exp);
     return exp;
 }
 
-string simplefyOne(string exp)
+string Parentheses::simplifyOne(string exp)
 {
     string out = "";
     int i;
@@ -23,11 +22,11 @@ string simplefyOne(string exp)
         temp += exp.at(i);
         temp += exp.at(i + 1);
         temp += exp.at(i + 2);
-        if (truthTable(temp) == SPACE)
+        if (Parentheses::truthTable(temp) == SPACE)
             out += exp.at(i);
         else
         {
-            out += truthTable(temp);
+            out += Parentheses::truthTable(temp);
             i += 2;
         }
     }
@@ -41,7 +40,7 @@ string simplefyOne(string exp)
     return out;
 }
 
-char truthTable(string exp)
+char Parentheses::truthTable(string exp)
 {
     if (exp.at(0) == PARENTHSESE_OPEN && exp.at(2) == PARENTHSESE_CLOSE)
     {
@@ -52,4 +51,3 @@ char truthTable(string exp)
     }
     return SPACE;
 }
-} // namespace Parentheses

@@ -1,18 +1,9 @@
 #include "Preproces.hpp"
 
-using namespace std;
-void ERROR(string err)
-{
-    cout << "ERROR!" << err << endl;
-}
-
-namespace Preproces
-{
-
-string preProcessing(string exp)
+string Preproces::preProcessing(string exp)
 {
     char c = exp.at(0);
-    if (!(c == ZERO || c == ZERO || c == PARENTHSESE_OPEN || c == NOT))
+    if (!(c == ZERO || c == ONE || c == PARENTHSESE_OPEN || c == NOT))
         ERROR("unexpectet cahr " + to_string(c) + " at index: " + to_string(0));
 
     int parentheses = 0;
@@ -49,7 +40,7 @@ string preProcessing(string exp)
     return exp;
 }
 
-string removeSpace(string exp)
+string Preproces::removeSpace(string exp)
 {
     string out = "";
     for (int i = 0; i < exp.length(); i++)
@@ -64,7 +55,7 @@ string removeSpace(string exp)
     return out;
 }
 
-bool validChar(char c)
+bool Preproces::validChar(char c)
 {
     switch (c)
     {
@@ -91,5 +82,3 @@ bool validChar(char c)
         return false;
     }
 }
-
-} // namespace Preproces

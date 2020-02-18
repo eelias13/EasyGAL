@@ -10,10 +10,12 @@
 
 using namespace std;
 
+void ERROR(string);
+
 namespace Helper
 {
-void print(std::string);
-std::string getTokenName(Token);
-void printPare(std::vector<Pair>);
-void printStrVec(std::vector<std::string>);
+void print(string);
+string getTokenName(Token);
+void printPare(vector<Pair>);
+void printStrVec(vector<string>);
 } // namespace Helper

@@ -1,9 +1,6 @@
 #include "Or.hpp"
 
-using namespace std;
-namespace Or
-{
-string simplifyOne(string exp)
+string Or::simplifyOne(string exp)
 {
     if (exp.length() < 3)
         return exp;
@@ -15,11 +12,11 @@ string simplifyOne(string exp)
         temp += exp.at(i);
         temp += exp.at(i + 1);
         temp += exp.at(i + 2);
-        if (truthTable(temp) == SPACE)
+        if (Or::truthTable(temp) == SPACE)
             out += exp.at(i);
         else
         {
-            out += truthTable(temp);
+            out += Or::truthTable(temp);
             i += 2;
         }
     }
@@ -32,19 +29,21 @@ string simplifyOne(string exp)
         out += exp.at(exp.length() - 1);
     return out;
 }
-string simplify(string exp)
+
+string Or::simplify(string exp)
 {
     if (exp.length() == 1)
         return exp;
     int len = exp.length();
-    exp = simplifyOne(exp);
+    exp = Or::simplifyOne(exp);
     if (exp.length() == 1)
         return exp;
     if (exp.length() != len)
-        return simplify(exp);
+        return Or::simplify(exp);
     return exp;
 }
-char truthTable(string exp)
+
+char Or::truthTable(string exp)
 {
     if (exp.at(1) == OR)
         if (exp.at(0) == ZERO && exp.at(2) == ZERO)
@@ -57,4 +56,3 @@ char truthTable(string exp)
         return ONE;
     return SPACE;
 }
-} // namespace Or

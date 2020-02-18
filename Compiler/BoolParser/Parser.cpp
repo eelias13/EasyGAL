@@ -1,16 +1,7 @@
 #include "Parser.hpp"
 #include "Preproces.hpp"
 
-using namespace std;
-
-void ERROR(string err)
-{
-    cout << "ERROR!" << err << endl;
-}
-
-namespace Parser
-{
-char parse(string exp)
+char Parser::parse(string exp)
 {
     if (exp.empty())
         ERROR("exp can not be null");
@@ -18,7 +9,7 @@ char parse(string exp)
     // checks for valid characters and right structure
     exp = Preproces::preProcessing(exp);
 
-    string outStr = parseRecursiv(exp);
+    string outStr = Parser::parseRecursiv(exp);
     if (outStr.length() != 1)
         ERROR("can not parse expresion");
     char out = outStr.at(0);
@@ -26,9 +17,10 @@ char parse(string exp)
         return out;
     else
         ERROR("can not parse expresion");
+    return ' ';
 }
 
-string parseRecursiv(string exp)
+string Parser::parseRecursiv(string exp)
 {
     if (exp.length() == 1)
         return exp;
@@ -37,27 +29,26 @@ string parseRecursiv(string exp)
     len = exp.length();
     exp = Parentheses::simplify(exp);
     if (exp.length() != len)
-        return parseRecursiv(exp);
+        return Parser::parseRecursiv(exp);
 
     len = exp.length();
     exp = Not::simplify(exp);
     if (exp.length() != len)
-        return parseRecursiv(exp);
+        return Parser::parseRecursiv(exp);
 
     len = exp.length();
     exp = And::simplify(exp);
     if (exp.length() != len)
-        return parseRecursiv(exp);
+        return Parser::parseRecursiv(exp);
 
     len = exp.length();
     exp = Or::simplify(exp);
     if (exp.length() != len)
-        return parseRecursiv(exp);
+        return Parser::parseRecursiv(exp);
 
     len = exp.length();
     exp = Xor::simplify(exp);
     if (exp.length() != len)
-        return parseRecursiv(exp);
-    return parseRecursiv(exp);
+        return Parser::parseRecursiv(exp);
+    return Parser::parseRecursiv(exp);
 }
-} // namespace Parser

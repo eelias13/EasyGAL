@@ -1,5 +1,10 @@
 #include "Helper.hpp"
 
+void ERROR(string err)
+{
+    cout << "[Error] " << err << endl;
+}
+
 void Helper::print(string str)
 {
     cout << str << endl;
@@ -49,3 +54,4 @@ void Helper::printStrVec(vector<string> strVec)
     for (int i = 0; i < strVec.size(); i++)
         print(strVec.at(i));
 }
+

@@ -6,8 +6,8 @@
 #define COUNT ".count"
 
 #define AND '&'
+#define XOR '#'
 #define OR '|'
-#define XOR '?'
 #define NOT '!'
 
 #define PARENTHSESE_OPEN '('

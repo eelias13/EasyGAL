@@ -2,10 +2,10 @@
 #include <iostream>
 #include <vector>
 #include "../../Symbols.hpp"
-
+using namespace std;
 namespace Parentheses
 {
-char truthTable(std::string);
-std::string simplefyOne(std::string);
-std::string simplefy(std::string);
+char truthTable(string);
+string simplifyOne(string);
+string simplify(string);
 } // namespace And

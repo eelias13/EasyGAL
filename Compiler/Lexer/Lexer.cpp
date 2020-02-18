@@ -1,7 +1,7 @@
 #include "Lexer.hpp"
 namespace Lexer
 {
-using namespace std;
+    
 vector<Pair> tokenize(vector<string> strVec)
 {
     vector<Pair> result;

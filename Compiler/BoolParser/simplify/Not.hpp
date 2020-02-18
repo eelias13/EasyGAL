@@ -2,10 +2,10 @@
 #include <iostream>
 #include <vector>
 #include "../../Symbols.hpp"
-
+using namespace std;
 namespace Not
 {
-std::string simplefy(std::string);
-std::string simplefyOne(std::string);
-char truthTable(std::string);
+string simplify(string);
+string simplifyOne(string);
+char truthTable(string);
 }

@@ -1,19 +1,18 @@
 
 #include "Not.hpp"
 
-using namespace std;
-namespace Not
+string Not::simplify(string exp)
 {
-string simplefy(string exp)
-{
+    if (exp.length() == 1)
+        return exp;
     int len = exp.length();
-    exp = simplefyOne(exp);
+    exp = Not::simplifyOne(exp);
     if (exp.length() != len)
-        return simplefy(exp);
+        return Not::simplify(exp);
     return exp;
 }
 
-string simplefyOne(string exp)
+string Not::simplifyOne(string exp)
 {
     string out = "";
     int i;
@@ -22,11 +21,11 @@ string simplefyOne(string exp)
         string temp = "";
         temp += exp.at(i);
         temp += exp.at(i + 1);
-        if (truthTable(temp) == SPACE)
+        if (Not::truthTable(temp) == SPACE)
             out += exp.at(i);
         else
         {
-            out += truthTable(temp);
+            out += Not::truthTable(temp);
             i += 1;
         }
     }
@@ -36,7 +35,7 @@ string simplefyOne(string exp)
     return out;
 }
 
-char truthTable(string exp)
+char Not::truthTable(string exp)
 {
     if (exp.at(0) == NOT)
     {
@@ -47,4 +46,3 @@ char truthTable(string exp)
     }
     return SPACE;
 }
-} // namespace Not

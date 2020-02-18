@@ -1,9 +1,6 @@
 #include "And.hpp"
 
-using namespace std;
-namespace And
-{
-string simplifyOne(string exp)
+string And::simplifyOne(string exp)
 {
     string out = "";
     int i;
@@ -13,11 +10,11 @@ string simplifyOne(string exp)
         temp += exp.at(i);
         temp += exp.at(i + 1);
         temp += exp.at(i + 2);
-        if (truthTable(temp) == SPACE)
+        if (And::truthTable(temp) == SPACE)
             out += exp.at(i);
         else
         {
-            out += truthTable(temp);
+            out += And::truthTable(temp);
             i += 2;
         }
     }
@@ -30,17 +27,21 @@ string simplifyOne(string exp)
         out += exp.at(exp.length() - 1);
     return out;
 }
-string simplify(string exp)
+
+string And::simplify(string exp)
 {
+    if (exp.length() < 3)
+        return exp;
     int len = exp.length();
-    exp = simplifyOne(exp);
+    exp = And::simplifyOne(exp);
     if (exp.length() == 1)
         return exp;
     if (exp.length() != len)
-        return simplify(exp);
+        return And::simplify(exp);
     return exp;
 }
-char truthTable(string exp)
+
+char And::truthTable(string exp)
 {
     if (exp.at(1) == AND)
         if (exp.at(0) == ZERO && exp.at(2) == ZERO)
@@ -53,4 +54,3 @@ char truthTable(string exp)
         return ONE;
     return SPACE;
 }
-} // namespace And

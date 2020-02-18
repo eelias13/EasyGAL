@@ -11,8 +11,10 @@
 #include "simplify/Not.hpp"
 #include "simplify/Parentheses.hpp"
 
+using namespace std;
+
 namespace Parser
 {
-bool isCharValid(char);
-bool isValid(std::string);
+char parse(string);
+string parseRecursiv(string);
 } // namespace Parser
