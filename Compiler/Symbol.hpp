@@ -6,6 +6,7 @@
 #define FILL "fill"
 #define COUNT "count"
 
+#define DFF "DFF"
 #define ARROW "=>"
 #define SINGLE_COMMENT "//"
 #define BEGIN_COMMENT "/*"
@@ -32,3 +33,5 @@
 #define SPACE ' '
 #define TAB '\t'
 #define NEWL '\n'
+
+#define VALID_CHAR "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZzÄäÖöÜü-_$"

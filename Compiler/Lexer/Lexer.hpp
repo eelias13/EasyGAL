@@ -3,8 +3,7 @@
 #include <vector>
 #include <utility>
 #include "Token.hpp"
-#include "Symbol.hpp"
-#include "Error.hpp"
+#include "../Symbol.hpp"
 
 using namespace std;
 
@@ -17,7 +16,6 @@ class Lexer
 {
 private:
     vector<pair<string, int>> initLines(vector<string>);
-    vector<Token> removeComments(vector<Token>);
 
     vector<pair<string, int>> splitByStr(pair<string, int>, string);
     vector<pair<string, int>> splitByChar(pair<string, int>, char);

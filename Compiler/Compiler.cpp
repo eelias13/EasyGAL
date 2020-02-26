@@ -1,3 +1,4 @@
-#include "Compiler.hpp"
-
-using namespace std;
+Compiler::Compiler()
+{
+    m_Lexer = Lexer(VALID_CHAR);
+}

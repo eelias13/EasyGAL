@@ -1,17 +1,5 @@
 #include "Lexer.hpp"
 
-int main()
-{
-    vector<string> code;
-    code.push_back("pin 22 = iPin;");
-    code.push_back("pin 3 = oPin1;");
-    code.push_back("pin 4 = oPin2;");
-    code.push_back("iPin = oPin1 & oPin2;");
-
-    Lexer lexer = Lexer("AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZzÄäÖöÜü-_$");
-    printTokens(lexer.lex(code));
-}
-
 Lexer::Lexer(string ValidCahr)
 {
     Lexer::validatCharInit(ValidCahr);
@@ -29,15 +17,16 @@ vector<Token> Lexer::lex(vector<string> StrVec)
 
 vector<Token> Lexer::removeComments(vector<Token> TokVec)
 {
+    // TODO
     return TokVec;
 }
 
 vector<Token> Lexer::tokenize(vector<pair<string, int>> PairVec)
 {
     vector<Token> Result;
-    for (pair<string, int> p : PairVec)
+    for (pair<string, int> P : PairVec)
     {
-        Token Temp = Lexer::tokenizeKeyword(p);
+        Token Temp = Lexer::tokenizeKeyword(P);
         if (Temp.isKey(Token::Key::None))
             if (Lexer::isBool(Temp.value()))
                 Temp.key(Token::Key::Boolean);
@@ -50,65 +39,66 @@ vector<Token> Lexer::tokenize(vector<pair<string, int>> PairVec)
     return Result;
 }
 
-Token Lexer::tokenizeKeyword(pair<string, int> p)
+Token Lexer::tokenizeKeyword(pair<string, int> P)
 {
-    if (p.first.length() == 1)
+    if (P.first.length() == 1)
     {
-        switch (p.first.at(0))
+        switch (P.first.at(0))
         {
         case PARENTHSESE_CLOSE:
         case PARENTHSESE_OPEN:
         case CURLYBRACES_CLOSE:
         case CURLYBRACES_OPEN:
-            return Token(Token::Key::Parentheses, p.first, p.second);
+            return Token(Token::Key::Parentheses, P.first, P.second);
         case OR:
         case AND:
         case NOT:
         case XOR:
-            return Token(Token::Key::LogicalOperator, p.first, p.second);
+            return Token(Token::Key::LogicalOperator, P.first, P.second);
         case SPACE:
         case TAB:
         case NEWL:
-            return Token(Token::Key::Space, p.first, p.second);
+            return Token(Token::Key::Space, P.first, P.second);
         case ZERO:
         case ONE:
-            return Token(Token::Key::Boolean, p.first, p.second);
+            return Token(Token::Key::Boolean, P.first, P.second);
         case END:
-            return Token(Token::Key::End, p.first, p.second);
+            return Token(Token::Key::End, P.first, P.second);
         case POINT:
-            return Token(Token::Key::Point, p.first, p.second);
+            return Token(Token::Key::Point, P.first, P.second);
         case COMMA:
-            return Token(Token::Key::Comma, p.first, p.second);
+            return Token(Token::Key::Comma, P.first, P.second);
         case EQUAL:
-            return Token(Token::Key::Equal, p.first, p.second);
+            return Token(Token::Key::Equal, P.first, P.second);
         default:
-            return Token(Token::Key::None, p.first, p.second);
+            return Token(Token::Key::None, P.first, P.second);
         }
     }
     else
     {
-        if (SINGLE_COMMENT == p.first || BEGIN_COMMENT == p.first || END_COMMENT == p.first)
-            return Token(Token::Key::Comment, p.first, p.second);
-        if (PIN == p.first || TABLE == p.first)
-            return Token(Token::Key::Keyword, p.first, p.second);
-        if (FILL == p.first || COUNT == p.first)
-            return Token(Token::Key::ExtraFunction, p.first, p.second);
-        if (ARROW == p.first)
-            return Token(Token::Key::Arrow, p.first, p.second);
-        return Token(Token::Key::None, p.first, p.second);
+        if (SINGLE_COMMENT == P.first || BEGIN_COMMENT == P.first || END_COMMENT == P.first)
+            return Token(Token::Key::Comment, P.first, P.second);
+        if (PIN == P.first || TABLE == P.first)
+            return Token(Token::Key::Keyword, P.first, P.second);
+        if (FILL == P.first || COUNT == P.first)
+            return Token(Token::Key::ExtraFunction, P.first, P.second);
+        if (ARROW == P.first)
+            return Token(Token::Key::Arrow, P.first, P.second);
+        if (DFF == P.first)
+            return Token(Token::Key::dff, P.first, P.second);
     }
 }
 
 vector<pair<string, int>> Lexer::split(vector<pair<string, int>> PairVec)
 {
-    vector<string> StrVec = {PIN, TABLE, FILL, COUNT, ARROW, SINGLE_COMMENT, BEGIN_COMMENT, END_COMMENT};
+    vector<string> StrVec = {PIN, TABLE, FILL, COUNT, ARROW, SINGLE_COMMENT, BEGIN_COMMENT, END_COMMENT, DFF};
     for (string str : StrVec)
     {
         vector<pair<string, int>> Temp;
-        for (pair<string, int> p : PairVec)
-            for (pair<string, int> p2 : Lexer::splitByStr(p, str))
-                if (!p2.first.empty())
-                    Temp.push_back(p2);
+        for (pair<string, int> P : PairVec)
+            for (pair<string, int> P2 : Lexer::splitByStr(P, str))
+                if (!P2.first.empty())
+                    Temp.push_back(P2);
         PairVec = Temp;
     }
 
@@ -117,10 +107,10 @@ vector<pair<string, int>> Lexer::split(vector<pair<string, int>> PairVec)
     for (char c : CharVec)
     {
         vector<pair<string, int>> Temp;
-        for (pair<string, int> p : PairVec)
-            for (pair<string, int> p2 : Lexer::splitByChar(p, c))
+        for (pair<string, int> P : PairVec)
+            for (pair<string, int> P2 : Lexer::splitByChar(P, c))
                 if (!p2.first.empty())
-                    Temp.push_back(p2);
+                    Temp.push_back(P2);
         PairVec = Temp;
     }
     return PairVec;
@@ -155,17 +145,17 @@ vector<pair<string, int>> Lexer::splitByStr(pair<string, int> p, string Split)
     return Result;
 }
 
-vector<pair<string, int>> Lexer::splitByChar(pair<string, int> p, char Split)
+vector<pair<string, int>> Lexer::splitByChar(pair<string, int> P, char Split)
 {
     vector<pair<string, int>> Result;
     string Temp = "";
     for (int i = 0; i < p.first.size(); i++)
     {
-        if (p.first.at(i) == Split)
+        if (P.first.at(i) == Split)
         {
-            Result.push_back(pair<string, int>(Temp, p.second));
+            Result.push_back(pair<string, int>(Temp, P.second));
             Temp = "";
-            Result.push_back(pair<string, int>(string(1, p.first.at(i)), p.second));
+            Result.push_back(pair<string, int>(string(1, P.first.at(i)), P.second));
         }
         else
             Temp += p.first.at(i);
@@ -176,12 +166,12 @@ vector<pair<string, int>> Lexer::splitByChar(pair<string, int> p, char Split)
 
 bool Lexer::isChar(string Str)
 {
-    for (char c : Str)
+    for (char C : Str)
     {
         bool Flag = false;
-        for (char vc : Lexer::m_ValidCahr)
+        for (char VC : Lexer::m_ValidCahr)
         {
-            if (vc == c)
+            if (VC == C)
             {
                 Flag == true;
                 break;
@@ -195,8 +185,8 @@ bool Lexer::isChar(string Str)
 
 bool Lexer::isNum(string Str)
 {
-    for (char c : Str)
-        switch (c)
+    for (char C : Str)
+        switch (C)
         {
         case '0':
         case '1':
@@ -225,8 +215,8 @@ bool Lexer::isBool(string Str)
 
 void Lexer::validatCharInit(string ValidCahr)
 {
-    for (char c : ValidCahr)
-        switch (c)
+    for (char C : ValidCahr)
+        switch (C)
         {
         case PARENTHSESE_CLOSE:
         case PARENTHSESE_OPEN:
@@ -243,7 +233,7 @@ void Lexer::validatCharInit(string ValidCahr)
         case POINT:
         case COMMA:
         case EQUAL:
-            ERROR("faild to init Lexer \n" + string(1, c) + " can not be valid");
+            //ERROR("faild to init Lexer \n" + string(1, c) + " can not be valid");
             break;
         default:
             break;
@@ -260,10 +250,10 @@ void printTokens(vector<Token> Tokens)
 
 void printPair(vector<pair<string, int>> PairVec, bool line)
 {
-    for (pair<string, int> p : PairVec)
+    for (pair<string, int> P : PairVec)
         if (line)
-            cout << p.first << '\t' << p.second << endl;
+            cout << P.first << '\t' << P.second << endl;
         else
-            cout << p.first << endl;
+            cout << P.first << endl;
 }
 #endif

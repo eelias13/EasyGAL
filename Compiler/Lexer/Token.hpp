@@ -22,6 +22,7 @@ public:
         Boolean,         // "0", "1"
         Comma,           // ","
         Point,           // "."
+        dff,             // "DFF"
         Comment,         // "//", "/*", "*/"
         Space,           // " ", "\t" , "\n"
         None             //
