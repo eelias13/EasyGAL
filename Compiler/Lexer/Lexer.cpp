@@ -9,16 +9,31 @@ Lexer::Lexer(string ValidCahr)
 vector<Token> Lexer::lex(vector<string> StrVec)
 {
     vector<pair<string, int>> PairVec = Lexer::initLines(StrVec);
-    PairVec = Lexer::split(PairVec);
+    int len;
+    do
+    {
+        len = PairVec.size();
+        PairVec = Lexer::split(PairVec);
+    } while (len != PairVec.size());
+
     vector<Token> Result = Lexer::tokenize(PairVec);
-    Result = Lexer::removeComments(Result);
     return Result;
 }
 
-vector<Token> Lexer::removeComments(vector<Token> TokVec)
+bool Lexer::validatChar(char c)
 {
-    // TODO
-    return TokVec;
+    for (char x : Lexer::m_ValidCahr)
+        if (x == c)
+            return true;
+    return false;
+}
+
+bool Lexer::validatString(string str)
+{
+    for (char c : str)
+        if (!Lexer::validatChar(c))
+            return false;
+    return true;
 }
 
 vector<Token> Lexer::tokenize(vector<pair<string, int>> PairVec)
@@ -71,7 +86,10 @@ Token Lexer::tokenizeKeyword(pair<string, int> P)
         case EQUAL:
             return Token(Token::Key::Equal, P.first, P.second);
         default:
-            return Token(Token::Key::None, P.first, P.second);
+            if (Lexer::validatChar(P.first.at(0)))
+                return Token(Token::Key::Identifier, P.first, P.second);
+            else
+                return Token(Token::Key::None, P.first, P.second);
         }
     }
     else
@@ -86,6 +104,11 @@ Token Lexer::tokenizeKeyword(pair<string, int> P)
             return Token(Token::Key::Arrow, P.first, P.second);
         if (DFF == P.first)
             return Token(Token::Key::dff, P.first, P.second);
+
+        if (Lexer::validatString(P.first))
+            return Token(Token::Key::Identifier, P.first, P.second);
+        else
+            return Token(Token::Key::None, P.first, P.second);
     }
 }
 
@@ -104,12 +127,12 @@ vector<pair<string, int>> Lexer::split(vector<pair<string, int>> PairVec)
 
     vector<char> CharVec = {POINT, EQUAL, COMMA, END, AND, OR, XOR, NOT, ZERO, ONE, CURLYBRACES_OPEN,
                             CURLYBRACES_CLOSE, PARENTHSESE_OPEN, PARENTHSESE_CLOSE, SPACE, TAB, NEWL};
-    for (char c : CharVec)
+    for (char C : CharVec)
     {
         vector<pair<string, int>> Temp;
         for (pair<string, int> P : PairVec)
-            for (pair<string, int> P2 : Lexer::splitByChar(P, c))
-                if (!p2.first.empty())
+            for (pair<string, int> P2 : Lexer::splitByChar(P, C))
+                if (!P2.first.empty())
                     Temp.push_back(P2);
         PairVec = Temp;
     }
@@ -149,7 +172,7 @@ vector<pair<string, int>> Lexer::splitByChar(pair<string, int> P, char Split)
 {
     vector<pair<string, int>> Result;
     string Temp = "";
-    for (int i = 0; i < p.first.size(); i++)
+    for (int i = 0; i < P.first.size(); i++)
     {
         if (P.first.at(i) == Split)
         {
@@ -158,9 +181,9 @@ vector<pair<string, int>> Lexer::splitByChar(pair<string, int> P, char Split)
             Result.push_back(pair<string, int>(string(1, P.first.at(i)), P.second));
         }
         else
-            Temp += p.first.at(i);
+            Temp += P.first.at(i);
     }
-    Result.push_back(pair<string, int>(Temp, p.second));
+    Result.push_back(pair<string, int>(Temp, P.second));
     return Result;
 }
 
@@ -239,21 +262,3 @@ void Lexer::validatCharInit(string ValidCahr)
             break;
         }
 }
-
-#ifdef _Debug
-#include <iostream>
-void printTokens(vector<Token> Tokens)
-{
-    for (Token t : Tokens)
-        cout << "key: " << t.printKey() << '\t' << "value: " << t.value() << endl;
-}
-
-void printPair(vector<pair<string, int>> PairVec, bool line)
-{
-    for (pair<string, int> P : PairVec)
-        if (line)
-            cout << P.first << '\t' << P.second << endl;
-        else
-            cout << P.first << endl;
-}
-#endif

@@ -1,6 +1,5 @@
 #pragma once
 #include <string>
-#define _Debug
 
 using namespace std;
 
@@ -30,18 +29,20 @@ public:
 
     Token(Key, string, int);
 
-    Key key() { return m_Key; }
-    void key(Key key) { m_Key = key; }
-    string value() { return m_Value; }
-    int lineIndex() { return m_LineIndex; }
-    bool isKey(Key key) { return key == m_Key; }
-
-#ifdef _Debug
+    Key key();
+    void key(Key);
+    string value();
+    int lineIndex();
+    bool isKey(Key);
     string printKey();
-#endif
 
 private:
     Key m_Key;
     string m_Value;
     int m_LineIndex;
 };
+
+namespace TokenPrint
+{
+string printKey(Token::Key);
+}

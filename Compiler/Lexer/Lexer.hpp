@@ -7,11 +7,6 @@
 
 using namespace std;
 
-#ifdef _Debug
-void printTokens(vector<Token>);
-void printPair(vector<pair<string, int>>, bool);
-#endif
-
 class Lexer
 {
 private:
@@ -25,6 +20,8 @@ private:
     bool isBool(string);
 
     void validatCharInit(string);
+    bool validatChar(char);
+    bool validatString(string);
 
     vector<Token> tokenize(vector<pair<string, int>>);
     Token tokenizeKeyword(pair<string, int>);

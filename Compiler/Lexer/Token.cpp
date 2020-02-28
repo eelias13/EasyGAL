@@ -7,43 +7,71 @@ Token::Token(Key Key, string Value, int LineIndex)
     m_LineIndex = LineIndex;
 }
 
-#ifdef _Debug
 string Token::printKey()
 {
-    switch (m_Key)
+    return TokenPrint::printKey(m_Key);
+}
+
+string TokenPrint::printKey(Token::Key key)
+{
+    switch (key)
     {
-    case Key::Keyword:
+    case Token::Key::Keyword:
         return "Keyword";
-    case Key::Number:
+    case Token::Key::Number:
         return "Number";
-    case Key::Identifier:
+    case Token::Key::Identifier:
         return "Identifier";
-    case Key::Equal:
+    case Token::Key::Equal:
         return "Equal";
-    case Key::End:
+    case Token::Key::End:
         return "End";
-    case Key::Parentheses:
+    case Token::Key::Parentheses:
         return "Parentheses";
-    case Key::ExtraFunction:
+    case Token::Key::ExtraFunction:
         return "ExtraFunction";
-    case Key::LogicalOperator:
+    case Token::Key::LogicalOperator:
         return "LogicalOperator";
-    case Key::Arrow:
+    case Token::Key::Arrow:
         return "Arrow";
-    case Key::Boolean:
+    case Token::Key::Boolean:
         return "Boolean";
-    case Key::Comma:
+    case Token::Key::Comma:
         return "Comma";
-    case Key::Point:
+    case Token::Key::Point:
         return "Point";
-    case Key::None:
+    case Token::Key::None:
         return "None";
-    case Key::Comment:
+    case Token::Key::Comment:
         return "Comment";
-    case Key::Space:
+    case Token::Key::Space:
         return "Space";
     default:
         return "not defined in printKey()";
     }
 }
-#endif
+
+Token::Key Token::key()
+{
+    return Token::m_Key;
+}
+
+void Token::key(Token::Key key)
+{
+    Token::m_Key = key;
+}
+
+string Token::value()
+{
+    return Token::m_Value;
+}
+
+int Token::lineIndex()
+{
+    return Token::m_LineIndex;
+}
+
+bool Token::isKey(Token::Key key)
+{
+    return key == Token::m_Key;
+}

@@ -1,5 +1,16 @@
 #include "Helper.hpp"
 
+void error(string ErrType, string Err, int Line)
+{
+    Line++;
+    if (ErrType.empty())
+        cout << "[Error] " << Err << " at line: " << Line << endl;
+    else
+        cout << '[' << ErrType << "] " << Err << " at line: " << Line << endl;
+
+    exit(EXIT_FAILURE);
+}
+
 int Helper::str2Int(string Str)
 {
     if (Str.size() == 1)
@@ -37,11 +48,6 @@ int Helper::char2Int(char C)
     default:
         return -1;
     }
-}
-void error(string err)
-{
-    cout << "[Error]" << err << endl;
-    exit(EXIT_FAILURE);
 }
 
 vector<vector<bool>> Helper::generateTable2D(int len)
@@ -93,4 +99,22 @@ int Helper::bool2Int(vector<bool> BoolVec)
         if (BoolVec.at(i))
             number += pow(2, (BoolVec.size() - 1 - i));
     return number;
+}
+
+vector<string> Helper::getNames(vector<Token> TokenVec)
+{
+    vector<string> Result;
+    for (Token t : TokenVec)
+        if (t.key() == Token::Key::Identifier)
+            if (!inList(t.value(), Result))
+                Result.push_back(t.value());
+    return Result;
+}
+
+bool Helper::inList(string Str, vector<string> StrVec)
+{
+    for (string s : StrVec)
+        if (s == Str)
+            return true;
+    return false;
 }
