@@ -6,7 +6,7 @@
 #define FILL "fill"
 #define COUNT "count"
 
-#define DFF "DFF"
+#define DFF "dff"
 #define ARROW "=>"
 #define SINGLE_COMMENT "//"
 #define BEGIN_COMMENT "/*"

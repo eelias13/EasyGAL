@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <stdint.h>
 
 using namespace std;
 
@@ -13,7 +14,7 @@ using namespace std;
 *   - "m_EnableDFlipFlop" holds a boolean which decides if the output pin should have its flip flop turned on.
 */
 
-struct TableData 
+struct TableData
 {
     vector<uint32_t> m_InputPins;
     uint32_t m_OutputPin;
