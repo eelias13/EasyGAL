@@ -13,7 +13,7 @@
 #include "Compiler/Linker/Linker.hpp"
 #include "Compiler/TablesAndNames.hpp"
 
-#include "TableData.hpp"
+#include "Translator/TableData.hpp"
 #include "Helper.hpp"
 using namespace std;
 

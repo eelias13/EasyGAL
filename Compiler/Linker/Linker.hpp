@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <stdint.h>
-#include "../../TableData.hpp"
+#include "../../Translator/TableData.hpp"
 #include "../TablesAndNames.hpp"
 
 using namespace std;

@@ -7,7 +7,7 @@
 #include "FunctionParser/FunctionParser.hpp"
 #include "Lexer/Token.hpp"
 #include "Lexer/Lexer.hpp"
-#include "../TableData.hpp"
+#include "../Translator/TableData.hpp"
 #include "StackHelper/StackHelper.hpp"
 #include "TablesAndNames.hpp"
 
@@ -27,7 +27,6 @@ private:
     void pinProcess(stack<Token> &);
     void tableProcess(stack<Token> &);
     void functionProcess(stack<Token> &);
-
 
 public:
     Compiler(vector<int>);
