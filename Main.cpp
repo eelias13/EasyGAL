@@ -22,17 +22,41 @@ int main()
 
     code.push_back("c = (a & b);");
 
-    vector<int> ValidPins;
-    string Temp;
+    vector<int> validPins;
+    string temp;
     for (char c : VALID_PINS)
         if (c == ' ')
         {
-            ValidPins.push_back(Helper::str2Int(Temp));
-            Temp = "";
+            validPins.push_back(Helper::str2Int(temp));
+            temp = "";
         }
         else
-            Temp += c;
+            temp += c;
 
-    // Compiler compiler = Compiler(ValidPins);
-    // vector<TableData> tb = compiler.compile(code);
+    Lexer lexer = Lexer(VALID_CHAR);
+    PreCompiler preCompiler = PreCompiler();
+    Compiler compiler = Compiler(validPins);
+    Linker linker = Linker();
+
+    vector<Token> tokens = lexer.lex(code);
+    stack<Token> tokenStack = preCompiler.compile(tokens);
+    TablesAndNames tempTable = compiler.compile(tokenStack);
+    vector<TableData> tdVec = linker.link(tempTable);
+
+    for (TableData td : tdVec)
+        printTD(td);
+}
+
+void printTD(TableData td)
+{
+    cout << "Is D: " << td.m_EnableFlipFlop;
+
+    cout << "  Output Pin: " << td.m_OutputPin;
+    cout << "  Boolean Table: ";
+    for (bool b : td.m_Table)
+        cout << b;
+    cout << "  Input Pins: ";
+    for (uint32_t i : td.m_InputPins)
+        cout << i << " ";
+    cout << endl;
 }

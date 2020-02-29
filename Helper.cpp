@@ -4,9 +4,19 @@ void error(string ErrType, string Err, int Line)
 {
     Line++;
     if (ErrType.empty())
-        cout << "[Error] " << Err << " at line: " << Line << endl;
+    {
+        if (Line == 0)
+            cout << "[Error] " << Err << endl;
+        else
+            cout << "[Error] " << Err << " at line: " << Line << endl;
+    }
     else
-        cout << '[' << ErrType << "] " << Err << " at line: " << Line << endl;
+    {
+        if (Line == 0)
+            cout << '[' << ErrType << "] " << Err << endl;
+        else
+            cout << '[' << ErrType << "] " << Err << " at line: " << Line << endl;
+    }
 
     exit(EXIT_FAILURE);
 }
@@ -101,15 +111,6 @@ int Helper::bool2Int(vector<bool> BoolVec)
     return number;
 }
 
-vector<string> Helper::getNames(vector<Token> TokenVec)
-{
-    vector<string> Result;
-    for (Token t : TokenVec)
-        if (t.key() == Token::Key::Identifier)
-            if (!inList(t.value(), Result))
-                Result.push_back(t.value());
-    return Result;
-}
 
 bool Helper::inList(string Str, vector<string> StrVec)
 {

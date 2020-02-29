@@ -1,0 +1,17 @@
+{
+    "files.associations": {
+        "iostream": "cpp",
+        "*.tcc": "cpp",
+        "string": "cpp",
+        "ostream": "cpp",
+        "optional": "cpp",
+        "system_error": "cpp",
+        "vector": "cpp",
+        "hash_map": "cpp",
+        "algorithm": "cpp",
+        "array": "cpp",
+        "string_view": "cpp",
+        "initializer_list": "cpp",
+        "utility": "cpp"
+    }
+}

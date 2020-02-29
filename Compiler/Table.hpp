@@ -3,7 +3,7 @@
 #include <vector>
 #include <cmath>
 #include <utility>
-#include "Helper.hpp"
+#include "../Helper.hpp"
 using namespace std;
 
 class Table
@@ -14,9 +14,9 @@ public:
         None,
         Count,
     };
+    bool m_InitSuccess;
 
 private:
-public:
     vector<vector<bool>> splitRows(vector<bool>, int);
     pair<int, vector<bool>> matchLine(vector<bool>, int);
     vector<vector<bool>> match(vector<vector<bool>>, int, bool);
@@ -33,5 +33,4 @@ private:
     vector<string> m_OutNames;
     vector<vector<bool>> m_BoolVec;
     bool m_Fill;
-    bool m_InitSuccess;
 };

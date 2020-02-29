@@ -1,6 +1,20 @@
+#pragma once
 #include <iostream>
 #include <vector>
+#include <stdint.h>
+
+#include "Compiler/Lexer/Lexer.hpp"
+#include "Compiler/Lexer/Token.hpp"
+
+#include "Compiler/PreCompiler/PreCompiler.hpp"
+
 #include "Compiler/Compiler.hpp"
-#include "Translator/TableData.hpp"
-#include "Compiler/Helper.hpp"
+
+#include "Compiler/Linker/Linker.hpp"
+#include "Compiler/TablesAndNames.hpp"
+
+#include "TableData.hpp"
+#include "Helper.hpp"
 using namespace std;
+
+void printTD(TableData td);
