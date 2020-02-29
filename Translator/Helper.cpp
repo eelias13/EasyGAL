@@ -1,7 +1,5 @@
 #include "Helper.hpp"
 
-using namespace std;
-
 vector<string> Helper::String::Tokenize(const string &InputString, string Delimiters)
 {
     /*
