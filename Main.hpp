@@ -17,4 +17,5 @@
 #include "Helper.hpp"
 using namespace std;
 
-void printTD(TableData td);
+void printTD(TableData);
+void printTable(vector<bool>, vector<uint32_t>, uint32_t);

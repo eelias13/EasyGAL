@@ -41,10 +41,21 @@ int main()
     vector<Token> tokens = lexer.lex(code);
     stack<Token> tokenStack = preCompiler.compile(tokens);
     TablesAndNames tempTable = compiler.compile(tokenStack);
-    vector<TableData> tdVec = linker.link(tempTable);
+    //vector<TableData> tdVec = linker.link(tempTable);
 
-    for (TableData td : tdVec)
-        printTD(td);
+    // for (TableData td : tdVec)
+    //     printTD(td);
+
+    TableData td;
+    td.m_EnableFlipFlop = false;
+    td.m_OutputPin = 1;
+    td.m_InputPins = {2, 3};
+    td.m_Table = {false, false, false, true};
+
+    printTD(td);
+    cout << endl;
+    cout << endl;
+    printTable(td.m_Table, td.m_InputPins, td.m_OutputPin);
 }
 
 void printTD(TableData td)
@@ -59,4 +70,19 @@ void printTD(TableData td)
     for (uint32_t i : td.m_InputPins)
         cout << i << " ";
     cout << endl;
+}
+
+void printTable(vector<bool> BoolVec, vector<uint32_t> InPins, uint32_t OutPin)
+{
+    for (uint32_t pin : InPins)
+        cout << pin << " ";
+    cout << "\t" << OutPin << endl;
+    cout << endl;
+    vector<vector<bool>> Vec2D = Helper::generateTable2D(InPins.size());
+    for (int i = 0; i < Vec2D.size(); i++)
+    {
+        for (bool b : Vec2D.at(i))
+            cout << b << " ";
+        cout << "\t" << BoolVec.at(i) << endl;
+    }
 }
