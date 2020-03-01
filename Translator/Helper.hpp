@@ -6,6 +6,16 @@
 
 using namespace std;
 
+#define ERROR(FMT, ...) \
+	printf("%s%s%s%s%s%i%s", "Error in ", __FILE__, "\nIn function ", __FUNCTION__, "\nIn line ", __LINE__, ": "); \
+	printf(FMT, __VA_ARGS__); \
+	printf("%s", "\n")
+
+#define LOG(FMT, ...) \
+	printf("%s", "[LOG] "); \
+	printf(FMT, __VA_ARGS__); \
+	printf("%s", "\n")
+
 namespace Helper
 {
 	namespace String

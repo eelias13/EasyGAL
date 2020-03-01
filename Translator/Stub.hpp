@@ -2,8 +2,8 @@
 
 /*
 *	This stub is used for emulating the compiler part of the program.
-*	It feeds the translator TableData to translate into the jedec format.
+*	It feeds the translator TableData to translate into the JEDEC format.
 */
 
-#include <iostream>
-
+#include "Translator.hpp"
+#include "Helper.hpp"
