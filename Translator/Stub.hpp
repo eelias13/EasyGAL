@@ -7,3 +7,4 @@
 
 #include "Translator.hpp"
 #include "Helper.hpp"
+#include "DNF.hpp"

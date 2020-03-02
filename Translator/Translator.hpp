@@ -1,5 +1,10 @@
 #pragma once
 
+/*
+*	This is the interface which computes given truth tables to the JEDEC file format.
+*	The Translator::Process is the entry point for the translator and processes everything translator related.
+*/
+
 #include <vector>
 
 #include "DNF.hpp"
@@ -7,11 +12,6 @@
 #include "TableData.hpp"
 
 using namespace std;
-
-/*
-*	This is the interface which computes given truth tables to the JEDEC file format.
-*	The Translator::Process is the entry point for the translator and processes everything translator related.
-*/
 
 namespace Translator 
 {

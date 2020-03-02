@@ -5,6 +5,9 @@
 *	It is only used to compile the stub which feeds the TableData to the translator.
 */
 
+using namespace std;
+
 int main() 
 {
+	getchar();
 }
