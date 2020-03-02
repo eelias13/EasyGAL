@@ -1,5 +1,7 @@
 #include "Lexer.hpp"
 
+Lexer::Lexer() {}
+
 Lexer::Lexer(string ValidCahr)
 {
     Lexer::validatCharInit(ValidCahr);

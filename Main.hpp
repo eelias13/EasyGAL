@@ -2,20 +2,15 @@
 #include <iostream>
 #include <vector>
 #include <stdint.h>
-
-#include "Compiler/Lexer/Lexer.hpp"
-#include "Compiler/Lexer/Token.hpp"
-
-#include "Compiler/PreCompiler/PreCompiler.hpp"
+#include <fstream>
 
 #include "Compiler/Compiler.hpp"
-
-#include "Compiler/Linker/Linker.hpp"
-#include "Compiler/TablesAndNames.hpp"
-
 #include "Translator/TableData.hpp"
-#include "Helper.hpp"
+
 using namespace std;
+
+vector<string> ReadFile(string Path);
+vector<int> getValidPins(string InStr);
 
 void printTD(TableData);
 void printTable(vector<bool>, vector<uint32_t>, uint32_t);

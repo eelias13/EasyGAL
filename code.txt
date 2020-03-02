@@ -1,0 +1,17 @@
+// test
+
+pin 1 = in1;
+pin 2 = in2;
+pin 3 = and;
+pin 4 = xor;
+
+pin 5 = a;
+pin 6 = b;
+pin 5 = c;
+
+table(in1, in2 => and, xor){
+    00 00
+    01 01
+    10 01
+    11 10
+}

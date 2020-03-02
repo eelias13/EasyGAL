@@ -1,22 +1,35 @@
 #include "Compiler.hpp"
 
-Compiler::Compiler(vector<int> ValidPins)
+Compiler::Compiler(vector<int> ValidInPins, vector<int> ValidOutPins)
 {
-    m_ValidPins = ValidPins;
+    for (int Pin : ValidInPins)
+        m_ValidPins.push_back(Pin);
+    for (int Pin : ValidOutPins)
+        m_ValidPins.push_back(Pin);
+
     m_FP = FunctionParser();
+    m_Lexer = Lexer(VALID_CHAR);
+    m_PreCompiler = PreCompiler();
+    m_Linker = Linker();
 }
 
-TablesAndNames Compiler::compile(stack<Token> Stack)
+vector<TableData> Compiler::compile(vector<string> code)
 {
-    while (!Stack.empty())
-        prase(Stack);
+    // lex
+    vector<Token> Tokens = m_Lexer.lex(code);
+    stack<Token> TokenStack = m_PreCompiler.compile(Tokens);
 
-    TablesAndNames Result;
-    Result.Tables = m_Tables;
-    Result.IsD = m_IsD;
-    Result.Alias = m_Alias;
+    // parse
+    while (!TokenStack.empty())
+        prase(TokenStack);
 
-    return Result;
+    TablesAndNames tempTable;
+    tempTable.Tables = m_Tables;
+    tempTable.IsD = m_IsD;
+    tempTable.Alias = m_Alias;
+
+    // link
+    return m_Linker.link(tempTable);
 }
 
 void Compiler::prase(stack<Token> &Stack)

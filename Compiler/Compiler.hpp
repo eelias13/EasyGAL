@@ -2,14 +2,17 @@
 #include <vector>
 #include <utility>
 #include <stack>
-#include "../Helper.hpp"
+
 #include "Table.hpp"
-#include "FunctionParser/FunctionParser.hpp"
+#include "../Helper.hpp"
 #include "Lexer/Token.hpp"
 #include "Lexer/Lexer.hpp"
+#include "TablesAndNames.hpp"
 #include "../Translator/TableData.hpp"
 #include "StackHelper/StackHelper.hpp"
-#include "TablesAndNames.hpp"
+#include "PreCompiler/PreCompiler.hpp"
+#include "Linker/Linker.hpp"
+#include "FunctionParser/FunctionParser.hpp"
 
 using namespace std;
 
@@ -29,8 +32,8 @@ private:
     void functionProcess(stack<Token> &);
 
 public:
-    Compiler(vector<int>);
-    TablesAndNames compile(stack<Token>);
+    Compiler(vector<int>, vector<int>);
+    vector<TableData> compile(vector<string>);
 
 private:
     vector<pair<string, int>> m_Alias;
@@ -39,4 +42,8 @@ private:
 
     FunctionParser m_FP;
     vector<int> m_ValidPins;
+
+    Lexer m_Lexer;
+    PreCompiler m_PreCompiler;
+    Linker m_Linker;
 };
