@@ -49,7 +49,7 @@ void Compiler::prase(stack<Token> &Stack)
         {
             StackHelper::savePop(Stack, Token::Key::dff);
             StackHelper::savePop(Stack, Token::Key::End);
-            StackHelper::savePop(Stack);
+            Stack.pop();
             m_IsD.push_back(Temp.value());
         }
         else

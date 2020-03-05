@@ -10,5 +10,5 @@ using namespace std;
 namespace ShuntingYard
 {
 void sortIn(stack<Token> &, Token);
-vector<Token> reversePolishNotation(vector<Token>);
+stack<Token> reversePolishNotation(vector<Token>);
 } // namespace ShuntingYard

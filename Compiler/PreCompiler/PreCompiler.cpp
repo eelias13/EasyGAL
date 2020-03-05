@@ -81,7 +81,7 @@ stack<Token> PreCompiler::compile(vector<Token> TokenVec)
         else if (Comment)
         {
             if (Stack_1.top().value() == END_COMMENT)
-                CommentOneLine = false;
+                Comment = false;
             Stack_1.pop();
         }
         else if (Stack_1.top().key() == Token::Key::Comment)
