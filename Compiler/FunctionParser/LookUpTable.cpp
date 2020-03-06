@@ -22,6 +22,7 @@ bool LookUpTable::at(Token t)
             return m_Value.at(i);
 
     error("", "valid to evaluate expresion", t.lineIndex());
+    return 0;
 }
 
 void LookUpTable::setValue(vector<bool> Value)

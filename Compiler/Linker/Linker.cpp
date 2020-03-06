@@ -1,7 +1,11 @@
 #include "Linker.hpp"
 
-Linker::Linker()
+Linker::Linker() {}
+
+Linker::Linker(vector<int> ValidInPins, vector<int> ValidOutPins)
 {
+    m_ValidInPins = ValidInPins;
+    m_ValidOutPins = ValidOutPins;
 }
 
 vector<TableData> Linker::link(TablesAndNames Input)
@@ -10,11 +14,11 @@ vector<TableData> Linker::link(TablesAndNames Input)
     return matchPins(TNVec, Input);
 }
 
-uint32_t Linker::findePin(string Str, vector<pair<string, int>> Alias)
+int Linker::findePin(string Str, vector<pair<string, int>> Alias)
 {
     for (pair<string, int> p : Alias)
         if (p.first == Str)
-            return (uint32_t)p.second;
+            return p.second;
 
     error("Linking Error", "Pin " + Str + "is not definde", -1);
     return {};
@@ -45,9 +49,17 @@ vector<TableData> Linker::matchPins(vector<TableName> TNVec, TablesAndNames Inpu
     for (TableName TN : TNVec)
     {
         TableData Temp;
-        Temp.m_OutputPin = findePin(TN.OutName, Input.Alias);
+        int Pin = findePin(TN.OutName, Input.Alias);
+        checkPin(Pin, false);
+        Temp.m_OutputPin = (uint32_t)Pin;
+
         for (string Str : TN.InNames)
-            Temp.m_InputPins.push_back(findePin(Str, Input.Alias));
+        {
+            Pin = findePin(Str, Input.Alias);
+            checkPin(Pin, true);
+            Temp.m_InputPins.push_back((uint32_t)Pin);
+        }
+
         Temp.m_Table = TN.BoolTable;
         Temp.m_EnableFlipFlop = false;
         TDVec.push_back(Temp);
@@ -65,4 +77,28 @@ vector<TableData> Linker::matchPins(vector<TableName> TNVec, TablesAndNames Inpu
     }
 
     return TDVec;
+}
+
+void Linker::checkPin(int Pin, bool IsInput)
+{
+    if (!isValidPin(Pin, IsInput))
+        if (IsInput)
+            error("Linking Error", "Pin " + to_string(Pin) + " is not a valid inputpin", -1);
+        else
+            error("Linking Error", "Pin " + to_string(Pin) + " is not a valid outputpin", -1);
+}
+
+bool Linker::isValidPin(int Pin, bool IsInput)
+{
+    if (IsInput)
+    {
+        for (int i : m_ValidInPins)
+            if (i == Pin)
+                return true;
+    }
+    else
+        for (int i : m_ValidOutPins)
+            if (i == Pin)
+                return true;
+    return false;
 }

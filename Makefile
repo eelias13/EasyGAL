@@ -1,9 +1,8 @@
 # manual build: 
 # g++ *.cpp Compiler/*.cpp Compiler/FunctionParser/*cpp Compiler/Lexer/*.cpp Compiler/Linker/*.cpp Compiler/PreCompiler/*cpp Compiler/StackHelper/*.cpp
 
-
-EasyGal: Main.o FunctionParser.o Lexer.o Token.o Linker.o PreCompiler.o StackHelper.o Compiler.o Helper.o Table.o
-	g++ Main.o FunctionParser.o Lexer.o Token.o Linker.o PreCompiler.o StackHelper.o Compiler.o Helper.o -o EasyGal
+EasyGal: Main.o FunctionParser.o LookUpTable.o Node.o ShuntingYard.o Lexer.o Token.o Linker.o PreCompiler.o StackHelper.o Compiler.o Helper.o Table.o
+	g++ Main.o FunctionParser.o LookUpTable.o Node.o ShuntingYard.o Lexer.o Token.o Linker.o PreCompiler.o StackHelper.o Compiler.o Helper.o Table.o -o EasyGal
 
 # in Main
 Main.o: Main.cpp Main.hpp
@@ -12,6 +11,15 @@ Main.o: Main.cpp Main.hpp
 # in Compiler
 FunctionParser.o: Compiler/FunctionParser/FunctionParser.cpp Compiler/FunctionParser/FunctionParser.hpp
 	g++ -c Compiler/FunctionParser/FunctionParser.cpp
+
+LookUpTable.o: Compiler/FunctionParser/LookUpTable.cpp Compiler/FunctionParser/LookUpTable.hpp
+	g++ -c Compiler/FunctionParser/LookUpTable.cpp 
+
+Node.o: Compiler/FunctionParser/Node.cpp Compiler/FunctionParser/Node.hpp 
+	g++ -c Compiler/FunctionParser/Node.cpp
+
+ShuntingYard.o: Compiler/FunctionParser/ShuntingYard.cpp Compiler/FunctionParser/ShuntingYard.hpp
+	g++ -c Compiler/FunctionParser/ShuntingYard.cpp
 
 Lexer.o: Compiler/Lexer/Lexer.cpp Compiler/Lexer/Lexer.hpp
 	g++ -c Compiler/Lexer/Lexer.cpp
@@ -44,6 +52,9 @@ Table.o: Compiler/Table.cpp Compiler/Table.hpp
 clean:
 	rm Main.o 
 	rm FunctionParser.o 
+	rm LookUpTable.o
+	rm Node.o 
+	rm ShuntingYard.o
 	rm Lexer.o 
 	rm Token.o 
 	rm Linker.o 

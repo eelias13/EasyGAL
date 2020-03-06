@@ -1,3 +1,4 @@
+#pragma once
 #include <vector>
 #include <stack>
 #include <string>
@@ -5,7 +6,7 @@
 #include "ShuntingYard.hpp"
 #include "Node.hpp"
 #include "../Lexer/Token.hpp"
-#include "../Helper.hpp"
+#include "../../Helper.hpp"
 using namespace std;
 
 class FunctionParser

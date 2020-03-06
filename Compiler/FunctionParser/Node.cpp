@@ -77,4 +77,5 @@ bool Node::eval(LookUpTable LookUp)
     if ((*m_Value).value() == string(1, XOR))
         return (*m_Right).eval(LookUp) ^ (*m_Left).eval(LookUp);
     error("", "valid to evaluate expresion", (*m_Value).lineIndex());
+    return 0;
 }

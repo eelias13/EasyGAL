@@ -7,7 +7,7 @@ vector<bool> FunctionParser::parse(vector<Token> Expression)
     vector<Token> Identifier = getNames(Expression);
     vector<vector<bool>> Vec2D = Helper::generateTable2D(Identifier.size());
     stack<Token> Stack = ShuntingYard::reversePolishNotation(Expression);
-    
+
     Node Tree = Node(Stack);
     vector<bool> Result;
 

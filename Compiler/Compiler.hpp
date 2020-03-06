@@ -23,7 +23,6 @@ private:
     vector<string> getIdentifierList(stack<Token> &);
     vector<Token> getExpresion(stack<Token> &);
 
-    bool pinIsValide(int);
     vector<string> getNames(vector<Token>);
 
     void prase(stack<Token> &);
@@ -41,7 +40,8 @@ private:
     vector<string> m_IsD;
 
     FunctionParser m_FP;
-    vector<int> m_ValidPins;
+    vector<int> m_ValidInPins;
+    vector<int> m_ValidOutPins;
 
     Lexer m_Lexer;
     PreCompiler m_PreCompiler;

@@ -19,10 +19,18 @@ public:
 private:
     vector<TableName> split(TablesAndNames);
     vector<TableData> matchPins(vector<TableName>, TablesAndNames);
-    uint32_t findePin(string, vector<pair<string, int>>);
+    int findePin(string, vector<pair<string, int>>);
     void matchD(vector<TableName> &TNVec);
+
+    void checkPin(int, bool);
+    bool isValidPin(int, bool);
 
 public:
     Linker();
+    Linker(vector<int>, vector<int>);
     vector<TableData> link(TablesAndNames);
+
+private:
+    vector<int> m_ValidInPins;
+    vector<int> m_ValidOutPins;
 };
