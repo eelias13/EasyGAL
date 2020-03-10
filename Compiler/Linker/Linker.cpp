@@ -29,7 +29,7 @@ vector<Linker::TableName> Linker::split(TablesAndNames Input)
     vector<TableName> TNVec;
     for (Table t : Input.Tables)
     {
-        for (int i = 0; i < t.getInNames().size(); i++)
+        for (int i = 0; i < t.getOutNames().size(); i++)
         {
             TableName Temp;
             Temp.OutName = t.getOutNames().at(i);
