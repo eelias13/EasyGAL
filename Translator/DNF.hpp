@@ -6,7 +6,6 @@
 */
 
 #include <bitset>
-#include <optional>
 #include <cmath>
 
 #include "Helper.hpp"
@@ -48,6 +47,8 @@ namespace DNF
 
 	struct Expression 
 	{
+		Expression() {}
+
 		Expression(uint32_t OutputPin, bool EnableFlipFlops, vector<Row> Rows)
 		{
 			this->m_OutputPin = OutputPin;
@@ -60,8 +61,7 @@ namespace DNF
 		vector<Row> m_Rows;
 	};
 
-	optional<Expression> Build(TableData& TruthTable);
-	bool Build(vector<TableData>& TruthTables, vector<Expression>* pExpressionsOut);
-
+	bool Build(TableData& TruthTable, Expression& ExpressionOut);
+	bool Build(vector<TableData>& TruthTables, vector<Expression>& ExpressionsOut);
 	Row BuildRow(bitset<MAX_INPUTS> Bits, vector<uint32_t> Inputs);
 }

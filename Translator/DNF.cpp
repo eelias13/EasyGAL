@@ -3,68 +3,64 @@
 using namespace DNF;
 
 /*
-*	DNF::Build(TableData) builds a DNF expression from a TableData datastructure.
+*	DNF::Build(TableData&, Expression&) builds a DNF expression from a TableData datastructure.
 *	It's return value is optional, because the function can fail in case the supplied
-*	TableData structure is faulty. The expression is returned in the DNF::Expression datastructure.
+*	TableData structure is faulty. The resulting Expression datastructure is stored in the supplied Expression reference.
 */
 
-optional<Expression> DNF::Build(TableData& TruthTable)
+bool DNF::Build(TableData& TruthTable, Expression& ExpressionOut)
 {
-	if (TruthTable.m_InputPins.size() > MAX_INPUTS) 
+	if (TruthTable.m_InputPins.size() > MAX_INPUTS)
 	{
-		ERROR("%s", "Too many inputs");
-		return {};
-	} 
-	else if(TruthTable.m_Table.size() != pow(2, TruthTable.m_InputPins.size()))
-	{ 
+		ERROR("%s", "Too many input pins");
+		return false;
+	}
+	else if (TruthTable.m_Table.size() != pow(2, TruthTable.m_InputPins.size()))
+	{
 		ERROR("%s", "Truth table size doesn't match input bits");
-		return {};
+		return false;
 	}
 
 	vector<Row> Rows;
 
-	for(uint32_t Index = 0; Index < TruthTable.m_Table.size(); Index++)
+	for (uint32_t Index = 0; Index < TruthTable.m_Table.size(); Index++)
 	{
-		if(TruthTable.m_Table[Index])
+		if (TruthTable.m_Table[Index])
 		{
 			Rows.push_back(BuildRow(bitset<MAX_INPUTS>(Index), TruthTable.m_InputPins));
 		}
 	}
 
-	return Expression(TruthTable.m_OutputPin, TruthTable.m_EnableFlipFlop, Rows);
+	ExpressionOut = Expression(TruthTable.m_OutputPin, TruthTable.m_EnableFlipFlop, Rows);
+
+	return true;
 }
 
 /*
-*	DNF::Build(vector<TableData>&, vector<Expression>*) is basically a wrapper for DNF::Build(TableData)
+*	DNF::Build(vector<TableData>&, vector<Expression>&) is basically a wrapper for DNF::Build(TableData&, Expression&)
 *	and is able to build multiple DNF expressions at once by receiving a vector of TableData datastructures.
-*	It stores the result in a vector which you need to supply to the function by pointer. The function
+*	It stores the result in a vector which you need to supply to the function by reference. The function
 *	returns a boolean which indicates if the building of all expressions was successful.
 */
 
-bool DNF::Build(vector<TableData>& TruthTables, vector<Expression>* pExpressionsOut)
+bool DNF::Build(vector<TableData>& TruthTables, vector<Expression>& ExpressionsOut)
 {
-	if (pExpressionsOut == nullptr)
-	{
-		ERROR("%s", "pExpressionsOut was nullpointer");
-		return false;
-	}
-
 	vector<Expression> Expressions;
 
 	for(TableData TruthTable : TruthTables)
 	{
-		optional<Expression> CurExpression = Build(TruthTable);
+		Expression CurExpression;
 
-		if (CurExpression.has_value() == false)
+		if(Build(TruthTable, CurExpression) == false)
 		{
 			ERROR("%s", "Couldn't build all DNF expressions");
 			return false;
 		}
 
-		Expressions.push_back(*CurExpression);
+		Expressions.push_back(CurExpression);
 	}
 
-	*pExpressionsOut = Expressions;
+	ExpressionsOut = Expressions;
 
 	return true;
 }
