@@ -198,9 +198,12 @@ void Compiler::functionProcess(stack<Token> &Stack)
     StackHelper::savePop(Stack);
     vector<Token> Expresion = getExpresion(Stack);
 
-    vector<string> Names = getNames(Expresion);
+    vector<Token> Temp = m_FP.getNames(Expresion);
+    vector<string> Names;
+    for (Token t : Temp)
+        Names.push_back(t.value());
     vector<bool> BoolTable = m_FP.parse(Expresion);
-    m_Tables.push_back(Table(vector<string>{First.value()}, Names, BoolTable, Table::Type::Count));
+    m_Tables.push_back(Table(Names, {First.value()}, BoolTable, Table::Type::Count));
 
     StackHelper::check(Stack.top(), Token::Key::End);
     Stack.pop();

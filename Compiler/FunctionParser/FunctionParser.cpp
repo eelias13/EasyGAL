@@ -6,9 +6,6 @@ vector<bool> FunctionParser::parse(vector<Token> Expression)
 {
     vector<Token> Identifier = getNames(Expression);
     vector<vector<bool>> Vec2D = Helper::generateTable2D(Identifier.size());
-    stack<Token> Stack = ShuntingYard::reversePolishNotation(Expression);
-
-    Node Tree = Node(Stack);
     vector<bool> Result;
 
     LookUpTable LookUp;
@@ -17,10 +14,32 @@ vector<bool> FunctionParser::parse(vector<Token> Expression)
     for (vector<bool> BoolVec : Vec2D)
     {
         LookUp.setValue(BoolVec);
-        Result.push_back(Tree.eval(LookUp));
+        string exp = insert(Expression, LookUp);
+        if (Parser::parse(exp) == ONE)
+            Result.push_back(true);
+        else if (Parser::parse(exp) == ZERO)
+            Result.push_back(false);
+        else
+            error("", "can not parse expresion", -1);
     }
 
     return Result;
+}
+
+string FunctionParser::insert(vector<Token> Expression, LookUpTable LookUp)
+{
+    string out = string(1, PARENTHSESE_OPEN);
+    for (Token t : Expression)
+        if (t.key() == Token::Key::Identifier)
+            if (LookUp.at(t))
+                out += ONE;
+            else
+                out += ZERO;
+        else
+            out += t.value();
+
+    out += PARENTHSESE_CLOSE;
+    return out;
 }
 
 vector<Token> FunctionParser::getNames(vector<Token> Expression)

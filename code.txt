@@ -1,20 +1,5 @@
-// test
+pin 6 = a;
+pin 7 = b;
+pin 8 = c;
 
-/* 
-  comment 
-*/
-
-pin 1 = in1;
-pin 2 = in2;
-pin 3 = and;
-pin 4 = xor;
-pin 5 = or;
-
-table(in1, in2 => and, or, xor).count{
-  000
-  011
-  011
-  110
-}
-
-and.dff;
+a = !b | c;

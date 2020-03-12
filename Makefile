@@ -1,8 +1,8 @@
 # manual build: 
 # g++ *.cpp Compiler/*.cpp Compiler/FunctionParser/*cpp Compiler/Lexer/*.cpp Compiler/Linker/*.cpp Compiler/PreCompiler/*cpp Compiler/StackHelper/*.cpp
 
-EasyGal: Main.o FunctionParser.o LookUpTable.o Node.o ShuntingYard.o Lexer.o Token.o Linker.o PreCompiler.o StackHelper.o Compiler.o Helper.o Table.o
-	g++ Main.o FunctionParser.o LookUpTable.o Node.o ShuntingYard.o Lexer.o Token.o Linker.o PreCompiler.o StackHelper.o Compiler.o Helper.o Table.o -o EasyGal
+EasyGal: Main.o FunctionParser.o LookUpTable.o And.o Or.o Not.o Xor.o Parentheses.o Parser.o Preproces.o Lexer.o Token.o Linker.o PreCompiler.o StackHelper.o Compiler.o Helper.o Table.o
+	g++ Main.o FunctionParser.o LookUpTable.o And.o Or.o Not.o Xor.o Parentheses.o Parser.o Preproces.o Lexer.o Token.o Linker.o PreCompiler.o StackHelper.o Compiler.o Helper.o Table.o -o EasyGal
 
 # in Main
 Main.o: Main.cpp Main.hpp
@@ -15,11 +15,26 @@ FunctionParser.o: Compiler/FunctionParser/FunctionParser.cpp Compiler/FunctionPa
 LookUpTable.o: Compiler/FunctionParser/LookUpTable.cpp Compiler/FunctionParser/LookUpTable.hpp
 	g++ -c Compiler/FunctionParser/LookUpTable.cpp 
 
-Node.o: Compiler/FunctionParser/Node.cpp Compiler/FunctionParser/Node.hpp 
-	g++ -c Compiler/FunctionParser/Node.cpp
+And.o: Compiler/FunctionParser/Simplefy/And.cpp Compiler/FunctionParser/Simplefy/And.hpp
+	g++ -c Compiler/FunctionParser/Simplefy/And.cpp 
 
-ShuntingYard.o: Compiler/FunctionParser/ShuntingYard.cpp Compiler/FunctionParser/ShuntingYard.hpp
-	g++ -c Compiler/FunctionParser/ShuntingYard.cpp
+Or.o: Compiler/FunctionParser/Simplefy/Or.cpp Compiler/FunctionParser/Simplefy/Or.hpp
+	g++ -c Compiler/FunctionParser/Simplefy/Or.cpp
+
+Not.o: Compiler/FunctionParser/Simplefy/Not.cpp Compiler/FunctionParser/Simplefy/Not.hpp
+	g++ -c Compiler/FunctionParser/Simplefy/Not.cpp
+
+Xor.o: Compiler/FunctionParser/Simplefy/Xor.cpp Compiler/FunctionParser/Simplefy/Xor.hpp
+	g++ -c Compiler/FunctionParser/Simplefy/Xor.cpp
+
+Parentheses.o: Compiler/FunctionParser/Simplefy/Parentheses.cpp Compiler/FunctionParser/Simplefy/Parentheses.hpp
+	g++ -c Compiler/FunctionParser/Simplefy/Parentheses.cpp
+
+Parser.o: Compiler/FunctionParser/Parser/Parser.cpp Compiler/FunctionParser/Parser/Parser.hpp
+	g++ -c Compiler/FunctionParser/Parser/Parser.cpp
+
+Preproces.o: Compiler/FunctionParser/Parser/Preproces.cpp Compiler/FunctionParser/Parser/Preproces.hpp
+	g++ -c Compiler/FunctionParser/Parser/Preproces.cpp
 
 Lexer.o: Compiler/Lexer/Lexer.cpp Compiler/Lexer/Lexer.hpp
 	g++ -c Compiler/Lexer/Lexer.cpp
@@ -53,8 +68,13 @@ clean:
 	rm Main.o 
 	rm FunctionParser.o 
 	rm LookUpTable.o
-	rm Node.o 
-	rm ShuntingYard.o
+	rm And.o
+	rm Or.o
+	rm Not.o
+	rm Xor.o
+	rm Parentheses.o
+	rm Parser.o
+	rm Preproces.o 
 	rm Lexer.o 
 	rm Token.o 
 	rm Linker.o 
