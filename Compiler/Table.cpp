@@ -18,6 +18,7 @@ Table::Table(vector<string> InNames, vector<string> OutNames, vector<bool> BoolV
     {
         if (BoolVec.size() != pow(2, InNames.size()) * OutNames.size())
             m_InitSuccess = false;
+#ifdef COUNT_VERTICAL
         else
         {
             for (int i = 0; i < OutNames.size(); i++)
@@ -29,6 +30,20 @@ Table::Table(vector<string> InNames, vector<string> OutNames, vector<bool> BoolV
             }
             m_InitSuccess = true;
         }
+#else
+        else
+        {
+            for (int i = 0; i < OutNames.size(); i++)
+                m_BoolVec.push_back({});
+
+            for (int i = 0; i < BoolVec.size(); i++)
+            {
+                m_BoolVec.at(i % OutNames.size()).push_back(BoolVec.at(i));
+            }
+            m_InitSuccess = true;
+        }
+
+#endif
     }
     else
     {

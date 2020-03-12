@@ -59,6 +59,7 @@ void PreCompiler::grouping(stack<Token> &Stack, stack<Token> &Result)
         Result.push(Temp);
 }
 
+#include <iostream>
 stack<Token> PreCompiler::compile(vector<Token> TokenVec)
 {
     stack<Token> Stack_1;
@@ -71,7 +72,6 @@ stack<Token> PreCompiler::compile(vector<Token> TokenVec)
 
     while (!Stack_1.empty())
     {
-
         if (CommentOneLine)
         {
             if (Stack_1.top().value() == string(1, '\n'))
@@ -81,7 +81,7 @@ stack<Token> PreCompiler::compile(vector<Token> TokenVec)
         else if (Comment)
         {
             if (Stack_1.top().value() == END_COMMENT)
-                CommentOneLine = false;
+                Comment = false;
             Stack_1.pop();
         }
         else if (Stack_1.top().key() == Token::Key::Comment)

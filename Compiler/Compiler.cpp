@@ -1,22 +1,33 @@
 #include "Compiler.hpp"
 
-Compiler::Compiler(vector<int> ValidPins)
+Compiler::Compiler(vector<int> ValidInPins, vector<int> ValidOutPins)
 {
-    m_ValidPins = ValidPins;
+    m_ValidInPins = ValidInPins;
+    m_ValidOutPins = ValidOutPins;
+
     m_FP = FunctionParser();
+    m_Lexer = Lexer(VALID_CHAR);
+    m_PreCompiler = PreCompiler();
+    m_Linker = Linker(ValidInPins, ValidOutPins);
 }
 
-TablesAndNames Compiler::compile(stack<Token> Stack)
+vector<TableData> Compiler::compile(vector<string> code)
 {
-    while (!Stack.empty())
-        prase(Stack);
+    // lex
+    vector<Token> Tokens = m_Lexer.lex(code);
+    stack<Token> TokenStack = m_PreCompiler.compile(Tokens);
 
-    TablesAndNames Result;
-    Result.Tables = m_Tables;
-    Result.IsD = m_IsD;
-    Result.Alias = m_Alias;
+    // parse
+    while (!TokenStack.empty())
+        prase(TokenStack);
 
-    return Result;
+    TablesAndNames tempTable;
+    tempTable.Tables = m_Tables;
+    tempTable.IsD = m_IsD;
+    tempTable.Alias = m_Alias;
+
+    // link
+    return m_Linker.link(tempTable);
 }
 
 void Compiler::prase(stack<Token> &Stack)
@@ -36,7 +47,7 @@ void Compiler::prase(stack<Token> &Stack)
         {
             StackHelper::savePop(Stack, Token::Key::dff);
             StackHelper::savePop(Stack, Token::Key::End);
-            StackHelper::savePop(Stack);
+            Stack.pop();
             m_IsD.push_back(Temp.value());
         }
         else
@@ -50,6 +61,7 @@ void Compiler::prase(stack<Token> &Stack)
 }
 
 // -------------------------- usefull functions ------------------------------
+
 vector<string> Compiler::getNames(vector<Token> TokenVec)
 {
     vector<string> Result;
@@ -102,21 +114,11 @@ vector<Token> Compiler::getExpresion(stack<Token> &Stack)
     return Result;
 }
 
-bool Compiler::pinIsValide(int Pin)
-{
-    for (int i : m_ValidPins)
-        if (Pin == i)
-            return true;
-    return false;
-}
-
 // ----------------------------process functions -------------------------------
 void Compiler::pinProcess(stack<Token> &Stack)
 {
     StackHelper::savePop(Stack);
     int Num = Helper::str2Int(Stack.top().value());
-    if (!pinIsValide(Num))
-        error("", "invalid pin " + Num, Stack.top().lineIndex());
 
     StackHelper::savePop(Stack, Token::Key::Equal);
 
@@ -196,9 +198,12 @@ void Compiler::functionProcess(stack<Token> &Stack)
     StackHelper::savePop(Stack);
     vector<Token> Expresion = getExpresion(Stack);
 
-    vector<string> Names = getNames(Expresion);
+    vector<Token> Temp = m_FP.getNames(Expresion);
+    vector<string> Names;
+    for (Token t : Temp)
+        Names.push_back(t.value());
     vector<bool> BoolTable = m_FP.parse(Expresion);
-    m_Tables.push_back(Table(vector<string>{First.value()}, Names, BoolTable, Table::Type::Count));
+    m_Tables.push_back(Table(Names, {First.value()}, BoolTable, Table::Type::Count));
 
     StackHelper::check(Stack.top(), Token::Key::End);
     Stack.pop();

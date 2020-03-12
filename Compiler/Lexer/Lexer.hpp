@@ -29,6 +29,7 @@ private:
 
 public:
     Lexer(string ValidCahr);
+    Lexer();
     vector<Token> lex(vector<string>);
 
 private:

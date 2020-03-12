@@ -1,61 +1,71 @@
 #include "Main.hpp"
 
-int main()
+int main(int argc, char **argv)
 {
-    vector<string> code;
-    code.push_back("pin 1 = in1;");
-    code.push_back("pin 2 = in2;");
-    code.push_back("pin 3 = and;");
-    code.push_back("pin 4 = xor;");
-    code.push_back("pin 5 = a;");
-    code.push_back("pin 6 = b;");
-    code.push_back("pin 5 = c;");
+    if (argc == 1)
+    {
+        cout << "you have to enter a file" << endl;
+        exit(EXIT_FAILURE);
+    }
+    if (argc > 2)
+    {
+        cout << "this progatam dose  not suport more then one argument" << endl;
+        exit(EXIT_FAILURE);
+    }
 
-    code.push_back("in1.dff;");
+    string Path = argv[1];
+    vector<string> Code = ReadFile(Path);
 
-    code.push_back("table(in1, in2 => and, xor){");
-    code.push_back("00 00");
-    code.push_back("01 01");
-    code.push_back("10 01");
-    code.push_back("11 10");
-    code.push_back("}");
+    vector<int> ValidInPins = getValidPins(VALID_IN_PINS);
+    vector<int> ValidOutPins = getValidPins(VALID_OUT_PINS);
 
-    code.push_back("c = (a & b);");
+    Compiler compiler = Compiler(ValidInPins, ValidOutPins);
 
-    vector<int> validPins;
-    string temp;
-    for (char c : VALID_PINS)
+    vector<TableData> TD = compiler.compile(Code);
+
+    for (TableData t : TD)
+        printTD(t);
+}
+
+vector<string> ReadFile(string Path)
+{
+    ifstream InReader(Path);
+    vector<string> Code;
+
+    if (!InReader)
+    {
+        cout << "Cannot open input file." << endl;
+        exit(EXIT_FAILURE);
+    }
+
+    char str[255];
+
+    while (InReader)
+    {
+        InReader.getline(str, 255);
+        Code.push_back(str);
+    }
+
+    for (int i = 0; i < Code.size(); i++)
+        Code.at(i) += '\n';
+
+    InReader.close();
+    return Code;
+}
+
+vector<int> getValidPins(string InStr)
+{
+    vector<int> ValidPins;
+    string Temp;
+    for (char c : InStr)
         if (c == ' ')
         {
-            validPins.push_back(Helper::str2Int(temp));
-            temp = "";
+            ValidPins.push_back(Helper::str2Int(Temp));
+            Temp = "";
         }
         else
-            temp += c;
-
-    Lexer lexer = Lexer(VALID_CHAR);
-    PreCompiler preCompiler = PreCompiler();
-    Compiler compiler = Compiler(validPins);
-    Linker linker = Linker();
-
-    vector<Token> tokens = lexer.lex(code);
-    stack<Token> tokenStack = preCompiler.compile(tokens);
-    TablesAndNames tempTable = compiler.compile(tokenStack);
-    //vector<TableData> tdVec = linker.link(tempTable);
-
-    // for (TableData td : tdVec)
-    //     printTD(td);
-
-    TableData td;
-    td.m_EnableFlipFlop = false;
-    td.m_OutputPin = 1;
-    td.m_InputPins = {2, 3};
-    td.m_Table = {false, false, false, true};
-
-    printTD(td);
-    cout << endl;
-    cout << endl;
-    printTable(td.m_Table, td.m_InputPins, td.m_OutputPin);
+            Temp += c;
+    return ValidPins;
 }
 
 void printTD(TableData td)

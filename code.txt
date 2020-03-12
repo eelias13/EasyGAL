@@ -1,0 +1,5 @@
+pin 6 = a;
+pin 7 = b;
+pin 8 = c;
+
+a = !b | c;

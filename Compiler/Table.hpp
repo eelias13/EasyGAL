@@ -4,6 +4,7 @@
 #include <cmath>
 #include <utility>
 #include "../Helper.hpp"
+#include "Symbol.hpp"
 using namespace std;
 
 class Table
