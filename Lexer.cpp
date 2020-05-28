@@ -1,13 +1,11 @@
 #include "Lexer.h"
 
-Lexer::Lexer()
+Lexer::Lexer(std::vector<std::string> code)
 {
-	isInit = false;
-	current = 0;
-	eof = true;
-	charIndex = 0;
-	charIndex = 0;
+	this->code = code;
+	eof = false;
 	lineIndex = 0;
+	charIndex = 0;
 }
 
 uint16_t Lexer::getLineIndex()
@@ -20,88 +18,79 @@ bool Lexer::isFinished()
 	return eof;
 }
 
-void Lexer::init(char *path)
-{
-	inReader = std::ifstream(path);
-
-	lineIndex = 1;
-	charIndex = 0;
-
-	if (!inReader)
-		error("[IOError]: could not read file");
-	inReader.getline(line, 255);
-	nextChar();
-
-	eof = false;
-}
-
 void Lexer::nextChar()
 {
 	if (eof)
+		return;
+
+	if (lineIndex == code.size())
 	{
-		current = 0;
+		eof = true;
 		return;
 	}
 
-	if (line[charIndex] == 0)
-	{
-		if (inReader.eof())
-		{
-			eof = true;
-			inReader.close();
-			current = ' ';
-			return;
-		}
+	line = code.at(lineIndex);
 
+	if (charIndex == line.size())
+	{
 		charIndex = 0;
 		lineIndex++;
-		inReader.getline(line, 255);
-		if (line[0] == 0)
-		{
-			lineIndex++;
-			inReader.getline(line, 255);
-			return nextChar();
-		}
+		currentChar = '\n';
+		return;
 	}
 
-	current = line[charIndex++];
+	if (line.empty())
+	{
+		charIndex = 0;
+		lineIndex++;
+		currentChar = '\n';
+		return;
+	}
+
+	currentChar = line.at(charIndex);
+	charIndex++;
 }
 
-std::string Lexer::next()
+Token Lexer::next()
 {
-	if (isInit)
-		error("you have to first initialize the Lexer before you use it");
+	if (eof)
+		return {};
 
-	value = "";
+	token.value = "";
 
-	lexSpecial();
-	if (!value.empty())
-		return value;
+	lexComment();
+	if (token.value != "")
+		return next();
+
+	lexSymbol();
+	if (token.value != "")
+		return token.type == Token::ignore ? next() : token;
 
 	lexArrow();
-	if (!value.empty())
-		return value;
+	if (token.value != "")
+		return token;
 
 	lexBool();
-	if (!value.empty())
-		return value;
+	if (token.value != "")
+		return token;
 
 	lexNum();
-	if (!value.empty())
-		return value;
+	if (token.value != "")
+		return token;
 
 	lexWord();
-	return value;
+	return token;
 }
 
 void Lexer::lexBool()
 {
-	if (current != ZERO && current != ONE)
+	if (currentChar != ZERO && currentChar != ONE)
 		return;
 
-	while (current == ZERO || current == ONE)
+	token.type = Token::Type::boolean;
+	while (currentChar == ZERO || currentChar == ONE)
 	{
-		value += current;
+		token.value += currentChar;
 		nextChar();
 	}
 
@@ -114,9 +103,10 @@ void Lexer::lexNum()
 	if (!isNum())
 		return;
 
+	token.type = Token::Type::number;
 	while (isNum())
 	{
-		value += current;
+		token.value += currentChar;
 		nextChar();
 	}
 }
@@ -128,21 +118,26 @@ void Lexer::lexWord()
 
 	while (!isSpecial())
 	{
-		value += current;
+		token.value += currentChar;
 		nextChar();
 	}
+	token.type = isKeyword() ? Token::Type::identifier : Token::Type::keyword;
 }
 
-void Lexer::lexSpecial()
+void Lexer::lexSymbol()
 {
-	switch (current)
+	switch (currentChar)
 	{
-	case ';':
-	case '.':
-	case ',':
 	case '\n':
 	case ' ':
 	case '\t':
+		token.value += currentChar;
+		token.type = Token::Type::ignore;
+		nextChar();
+		break;
+	case ',':
+	case ';':
+	case '.':
 	case P_OPEN:
 	case P_CLOSE:
 	case CP_OPEN:
@@ -151,21 +146,24 @@ void Lexer::lexSpecial()
 	case OR:
 	case AND:
 	case XOR:
-		value += current;
+		token.value += currentChar;
+		token.type = Token::Type::symbol;
 		nextChar();
+		break;
 	default:
-		return;
+		break;
 	}
 }
 
 void Lexer::lexComment()
 {
-	if (current != '/')
+	if (currentChar != '/')
 		return;
 
+	token.value += currentChar;
 	nextChar();
 
-	if (current == '/')
+	if (currentChar == '/')
 	{
 		uint16_t lastLine = lineIndex;
 		while (lastLine == lineIndex)
@@ -173,56 +171,56 @@ void Lexer::lexComment()
 		return;
 	}
 
-	if (current == '*')
+	if (currentChar == '*')
 	{
 		nextChar();
 
-		char lastChar = current;
-		while (!(lastChar == '*' && current == '/'))
+		char lastChar = currentChar;
+		while (!(lastChar == '*' && currentChar == '/'))
 		{
-			lastChar = current;
+			lastChar = currentChar;
 			nextChar();
 		}
 		nextChar();
 		return;
 	}
 
-	std::string msg = "unexpected character " + value + " at line ";
+	std::string msg = "unexpected character " + token.value + " at line ";
 	msg += lineIndex;
-	error(msg);
+	// error(msg);
 }
 
-// void Lexer::lexArrow()
-// {
-// 	if (current != '=')
-// 		return;
+void Lexer::lexArrow()
+{
+	if (currentChar != '=')
+		return;
 
-// 	value += current;
-// 	nextChar();
+	token.value += currentChar;
+	token.type = Token::Type::symbol;
+	nextChar();
 
-// 	if (current == '>')
-// 	{
-// 		value += current;
-// 		nextChar();
-// 	}
-// }
+	if (currentChar == '>')
+	{
+		token.value += currentChar;
+		nextChar();
+	}
+}
 
 bool Lexer::isKeyword()
 {
-
-	if (value == PIN)
+	if (token.value == PIN)
 		return true;
 
-	if (TABLE)
+	if (token.value == TABLE)
 		return true;
 
-	if (FILL)
+	if (token.value == FILL)
 		return true;
 
-	if (COUNT)
+	if (token.value == COUNT)
 		return true;
 
-	if (DFF)
+	if (token.value == DFF)
 		return true;
 
 	return false;
@@ -230,7 +228,7 @@ bool Lexer::isKeyword()
 
 bool Lexer::isSpecial()
 {
-	switch (current)
+	switch (currentChar)
 	{
 	case '=':
 	case ';':
@@ -256,7 +254,7 @@ bool Lexer::isSpecial()
 
 bool Lexer::isNum()
 {
-	switch (current)
+	switch (currentChar)
 	{
 	case '0':
 	case '1':

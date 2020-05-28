@@ -2,42 +2,40 @@
 #define LEXER_H_
 
 #include <cstdint>
-#include <fstream>
-#include <strings.h>
+#include <string>
+#include <vector>
 
 #include "Symbols.h"
-#include "Error.h"
+// #include "Error.h"
+#include "Token.h"
 
 class Lexer
 {
 
 public:
-	void init(char *);
-	std::string next();
+	Token next();
 	bool isFinished();
 	uint16_t getLineIndex();
 
 private:
-	char current;
-	char line[255];
 	uint16_t lineIndex;
-	uint8_t charIndex;
-	std::ifstream inReader;
-
+	uint16_t charIndex;
+	std::string line;
 	bool eof;
-	bool isInit;
+	std::vector<std::string> code;
 
-	std::string value;
+	char currentChar;
+	Token token;
 
 public:
-	Lexer();
+	Lexer(std::vector<std::string>);
 
 private:
 	void lexBool();
 	void lexNum();
 	void lexWord();
 	void lexArrow();
-	void lexSpecial();
+	void lexSymbol();
 	void lexComment();
 
 	bool isNum();

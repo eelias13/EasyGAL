@@ -2,6 +2,7 @@
 #define ERROR_H_
 
 #include <iostream>
+#include <string>
 
 void error(std::string msg)
 {
