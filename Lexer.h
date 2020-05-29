@@ -4,46 +4,51 @@
 #include <cstdint>
 #include <string>
 #include <vector>
+#include <iostream>
 
 #include "Symbols.h"
-// #include "Error.h"
 #include "Token.h"
+
+using namespace std;
 
 class Lexer
 {
-
 public:
+	Lexer(vector<string>);
+
 	Token next();
+
 	bool isFinished();
 	uint16_t getLineIndex();
+	uint16_t getCharIndex();
 
 private:
 	uint16_t lineIndex;
 	uint16_t charIndex;
-	std::string line;
+	string line;
 	bool eof;
-	std::vector<std::string> code;
+	vector<string> code;
 
 	char currentChar;
 	Token token;
 
-public:
-	Lexer(std::vector<std::string>);
-
 private:
+	// lex functions
+	void lexComment();
+	void lexSymbol();
+	void lexArrow();
 	void lexBool();
 	void lexNum();
 	void lexWord();
-	void lexArrow();
-	void lexSymbol();
-	void lexComment();
 
+	// helpful functions
 	bool isNum();
-	bool isSpecial();
 	bool isKeyword();
-
+	bool isSpecial();
 	void nextChar();
-	void init();
+
+	// error handling
+	void lexingError(string);
 };
 
 #endif /* LEXER_H_ */
