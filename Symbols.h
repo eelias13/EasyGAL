@@ -20,4 +20,6 @@
 #define CP_OPEN '{'
 #define CP_CLOSE '}'
 
+#define WITH_SEMICOLON
+
 #endif /* SYMBOLS_H_ */
