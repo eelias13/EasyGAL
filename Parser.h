@@ -11,6 +11,7 @@
 #include "Lexer.h"
 #include "Token.h"
 #include "Symbols.h"
+#include "Error.h"
 
 using namespace std;
 

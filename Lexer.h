@@ -4,10 +4,10 @@
 #include <cstdint>
 #include <string>
 #include <vector>
-#include <iostream>
 
 #include "Symbols.h"
 #include "Token.h"
+#include "Error.h"
 
 using namespace std;
 

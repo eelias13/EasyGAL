@@ -310,17 +310,18 @@ uint32_t Parser::getInt(char c)
 // ------------------------------------ error handling ------------------------------------
 void Parser::parsingError(string input)
 {
-    string msg = "Parsing Error at line ";
-    msg += (*lexer).getLineIndex();
+    string msg = "[Parsing Error] at line ";
+    msg += (*lexer).getLineIndex() + 1;
+    msg += " ";
     msg += input;
-    cout << msg << endl;
+    Error::printError(msg);
     exit(1);
 }
 
 void Parser::syntaxError(string expected)
 {
-    string msg = "Syntax Error at line ";
-    msg += (*lexer).getLineIndex();
+    string msg = "[Syntax Error] at line ";
+    msg += (*lexer).getLineIndex() + 1;
     msg += " expected: ";
     msg += expected;
     msg += " got instead: ";
@@ -329,7 +330,7 @@ void Parser::syntaxError(string expected)
     else
         msg += currentToken.value;
 
-    cout << msg << endl;
+    Error::printError(msg);
     exit(1);
 }
 

@@ -43,6 +43,7 @@ Token Lexer::next()
 		return token;
 
 	lexingError("couldn't lex " + currentChar);
+	return {};
 }
 
 // ------------------------------------ lex functions ------------------------------------
@@ -272,8 +273,8 @@ void Lexer::nextChar()
 void Lexer::lexingError(string input)
 {
 	string msg = "Lexing error at line";
-	msg += lineIndex;
+	msg += lineIndex + 1;
 	msg += input;
-	cout << msg << endl;
+	Error::printError(msg);
 	exit(1);
 }
