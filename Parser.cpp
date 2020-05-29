@@ -10,7 +10,7 @@ Parser::Parser(string path)
     file.close();
 
     // initialise variables
-    *lexer = Lexer(code);
+    lexer = Lexer(code);
     isFill = false;
     fill = false;
     isCount = false;
@@ -18,7 +18,9 @@ Parser::Parser(string path)
 
 vector<TableData> Parser::parse()
 {
-    while (!(*lexer).isFinished())
+    nextToken();
+    nextToken();
+    while (!lexer.isFinished())
         parseNext();
     return tables;
 }
@@ -26,8 +28,9 @@ vector<TableData> Parser::parse()
 // ------------------------------------ main parser function ------------------------------------
 void Parser::parseNext()
 {
+
     if (currentToken.value.empty())
-        return;
+        return nextToken();
 
     if (isToken(PIN))
         return parsePin();
@@ -43,6 +46,7 @@ void Parser::parseNext()
 
 void Parser::parsePin()
 {
+    cout << "parsePin" << endl;
     string str;
     pair<string, uint32_t> temp;
 
@@ -65,20 +69,21 @@ void Parser::parsePin()
 
 void Parser::parseTable()
 {
+    cout << "parseTable" << endl;
     isFill = false;
     fill = false;
     isCount = false;
 
     expect(TABLE);
-    expect(P_OPEN);
+    expect("(");
     vector<uint32_t> inPins = getIdentifier();
     expect("=>");
     vector<uint32_t> outPins = getIdentifier();
-    expect(P_CLOSE);
+    expect(")");
     extraFunction();
-    expect(CP_OPEN);
+    expect("{");
     vector<bool> boolTable = getBooltable();
-    expect(CP_CLOSE);
+    expect("}");
 #ifdef WITH_SEMICOLON
     expect(";");
 #endif
@@ -86,6 +91,7 @@ void Parser::parseTable()
 
 void Parser::parseIdentifier()
 {
+    cout << "parseIdentifier" << endl;
     string pinName = currentToken.value;
     expect(Token::Type::identifier);
     if (isToken("."))
@@ -165,10 +171,10 @@ void Parser::extraFunction()
 
     expect(FILL);
     isFill = true;
-    expect(P_OPEN);
+    expect("(");
     string temp = currentToken.value;
     expect(Token::Type::boolean);
-    expect(P_CLOSE);
+    expect(")");
 
     if (temp.size() != 1)
         return syntaxError(ZERO + " or " + ONE);
@@ -214,10 +220,14 @@ vector<Token> Parser::getExpression()
     vector<Token> tokens;
     if (!validExpression())
         syntaxError(type2Str(Token::Type::identifier));
-    tokens.push_back(currentToken);
-    uint32_t lineNum = (*lexer).getLineIndex();
-    while (validExpression() && lineNum == (*lexer).getLineIndex())
+    uint32_t lineNum = lexer.getLineIndex();
+
+    while (validExpression() && lineNum == lexer.getLineIndex())
+    {
         tokens.push_back(currentToken);
+        nextToken();
+    }
+
     return tokens;
 }
 
@@ -230,8 +240,8 @@ bool Parser::validExpression()
         case OR:
         case XOR:
         case NOT:
-        case P_CLOSE:
-        case P_OPEN:
+        case '(':
+        case ')':
             return true;
         default:
             return false;
@@ -243,18 +253,13 @@ bool Parser::validExpression()
 }
 
 // ------------------------------------ helpful functions ------------------------------------
-void Parser::nextToken() { currentToken = (*lexer).next(); }
+void Parser::nextToken() { currentToken = lexer.next(); }
 
 bool Parser::isToken(char expected) { return currentToken.value == "" + expected; }
 bool Parser::isToken(string expected) { return currentToken.value == expected; }
 bool Parser::isToken(Token::Type expected) { return currentToken.type == expected; }
 
-void Parser::expect(char expected)
-{
-    if (currentToken.value != "" + expected)
-        syntaxError("" + expected);
-    nextToken();
-}
+void Parser::expect(char expected) { expect("" + expected); }
 void Parser::expect(string expected)
 {
     if (currentToken.value != expected)
@@ -311,7 +316,7 @@ uint32_t Parser::getInt(char c)
 void Parser::parsingError(string input)
 {
     string msg = "[Parsing Error] at line ";
-    msg += (*lexer).getLineIndex() + 1;
+    msg += to_string(lexer.getLineIndex() + 1);
     msg += " ";
     msg += input;
     Error::printError(msg);
@@ -321,11 +326,11 @@ void Parser::parsingError(string input)
 void Parser::syntaxError(string expected)
 {
     string msg = "[Syntax Error] at line ";
-    msg += (*lexer).getLineIndex() + 1;
+    msg += to_string(lexer.getLineIndex() + 1);
     msg += " expected: ";
     msg += expected;
     msg += " got instead: ";
-    if (expected.at(0) == '{' && expected.at(expected.size() - 1) == '}')
+    if (expected.size() != 1 && expected.at(0) == '{' && expected.at(expected.size() - 1) == '}')
         msg += type2Str(currentToken.type);
     else
         msg += currentToken.value;

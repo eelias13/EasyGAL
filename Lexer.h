@@ -15,6 +15,7 @@ class Lexer
 {
 public:
 	Lexer(vector<string>);
+	Lexer();
 
 	Token next();
 

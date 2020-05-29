@@ -27,7 +27,7 @@ private:
     vector<TableData> tables;
     vector<pair<string, uint32_t>> alias;
 
-    Lexer *lexer;
+    Lexer lexer;
     Token currentToken;
 
     bool isFill;

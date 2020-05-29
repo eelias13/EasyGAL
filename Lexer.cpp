@@ -8,6 +8,8 @@ Lexer::Lexer(vector<string> code)
 	charIndex = 0;
 }
 
+Lexer::Lexer() {}
+
 uint16_t Lexer::getLineIndex() { return lineIndex; }
 bool Lexer::isFinished() { return eof; }
 
@@ -94,10 +96,10 @@ void Lexer::lexSymbol()
 	case ',':
 	case ';':
 	case '.':
-	case P_OPEN:
-	case P_CLOSE:
-	case CP_OPEN:
-	case CP_CLOSE:
+	case '(':
+	case ')':
+	case '{':
+	case '}':
 	case NOT:
 	case OR:
 	case AND:
@@ -166,7 +168,7 @@ void Lexer::lexWord()
 		token.value += currentChar;
 		nextChar();
 	}
-	token.type = isKeyword() ? Token::Type::identifier : Token::Type::keyword;
+	token.type = isKeyword() ? Token::Type::keyword : Token::Type::identifier;
 }
 
 // ------------------------------------ helpful functions ------------------------------------
@@ -221,10 +223,10 @@ bool Lexer::isSpecial()
 	case '\n':
 	case ' ':
 	case '\t':
-	case P_OPEN:
-	case P_CLOSE:
-	case CP_OPEN:
-	case CP_CLOSE:
+	case '(':
+	case ')':
+	case '{':
+	case '}':
 	case NOT:
 	case OR:
 	case AND:
@@ -273,7 +275,7 @@ void Lexer::nextChar()
 void Lexer::lexingError(string input)
 {
 	string msg = "Lexing error at line";
-	msg += lineIndex + 1;
+	msg += to_string(lineIndex + 1);
 	msg += input;
 	Error::printError(msg);
 	exit(1);
