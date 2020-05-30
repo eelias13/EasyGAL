@@ -28,7 +28,6 @@ vector<TableData> Parser::parse()
 // ------------------------------------ main parser function ------------------------------------
 void Parser::parseNext()
 {
-
     if (currentToken.value.empty())
         return nextToken();
 
@@ -46,7 +45,6 @@ void Parser::parseNext()
 
 void Parser::parsePin()
 {
-    cout << "parsePin" << endl;
     string str;
     pair<string, uint32_t> temp;
 
@@ -69,7 +67,6 @@ void Parser::parsePin()
 
 void Parser::parseTable()
 {
-    cout << "parseTable" << endl;
     isFill = false;
     fill = false;
     isCount = false;
@@ -91,7 +88,6 @@ void Parser::parseTable()
 
 void Parser::parseIdentifier()
 {
-    cout << "parseIdentifier" << endl;
     string pinName = currentToken.value;
     expect(Token::Type::identifier);
     if (isToken("."))

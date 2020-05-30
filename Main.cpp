@@ -5,14 +5,44 @@
 #include "Parser.h"
 #include "TableData.h"
 
-string int2Str(uint32_t i);
-char getChar(uint32_t i);
-uint32_t getInt(char c);
+#include "FunctionParser.h"
 
 using namespace std;
 
+void printToken(Token token);
+vector<Token> lex(string str);
+
 int main()
 {
-	Parser parser = Parser("code.txt");
-	vector<TableData> tableData = parser.parse();
+
+	FunctionParser fp = FunctionParser();
+	fp.test(lex("a|b"));
+}
+
+vector<Token> lex(string str)
+{
+	vector<Token> tokens;
+	for (char c : str)
+	{
+		Token token;
+		token.value = c;
+		switch (c)
+		{
+		case '(':
+		case ')':
+		case '{':
+		case '}':
+		case NOT:
+		case OR:
+		case AND:
+		case XOR:
+			token.type = Token::Type::symbol;
+			break;
+		default:
+			token.type = Token::Type::identifier;
+			break;
+		}
+		tokens.push_back(token);
+	}
+	return tokens;
 }
