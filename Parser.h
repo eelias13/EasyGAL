@@ -73,7 +73,7 @@ private:
     // error handling
     void parsingError(string);
     void syntaxError(string);
-    string type2Str(Token::Type);
+    void syntaxError(Token::Type);
 };
 
 #endif /* PARSER_H_ */

@@ -40,7 +40,7 @@ void Parser::parseNext()
     if (isToken(Token::Type::identifier))
         return parseIdentifier();
 
-    syntaxError(type2Str(Token::Type::identifier) + " or " + type2Str(Token::Type::keyword));
+    syntaxError(Token::Type::identifier);
 }
 
 void Parser::parsePin()
@@ -215,7 +215,7 @@ vector<Token> Parser::getExpression()
 {
     vector<Token> tokens;
     if (!validExpression())
-        syntaxError(type2Str(Token::Type::identifier));
+        syntaxError(Token::Type::identifier);
     uint32_t lineNum = lexer.getLineIndex();
 
     while (validExpression() && lineNum == lexer.getLineIndex())
@@ -265,7 +265,7 @@ void Parser::expect(string expected)
 void Parser::expect(Token::Type expected)
 {
     if (currentToken.type != expected)
-        syntaxError(type2Str(expected));
+        syntaxError(expected);
     nextToken();
 }
 
@@ -309,49 +309,6 @@ uint32_t Parser::getInt(char c)
 }
 
 // ------------------------------------ error handling ------------------------------------
-void Parser::parsingError(string input)
-{
-    string msg = "[Parsing Error] at line ";
-    msg += to_string(lexer.getLineIndex() + 1);
-    msg += " ";
-    msg += input;
-    Error::printError(msg);
-    exit(1);
-}
-
-void Parser::syntaxError(string expected)
-{
-    string msg = "[Syntax Error] at line ";
-    msg += to_string(lexer.getLineIndex() + 1);
-    msg += " expected: ";
-    msg += expected;
-    msg += " got instead: ";
-    if (expected.size() != 1 && expected.at(0) == '{' && expected.at(expected.size() - 1) == '}')
-        msg += type2Str(currentToken.type);
-    else
-        msg += currentToken.value;
-
-    Error::printError(msg);
-    exit(1);
-}
-
-string Parser::type2Str(Token::Type type)
-{
-    switch (type)
-    {
-    case Token::Type::boolean:
-        return "{boolean}";
-    case Token::Type::identifier:
-        return "{identifier}";
-    case Token::Type::ignore:
-        return "{ignore}";
-    case Token::Type::keyword:
-        return "{keyword}";
-    case Token::Type::number:
-        return "{number}";
-    case Token::Type::symbol:
-        return "{symbol}";
-    default:
-        return "{undifinde}";
-    }
-}
+void Parser::parsingError(string input) { Error::makeError("Parsing Error", lexer.getLineIndex(), input); }
+void Parser::syntaxError(string expected) { Error::makeError("Syntax Error", lexer.getLineIndex(), currentToken, expected); }
+void Parser::syntaxError(Token::Type expected) { Error::makeError("Syntax Error", lexer.getLineIndex(), currentToken, expected); }
