@@ -14,6 +14,10 @@ Parser::Parser(string path)
     isFill = false;
     fill = false;
     isCount = false;
+
+    // initialise extra parser
+    functionParser = FunctionParser();
+    tableParser = TableParser();
 }
 
 vector<TableData> Parser::parse()
@@ -84,6 +88,17 @@ void Parser::parseTable()
 #ifdef WITH_SEMICOLON
     expect(";");
 #endif
+
+    vector<TableData> temp;
+    if (isCount)
+        temp = tableParser.getTableDataCount(boolTable, inPins, outPins);
+    else if (isFill)
+        temp = tableParser.getTableDataFill(boolTable, inPins, outPins, fill);
+    else
+        temp = tableParser.getTableData(boolTable, inPins, outPins);
+
+    for (TableData t : temp)
+        tables.push_back(t);
 }
 
 void Parser::parseIdentifier()
@@ -102,10 +117,11 @@ void Parser::parseIdentifier()
     }
 
     expect("=");
-    vector<Token> tokens = getExpression();
+    vector<Token> expression = getExpression();
 #ifdef WITH_SEMICOLON
     expect(";");
 #endif
+    tables.push_back(assembleTableFromFunc(pinName, expression));
 }
 
 // ------------------------------------ helper for parsePin() ------------------------------------
@@ -246,6 +262,20 @@ bool Parser::validExpression()
     if (isToken(Token::Type::identifier))
         return true;
     return false;
+}
+
+TableData Parser::assembleTableFromFunc(string outName, vector<Token> expression)
+{
+    TableData table;
+    table.m_EnableFlipFlop = false;
+    table.m_OutputPin = str2Pin(outName);
+
+    vector<uint32_t> inPins;
+    for (string inName : functionParser.getNames(expression))
+        inPins.push_back(str2Pin(inName));
+    table.m_InputPins = inPins;
+
+    table.m_Table = functionParser.parser(expression);
 }
 
 // ------------------------------------ helpful functions ------------------------------------

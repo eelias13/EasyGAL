@@ -12,6 +12,8 @@
 #include "Token.h"
 #include "Symbols.h"
 #include "Error.h"
+#include "FunctionParser.h"
+#include "TableParser.h"
 
 using namespace std;
 
@@ -34,6 +36,9 @@ private:
     bool fill;
     bool isCount;
 
+    FunctionParser functionParser;
+    TableParser tableParser;
+
 private:
     // main parser function
     void parseNext();
@@ -55,6 +60,7 @@ private:
     void insertDFF(uint32_t);
     vector<Token> getExpression();
     bool validExpression();
+    TableData assembleTableFromFunc(string, vector<Token>);
 
     // helpful functions
     void nextToken();

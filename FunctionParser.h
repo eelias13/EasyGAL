@@ -9,6 +9,7 @@
 #include "Token.h"
 #include "Symbols.h"
 #include "Error.h"
+#include "TableData.h"
 
 using namespace std;
 
@@ -21,8 +22,8 @@ private:
     char operatorPrecedence[4];
 
 private:
-    void error(Token got, Token::Type expected);
-    void error(Token got, string expected);
+    void error(Token, Token::Type);
+    void error(Token, string);
     void toPostfix(vector<Token>);
     void insertToken(Token);
     void insertOperator(Token);
@@ -31,9 +32,9 @@ private:
     bool isGreater(char);
 
 public:
-    vector<bool> parser(vector<Token>, uint16_t);
-    vector<Token> getNames(vector<Token>);
     FunctionParser();
+    vector<bool> parser(vector<Token>);
+    vector<string> getNames(vector<Token>);
 
     void test(vector<Token>);
 };

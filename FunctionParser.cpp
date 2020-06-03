@@ -44,24 +44,35 @@ void FunctionParser::insertOperator(Token token)
 
     while (!isGreater(token.value.at(0)))
     {
+        if (tokenStack.top().value.at(0) == '(')
+        {
+            tokenStack.pop();
+            return tokenStack.push(token);
+        }
         tokenQueue.push(tokenStack.top());
         tokenStack.pop();
     }
-
     tokenStack.push(token);
+}
+
+void clearStack()
+{
 }
 
 bool FunctionParser::isGreater(char c)
 {
-
     if (tokenStack.empty())
         return true;
-    return precedenceOf(tokenStack.top().value.at(0)) < precedenceOf(c);
+
+    char stackChar = tokenStack.top().value.at(0);
+    if (stackChar == '(' || stackChar == ')')
+        return true;
+
+    return precedenceOf(stackChar) < precedenceOf(c);
 }
 
 uint8_t FunctionParser::precedenceOf(char c)
 {
-
     if (c == operatorPrecedence[0])
         return 1;
     if (c == operatorPrecedence[1])
@@ -70,10 +81,11 @@ uint8_t FunctionParser::precedenceOf(char c)
         return 3;
     if (c == operatorPrecedence[3])
         return 4;
-    if (c == '(')
-        return 0;
 
-    Error::makeError(Error::Type::parsing, lineIndex, "unexpected charecter in expression" + c);
+    string msg = "charecter ";
+    msg += c;
+    msg += " is not an operator";
+    Error::makeError(Error::Type::parsing, lineIndex, msg);
     return 0xff;
 }
 
