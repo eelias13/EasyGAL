@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS=-c -Wall
 LDFLAGS=
-SOURCES=Main.cpp Lexer.cpp Parser.cpp Error.cpp FunctionParser.cpp
+SOURCES=Main.cpp Lexer.cpp Parser.cpp Error.cpp FunctionParser.cpp TableParser.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=EasyGal
 

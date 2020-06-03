@@ -38,4 +38,4 @@ public:
     void test(vector<Token>);
 };
 
-#endif
+#endif /* FUNCTIONPARSER_H_ */
