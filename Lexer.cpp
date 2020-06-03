@@ -272,4 +272,4 @@ void Lexer::nextChar()
 }
 
 // ------------------------------------ error handling ------------------------------------
-void Lexer::lexingError(string input) { Error::makeError("Lexing Error", lineIndex, input); }
+void Lexer::lexingError(string input) { Error::makeError(Error::Type::lexing, lineIndex, input); }

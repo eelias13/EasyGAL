@@ -10,11 +10,19 @@ using namespace std;
 
 namespace Error
 {
-    void makeError(string, uint32_t, Token, string);
-    void makeError(string, uint32_t, Token, Token::Type);
-    void makeError(string, uint32_t, string);
+    enum Type
+    {
+        parsing,
+        syntax,
+        lexing
+    };
+
+    void makeError(Type, uint32_t, Token, string);
+    void makeError(Type, uint32_t, Token, Token::Type);
+    void makeError(Type, uint32_t, string);
     void printError(string);
-    string type2Str(Token::Type);
+    string tokenType2Str(Token::Type);
+    string errorType2Str(Type);
 } // namespace Error
 
 #endif /* ERROR_H_ */

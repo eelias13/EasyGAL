@@ -1,8 +1,8 @@
 #include "Error.h"
 
-void Error::makeError(string errorType, uint32_t lineIndex, Token got, string expected)
+void Error::makeError(Type errorType, uint32_t lineIndex, Token got, string expected)
 {
-    string msg = '[' + errorType + ']';
+    string msg = errorType2Str(errorType);
     msg += " at line " + to_string(lineIndex + 1);
     msg += " expected value: " + expected;
     msg += " got instade: " + got.value;
@@ -10,9 +10,9 @@ void Error::makeError(string errorType, uint32_t lineIndex, Token got, string ex
     exit(1);
 }
 
-void Error::makeError(string errorType, uint32_t lineIndex, Token got, Token::Type expected)
+void Error::makeError(Type errorType, uint32_t lineIndex, Token got, Token::Type expected)
 {
-    string msg = '[' + errorType + ']';
+    string msg = errorType2Str(errorType);
     msg += " at line " + to_string(lineIndex + 1);
     msg += " expected type: " + expected;
     msg += " got instade: " + got.type;
@@ -20,16 +20,31 @@ void Error::makeError(string errorType, uint32_t lineIndex, Token got, Token::Ty
     exit(1);
 }
 
-void Error::makeError(string errorType, uint32_t lineIndex, string input)
+void Error::makeError(Type errorType, uint32_t lineIndex, string input)
 {
-    string msg = '[' + errorType + ']';
+    string msg = errorType2Str(errorType);
     msg += " at line " + to_string(lineIndex + 1) + " ";
     msg += input;
     printError(msg);
     exit(1);
 }
 
-string Error::type2Str(Token::Type type)
+string Error::errorType2Str(Type type)
+{
+    switch (type)
+    {
+    case Error::Type::lexing:
+        return "[Lexing Error]";
+    case Error::Type::parsing:
+        return "[Parsing Error]";
+    case Error::Type::syntax:
+        return "[Syntax Error]";
+    default:
+        return "[Undifinde Error]";
+    }
+}
+
+string Error::tokenType2Str(Token::Type type)
 {
     switch (type)
     {
@@ -50,4 +65,4 @@ string Error::type2Str(Token::Type type)
     }
 }
 
-void Error::printError(std::string msg) { std::cout << msg << std::endl; }
+void Error::printError(string msg) { cout << msg << endl; }

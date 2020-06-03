@@ -16,7 +16,7 @@ int main()
 {
 
 	FunctionParser fp = FunctionParser();
-	fp.test(lex("a|b"));
+	fp.test(lex("!a|b&c&d|f"));
 }
 
 vector<Token> lex(string str)

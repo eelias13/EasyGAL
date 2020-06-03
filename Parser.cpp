@@ -309,6 +309,6 @@ uint32_t Parser::getInt(char c)
 }
 
 // ------------------------------------ error handling ------------------------------------
-void Parser::parsingError(string input) { Error::makeError("Parsing Error", lexer.getLineIndex(), input); }
-void Parser::syntaxError(string expected) { Error::makeError("Syntax Error", lexer.getLineIndex(), currentToken, expected); }
-void Parser::syntaxError(Token::Type expected) { Error::makeError("Syntax Error", lexer.getLineIndex(), currentToken, expected); }
+void Parser::parsingError(string input) { Error::makeError(Error::Type::parsing, lexer.getLineIndex(), input); }
+void Parser::syntaxError(string expected) { Error::makeError(Error::Type::syntax, lexer.getLineIndex(), currentToken, expected); }
+void Parser::syntaxError(Token::Type expected) { Error::makeError(Error::Type::syntax, lexer.getLineIndex(), currentToken, expected); }
