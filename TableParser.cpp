@@ -51,7 +51,6 @@ vector<TableData> TableParser::getTableDataCount(vector<bool> tableStream, vecto
 void TableParser::setLineIndex(uint32_t lineIndex) { this->lineIndex = lineIndex; }
 
 // Helper
-
 vector<TableData> TableParser::buildTableData(vector<vector<bool>> table2D, vector<uint32_t> inPins, vector<uint32_t> outPins)
 {
 

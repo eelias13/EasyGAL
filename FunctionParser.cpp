@@ -23,6 +23,11 @@ FunctionParser::FunctionParser()
     operatorPrecedence[3] = NOT;
 }
 
+vector<bool> FunctionParser::parser(vector<Token> exception)
+{
+    return {};
+}
+
 // shunting yard
 void FunctionParser::toPostfix(vector<Token> expression)
 {
@@ -109,7 +114,7 @@ void FunctionParser::insertToken(Token token)
         {
             if (tokenStack.top().value == "(")
                 return tokenStack.pop();
-            tokenQueue.push(token);
+            tokenQueue.push(tokenStack.top());
             tokenStack.pop();
         }
         return;
@@ -125,6 +130,33 @@ void FunctionParser::insertToken(Token token)
 
 void FunctionParser::error(Token got, Token::Type expected) { Error::makeError(Error::Type::syntax, lineIndex, got, expected); }
 void FunctionParser::error(Token got, string expected) { Error::makeError(Error::Type::syntax, lineIndex, got, expected); }
+
+vector<string> FunctionParser::getNames(vector<Token> exception)
+{
+    vector<string> names;
+    for (Token t : exception)
+        if (t.type == Token::Type::identifier)
+            names.push_back(t.value);
+    names = removeDouble(names);
+    return names;
+}
+
+vector<string> FunctionParser::removeDouble(vector<string> names)
+{
+    vector<string> result;
+    for (string name : names)
+        if (!strInVec(result, name))
+            result.push_back(name);
+    return result;
+}
+
+bool FunctionParser::strInVec(vector<string> vec, string str)
+{
+    for (string s : vec)
+        if (s == str)
+            return true;
+    return false;
+}
 
 void printToken(Token token)
 {

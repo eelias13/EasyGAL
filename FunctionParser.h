@@ -31,6 +31,9 @@ private:
     uint8_t precedenceOf(char);
     bool isGreater(char);
 
+    vector<string> removeDouble(vector<string>);
+    bool strInVec(vector<string>, string);
+
 public:
     FunctionParser();
     vector<bool> parser(vector<Token>);

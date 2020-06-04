@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 
-#include "Parser.h"
+// #include "Parser.h"
 #include "TableData.h"
 
 #include "FunctionParser.h"
@@ -16,7 +16,7 @@ int main()
 {
 
 	FunctionParser fp = FunctionParser();
-	fp.test(lex("!a|b&c&d|f"));
+	fp.test(lex("!a|b&c&((d|f))|g"));
 }
 
 vector<Token> lex(string str)

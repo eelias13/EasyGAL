@@ -276,6 +276,7 @@ TableData Parser::assembleTableFromFunc(string outName, vector<Token> expression
     table.m_InputPins = inPins;
 
     table.m_Table = functionParser.parser(expression);
+    return table;
 }
 
 // ------------------------------------ helpful functions ------------------------------------
