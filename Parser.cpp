@@ -275,7 +275,7 @@ TableData Parser::assembleTableFromFunc(string outName, vector<Token> expression
         inPins.push_back(str2Pin(inName));
     table.m_InputPins = inPins;
 
-    table.m_Table = functionParser.parser(expression);
+    table.m_Table = functionParser.parse(expression, lexer.getLineIndex());
     return table;
 }
 
