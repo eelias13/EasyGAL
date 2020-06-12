@@ -10,7 +10,6 @@ struct FunctionParser::Bundle
 
 FunctionParser::Bundle FunctionParser::split(vector<Token> expression)
 {
-
     // is leavnode
     if (expression.size() == 1)
     {
@@ -21,29 +20,38 @@ FunctionParser::Bundle FunctionParser::split(vector<Token> expression)
         return bundle;
     }
 
-    if (expression.at(0).value.at(0) == '(')
+    if (isParentheses(expression))
         return splitParentheses(expression);
-    if (expression.at(0).value.at(0) == NOT)
-        return splitNot(expression);
     return splitBineryOperator(expression);
+}
+
+bool FunctionParser::isParentheses(vector<Token> expression)
+{
+    if (expression.at(0).value.at(0) != '(')
+        return false;
+    if (expression.at(expression.size() - 1).value.at(0) != ')')
+        return false;
+
+    int counter = 1;
+    for (uint32_t i = 1; i < expression.size() - 1; i++)
+    {
+        if (counter == 0)
+            return false;
+        char c = expression.at(i).value.at(0);
+        if (c == '(')
+            counter++;
+        if (c == ')')
+            counter--;
+    }
+    return true;
 }
 
 FunctionParser::Bundle FunctionParser::splitParentheses(vector<Token> expression)
 {
-    Bundle bundle;
-    uint32_t index = 1;
-    while (expression.at(index).value.at(0) != ')')
-        bundle.left.push_back(expression.at(index));
-    index++;
-
-    if (expression.size() - 1 == index)
-        return split(bundle.left);
-    index++;
-
-    bundle.center = expression.at(index);
-    for (uint32_t i = index; i < expression.size(); i++)
-        bundle.right.push_back(expression.at(i));
-    return bundle;
+    vector<Token> temp;
+    for (uint32_t i = 1; i < expression.size() - 1; i++)
+        temp.push_back(expression.at(i));
+    return split(temp);
 }
 
 FunctionParser::Bundle FunctionParser::splitNot(vector<Token> expression)
@@ -59,14 +67,23 @@ FunctionParser::Bundle FunctionParser::splitNot(vector<Token> expression)
 FunctionParser::Bundle FunctionParser::splitBineryOperator(vector<Token> expression)
 {
     uint32_t index = splitIndex(expression);
+
     if (index == 0)
-        Error::makeError(Error::Type::parsing, lineIndex, "can not split");
+    {
+        if (expression.at(0).value.at(0) == NOT)
+            return splitNot(expression);
+
+        string msg = "can not split expression: ";
+        for (Token t : expression)
+            msg += t.value;
+        parsingError(msg);
+    }
 
     Bundle bundle;
     for (uint32_t i = 0; i < index; i++)
         bundle.left.push_back(expression.at(i));
     bundle.center = expression.at(index);
-    for (uint32_t i = index; i < expression.size(); i++)
+    for (uint32_t i = index + 1; i < expression.size(); i++)
         bundle.right.push_back(expression.at(i));
     return bundle;
 }
@@ -79,11 +96,11 @@ uint32_t FunctionParser::splitIndex(vector<Token> expression)
 
     for (uint32_t i = 0; i < expression.size(); i++)
     {
-        Token t = expression.at(0);
+        Token t = expression.at(i);
         if (t.type != Token::Type::symbol)
             continue;
 
-        if (parentheses > 0)
+        if (parentheses != 0)
         {
             if (t.value.at(0) == ')')
                 parentheses--;
@@ -97,6 +114,7 @@ uint32_t FunctionParser::splitIndex(vector<Token> expression)
 
         if (precedenceOf(t.value.at(0)) < lowestOperatorScore)
         {
+
             lowestOperatorScore = precedenceOf(t.value.at(0));
             lowestOperatorIndex = i;
             if (lowestOperatorScore == 0)
@@ -131,9 +149,9 @@ struct FunctionParser::Node *FunctionParser::newNode(Token token, FunctionParser
 
 FunctionParser::Node *FunctionParser::nextNode(vector<Token> expression, Node *pNode)
 {
-    Bundle bundle;
-    bundle = split(expression);
+    Bundle bundle = split(expression);
     Node *node = newNode(bundle.center, pNode);
+
     if (bundle.left.size() != 0)
         (*node).left = nextNode(bundle.left, node);
     if (bundle.right.size() != 0)
@@ -157,7 +175,7 @@ bool FunctionParser::evalNode(Node *node)
     case NOT:
         return !evalNode((*node).left);
     default:
-        Error::makeError(Error::Type::parsing, lineIndex, "can not resolve token " + (*node).token.value);
+        parsingError("can not resolve token" + (*node).token.value);
         return false;
     }
 }
@@ -172,18 +190,17 @@ void FunctionParser::deleteNode(Node *node)
 }
 
 // ------------------------------------ lookup ------------------------------------
-void FunctionParser::initLookup(vector<Token> expression)
+void FunctionParser::initLookup()
 {
-    vector<string> names = getNames(expression);
-    valueLength = names.size();
-    values = (bool *)malloc((valueLength - 1) * sizeof(bool));
-    finished = true;
+    lookupLength = names.size();
+    lookupValues = (bool *)malloc((lookupLength - 1) * sizeof(bool));
+    finished = false;
 
-    for (uint32_t i = 0; i < valueLength; i++)
+    for (uint32_t i = 0; i < lookupLength; i++)
     {
         pair<string, bool *> p;
         p.first = names.at(i);
-        p.second = (values + (sizeof(bool) * i));
+        p.second = (lookupValues + (sizeof(bool) * i));
         lookup.push_back(p);
 
         *(p.second) = false;
@@ -192,9 +209,9 @@ void FunctionParser::initLookup(vector<Token> expression)
 
 void FunctionParser::updateLookup()
 {
-    for (int i = valueLength - 1; i >= 0; i--)
+    for (int i = lookupLength - 1; i >= 0; i--)
     {
-        bool *currentValue = values + (sizeof(bool) * i);
+        bool *currentValue = lookupValues + (sizeof(bool) * i);
         *currentValue = !(*currentValue);
         if (*currentValue == true)
             return;
@@ -204,8 +221,8 @@ void FunctionParser::updateLookup()
 
 void FunctionParser::deleteLookup()
 {
-    free(values);
-    valueLength = 0;
+    free(lookupValues);
+    lookupLength = 0;
     lookup = {};
 }
 
@@ -218,6 +235,14 @@ bool *FunctionParser::getBoolPtr(Token token)
 }
 
 // ------------------------------------ functions for getNames ------------------------------------
+
+void FunctionParser::initNames(vector<Token> expression)
+{
+    for (Token t : expression)
+        if (t.type == Token::Type::identifier)
+            names.push_back(t.value);
+    names = removeDouble(names);
+}
 
 vector<string> FunctionParser::removeDouble(vector<string> names)
 {
@@ -250,6 +275,94 @@ uint8_t FunctionParser::precedenceOf(char c)
 
     return 0xff;
 }
+// ------------------------------------ validate ------------------------------------
+
+void FunctionParser::isValide(vector<Token> expression)
+{
+    if (expression.size() == 0)
+        parsingError("no expression");
+
+    uint32_t counterParentheses = 0;
+    uint32_t counterBinaryOperator = 0;
+    bool lastIdentifier = false;
+    for (Token t : expression)
+    {
+        if (t.type == Token::Type::symbol)
+        {
+            char c = t.value.at(0);
+            if (!valideSymbol(c))
+            {
+                string msg = "(, ), ";
+                msg += AND;
+                msg += ", ";
+                msg += OR;
+                msg += ", ";
+                msg += NOT;
+                msg += ", ";
+                msg += XOR;
+                syntaxError(t, msg);
+            }
+
+            if (isBinary(c))
+                counterBinaryOperator++;
+
+            if (c == '(')
+                counterParentheses++;
+            if (c == ')')
+            {
+                if (counterParentheses < 0)
+                    syntaxError(t, "(");
+                counterParentheses--;
+            }
+            lastIdentifier = false;
+        }
+        else
+        {
+            if (t.type != Token::Type::identifier)
+                syntaxError(t, Token::Type::symbol);
+            if (lastIdentifier == true)
+                syntaxError(t, Token::Type::symbol);
+            lastIdentifier = true;
+        }
+    }
+
+    if (counterBinaryOperator != names.size() - 1)
+        syntaxError(expression.at(expression.size() - 1), Token::Type::identifier);
+
+    if (counterParentheses != 0)
+        syntaxError(expression.at(expression.size() - 1), ")");
+}
+
+bool FunctionParser::isBinary(char c)
+{
+    switch (c)
+    {
+    case AND:
+    case OR:
+    case XOR:
+        return true;
+
+    default:
+        return false;
+    }
+}
+
+bool FunctionParser::valideSymbol(char c)
+{
+    switch (c)
+    {
+    case '(':
+    case ')':
+    case AND:
+    case OR:
+    case XOR:
+    case NOT:
+        return true;
+
+    default:
+        return false;
+    }
+}
 
 // ------------------------------------ constructor ------------------------------------
 FunctionParser::FunctionParser()
@@ -265,12 +378,17 @@ FunctionParser::FunctionParser()
 vector<bool> FunctionParser::parse(vector<Token> expression, uint32_t lineIndex)
 {
     this->lineIndex = lineIndex;
-    vector<bool> table;
+
+    names = {};
+    initNames(expression);
+    isValide(expression);
+
+    initLookup();
     Node *tree = nextNode(expression, NULL);
 
-    initLookup(expression);
+    vector<bool> table;
 
-    while (!finished)
+    for (uint32_t index = 0; index < pow(2, names.size()); index++)
     {
         table.push_back(evalNode(tree));
         updateLookup();
@@ -282,12 +400,8 @@ vector<bool> FunctionParser::parse(vector<Token> expression, uint32_t lineIndex)
     return table;
 }
 
-vector<string> FunctionParser::getNames(vector<Token> expression)
-{
-    vector<string> names;
-    for (Token t : expression)
-        if (t.type == Token::Type::identifier)
-            names.push_back(t.value);
-    names = removeDouble(names);
-    return names;
-}
+vector<string> FunctionParser::getNames() { return names; }
+
+void FunctionParser::syntaxError(Token got, string expected) { Error::makeError(Error::Type::syntax, lineIndex, got, expected); }
+void FunctionParser::syntaxError(Token got, Token::Type expected) { Error::makeError(Error::Type::syntax, lineIndex, got, expected); }
+void FunctionParser::parsingError(string msg) { Error::makeError(Error::Type::parsing, lineIndex, msg); }

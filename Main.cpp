@@ -17,14 +17,14 @@ vector<Token> lex(string str);
 
 int main()
 {
-
-	vector<Token> expression = lex("a|b");
-
+	vector<Token> expression = lex("(a|b)");
 	FunctionParser fp = FunctionParser();
-	vector<string> names = fp.getNames(expression);
-	for (string name : names)
-		cout << name << endl;
-	fp.parse(expression, 0);
+	vector<bool> table = fp.parse(expression, 0);
+
+	string str = "";
+	for (bool b : table)
+		str += (b ? "1" : "0");
+	cout << str << endl;
 }
 
 vector<Token> lex(string str)
