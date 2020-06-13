@@ -1,11 +1,20 @@
 #include "Lexer.h"
 
-Lexer::Lexer(vector<string> code)
+Lexer::Lexer(string path)
 {
-	this->code = code;
-	eof = false;
-	lineIndex = 0;
+
+	inReader.open(path);
+	currentChar = '\0';
 	charIndex = 0;
+	lineIndex = 0;
+
+	eof = false;
+	line = "";
+
+	if (inReader.eof())
+		lexingError("file is empty");
+
+	nextChar();
 }
 
 Lexer::Lexer() {}
@@ -241,30 +250,29 @@ bool Lexer::isSpecial()
 void Lexer::nextChar()
 {
 	if (eof)
-		return;
-
-	if (lineIndex == code.size())
 	{
-		eof = true;
+		currentChar = 0;
 		return;
 	}
 
-	line = code.at(lineIndex);
-
-	if (charIndex == line.size())
+	if (line.size() == 0 || charIndex == line.size())
 	{
-		charIndex = 0;
-		lineIndex++;
-		currentChar = '\n';
-		return;
-	}
 
-	if (line.empty())
-	{
-		charIndex = 0;
-		lineIndex++;
-		currentChar = '\n';
-		return;
+		if (getline(inReader, line))
+		{
+
+			lineIndex++;
+			charIndex = 0;
+
+			if (line.empty())
+				return nextChar();
+		}
+		else
+		{
+			eof = true;
+			currentChar = 0;
+			return;
+		}
 	}
 
 	currentChar = line.at(charIndex);
@@ -272,4 +280,4 @@ void Lexer::nextChar()
 }
 
 // ------------------------------------ error handling ------------------------------------
-void Lexer::lexingError(string input) { Error::makeError(Error::Type::lexing, lineIndex, input); }
+void Lexer::lexingError(string msg) { Error::makeError(Error::Type::lexing, lineIndex, msg); }

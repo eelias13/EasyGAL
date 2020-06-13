@@ -4,8 +4,6 @@
 #include <string>
 #include <vector>
 #include <utility>
-#include <iostream>
-#include <fstream>
 
 #include "TableData.h"
 #include "Lexer.h"
@@ -24,8 +22,6 @@ public:
     vector<TableData> parse();
 
 private:
-    vector<string> code;
-
     vector<TableData> tables;
     vector<pair<string, uint32_t>> alias;
 
@@ -46,22 +42,26 @@ private:
     void parseTable();
     void parseIdentifier();
 
+private:
     // helper for parsePin()
     uint32_t str2Pin(string);
     string pin2Str(uint32_t);
 
+private:
     // helper for tableParse()
     vector<uint32_t> getIdentifier();
     void extraFunction();
     vector<bool> getBooltable();
     void insertBooltable(vector<bool> &, string);
 
+private:
     // helper for parseIdentifier()
     void insertDFF(uint32_t);
     vector<Token> getExpression();
     bool validExpression();
     TableData assembleTableFromFunc(string, vector<Token>);
 
+private:
     // helpful functions
     void nextToken();
 
@@ -76,6 +76,7 @@ private:
     uint32_t getInt(char c);
     uint32_t str2Int(string);
 
+private:
     // error handling
     void parsingError(string);
     void syntaxError(string);

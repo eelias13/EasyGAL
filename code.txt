@@ -5,7 +5,10 @@ pin 1 = b;
 pin 2 = c;
 
 a = !b | c;
+
 // a.dff;
+
+/*
 
 pin 3 = i0;
 pin 4 = i1;
@@ -13,9 +16,9 @@ pin 5 = and;
 pin 6 = or;
 pin 7 = xor;
 
-/*
+
     multi line comment
-*/
+
 
 table(i0, i1 => and, or, xor){
     00 000
@@ -23,3 +26,5 @@ table(i0, i1 => and, or, xor){
     10 011
     11 110
 };
+
+*/

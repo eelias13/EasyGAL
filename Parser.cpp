@@ -1,16 +1,10 @@
 #include "Parser.h"
+#include <iostream>
 
 Parser::Parser(string path)
 {
-    // read on file from path
-    ifstream file(path);
-    string line;
-    while (getline(file, line))
-        code.push_back(line);
-    file.close();
-
     // initialise variables
-    lexer = Lexer(code);
+    lexer = Lexer(path);
     isFill = false;
     fill = false;
     isCount = false;
@@ -23,17 +17,17 @@ Parser::Parser(string path)
 vector<TableData> Parser::parse()
 {
     nextToken();
-    nextToken();
     while (!lexer.isFinished())
         parseNext();
+
     return tables;
 }
 
 // ------------------------------------ main parser function ------------------------------------
 void Parser::parseNext()
 {
-    if (currentToken.value.empty())
-        return nextToken();
+    // if (currentToken.value.empty())
+    //     return nextToken();
 
     if (isToken(PIN))
         return parsePin();
@@ -85,9 +79,6 @@ void Parser::parseTable()
     expect("{");
     vector<bool> boolTable = getBooltable();
     expect("}");
-#ifdef WITH_SEMICOLON
-    expect(";");
-#endif
 
     vector<TableData> temp;
     if (isCount)
@@ -270,12 +261,13 @@ TableData Parser::assembleTableFromFunc(string outName, vector<Token> expression
     table.m_EnableFlipFlop = false;
     table.m_OutputPin = str2Pin(outName);
 
+    table.m_Table = functionParser.parse(expression, lexer.getLineIndex());
+
     vector<uint32_t> inPins;
-    for (string inName : functionParser.getNames(expression))
+    for (string inName : functionParser.getNames())
         inPins.push_back(str2Pin(inName));
     table.m_InputPins = inPins;
 
-    table.m_Table = functionParser.parse(expression, lexer.getLineIndex());
     return table;
 }
 

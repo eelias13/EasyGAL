@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <string>
 #include <vector>
+#include <fstream>
 
 #include "Symbols.h"
 #include "Token.h"
@@ -14,7 +15,7 @@ using namespace std;
 class Lexer
 {
 public:
-	Lexer(vector<string>);
+	Lexer(string);
 	Lexer();
 
 	Token next();
@@ -28,7 +29,7 @@ private:
 	uint16_t charIndex;
 	string line;
 	bool eof;
-	vector<string> code;
+	ifstream inReader;
 
 	char currentChar;
 	Token token;
