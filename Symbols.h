@@ -19,6 +19,6 @@
 // #define WITH_SEMICOLON_TABLE
 // #define COUNT_VERTICAL
 
-#define LANG_DE
+// #define LANG_DE
 
 #endif /* SYMBOLS_H_ */
