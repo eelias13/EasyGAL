@@ -19,7 +19,7 @@ Lexer::Lexer(string path)
 
 Lexer::Lexer() {}
 
-uint16_t Lexer::getLineIndex() { return lineIndex; }
+uint16_t Lexer::getLineIndex() { return lineIndex - 1; }
 bool Lexer::isFinished() { return eof; }
 
 Token Lexer::next()

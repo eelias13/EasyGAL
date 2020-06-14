@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <utility>
+#include <math.h>
 
 #include "TableData.h"
 #include "Lexer.h"

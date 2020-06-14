@@ -26,9 +26,6 @@ vector<TableData> Parser::parse()
 // ------------------------------------ main parser function ------------------------------------
 void Parser::parseNext()
 {
-    // if (currentToken.value.empty())
-    //     return nextToken();
-
     if (isToken(PIN))
         return parsePin();
 
@@ -87,6 +84,8 @@ void Parser::parseTable()
         temp = tableParser.getTableDataFill(boolTable, inPins, outPins, fill);
     else
         temp = tableParser.getTableData(boolTable, inPins, outPins);
+
+    cout << "!!" << endl;
 
     for (TableData t : temp)
         tables.push_back(t);
@@ -211,11 +210,14 @@ void Parser::insertBooltable(vector<bool> &boolTable, string str)
 // ------------------------------------ helper for parseIdentifier() ------------------------------------
 void Parser::insertDFF(uint32_t pin)
 {
-    for (TableData table : tables)
-        if (table.m_OutputPin == pin)
-            table.m_EnableFlipFlop = true;
+    for (uint32_t i = 0; i < tables.size(); i++)
+        if (tables.at(i).m_OutputPin == pin)
+        {
+            tables.at(i).m_EnableFlipFlop = true;
+            return;
+        }
 
-    parsingError(pin2Str(pin) + "is not an output pin or not yet defined");
+    parsingError(pin2Str(pin) + " is not an output pin or not yet defined");
 }
 
 vector<Token> Parser::getExpression()
@@ -296,8 +298,7 @@ uint32_t Parser::str2Int(string str)
 {
     uint32_t result = 0;
     for (uint32_t i = 0; i < str.size(); i++)
-        result += getInt(str.at(i)) * (str.size() - i + 1) * 10;
-
+        result += getInt(str.at(i)) * pow(10, str.size() - i - 1);
     return result;
 }
 

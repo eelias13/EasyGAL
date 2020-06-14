@@ -5,6 +5,7 @@
 #include <vector>
 #include <utility>
 #include <cmath>
+#include <math.h>
 
 #include "TableData.h"
 #include "Error.h"

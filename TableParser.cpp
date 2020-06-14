@@ -1,4 +1,5 @@
 #include "TableParser.h"
+#include <iostream>
 
 vector<TableData> TableParser::getTableData(vector<bool> tableStream, vector<uint32_t> inPins, vector<uint32_t> outPins)
 {
@@ -13,7 +14,6 @@ vector<TableData> TableParser::getTableData(vector<bool> tableStream, vector<uin
 
 vector<TableData> TableParser::getTableDataFill(vector<bool> tableStream, vector<uint32_t> inPins, vector<uint32_t> outPins, bool fill)
 {
-
     vector<vector<bool>> temp2D = splitRows(tableStream, outPins.size() + inPins.size());
     vector<vector<bool>> table2D = match(temp2D, outPins.size(), fill);
 
@@ -98,16 +98,17 @@ pair<uint32_t, vector<bool>> TableParser::matchLine(vector<bool> boolVec, uint32
     for (uint32_t i = 0; i < outLen; i++)
         temp.push_back(boolVec.at(boolVec.size() - outLen + i));
 
+    cout << index << endl;
     return pair<uint32_t, vector<bool>>(index, temp);
 }
 
 uint32_t TableParser::bool2Int(vector<bool> boolVec)
 {
-    uint32_t number = 0;
-    for (uint32_t i = boolVec.size() - 1; i >= 0; i--)
+    uint32_t result = 0;
+    for (uint32_t i = 0; i < boolVec.size(); i++)
         if (boolVec.at(i))
-            number += pow(2, (boolVec.size() - 1 - i));
-    return number;
+            result += pow(2, boolVec.size() - i - 1);
+    return result;
 }
 
 vector<vector<bool>> TableParser::match(vector<vector<bool>> vec2D, uint32_t outLen, bool init)

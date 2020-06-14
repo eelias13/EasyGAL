@@ -1,14 +1,17 @@
 // one line comment
 
+/*
+    multi line comment
+*/
+
 pin 0 = a;
 pin 1 = b;
 pin 2 = c;
 
-a = !b | c;
+a = (!b | (c));
 
-// a.dff;
+a.dff;
 
-/*
 
 pin 3 = i0;
 pin 4 = i1;
@@ -16,15 +19,28 @@ pin 5 = and;
 pin 6 = or;
 pin 7 = xor;
 
-
-    multi line comment
-
-
-table(i0, i1 => and, or, xor){
+table(i0, i1 => and, xor, or) {
     00 000
     01 011
     10 011
-    11 110
-};
+    11 101
+}
 
+/*
+table(i0, i1 => and) {
+    00 0
+    01 0
+    10 0
+    11 1
+}
+
+table(i0, i1 => xor).count {
+    0110
+}
+
+table(i0, i1 => or).fill(1) {
+    00 0
+    01 1
+    10 1
+}
 */
