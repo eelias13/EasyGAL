@@ -98,7 +98,6 @@ pair<uint32_t, vector<bool>> TableParser::matchLine(vector<bool> boolVec, uint32
     for (uint32_t i = 0; i < outLen; i++)
         temp.push_back(boolVec.at(boolVec.size() - outLen + i));
 
-    cout << index << endl;
     return pair<uint32_t, vector<bool>>(index, temp);
 }
 

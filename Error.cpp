@@ -14,8 +14,8 @@ void Error::makeError(Type errorType, uint32_t lineIndex, Token got, Token::Type
 {
     string msg = errorType2Str(errorType);
     msg += " at line " + to_string(lineIndex + 1);
-    msg += " expected type: " + expected;
-    msg += " got instade: " + got.type;
+    msg += " expected type: " + tokenType2Str(expected);
+    msg += " got instade: " + tokenType2Str(got.type);
     printError(msg);
     exit(1);
 }

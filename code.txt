@@ -19,14 +19,6 @@ pin 5 = and;
 pin 6 = or;
 pin 7 = xor;
 
-table(i0, i1 => and, xor, or) {
-    00 000
-    01 011
-    10 011
-    11 101
-}
-
-/*
 table(i0, i1 => and) {
     00 0
     01 0
@@ -34,7 +26,7 @@ table(i0, i1 => and) {
     11 1
 }
 
-table(i0, i1 => xor).count {
+table(i0, i1 => xor ).count {
     0110
 }
 
@@ -43,4 +35,4 @@ table(i0, i1 => or).fill(1) {
     01 1
     10 1
 }
-*/
+

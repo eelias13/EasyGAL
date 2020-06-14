@@ -66,6 +66,8 @@ void Parser::parseTable()
     fill = false;
     isCount = false;
 
+    tableParser.setLineIndex(lexer.getLineIndex());
+
     expect(TABLE);
     expect("(");
     vector<uint32_t> inPins = getIdentifier();
@@ -84,8 +86,6 @@ void Parser::parseTable()
         temp = tableParser.getTableDataFill(boolTable, inPins, outPins, fill);
     else
         temp = tableParser.getTableData(boolTable, inPins, outPins);
-
-    cout << "!!" << endl;
 
     for (TableData t : temp)
         tables.push_back(t);
@@ -204,7 +204,7 @@ void Parser::insertBooltable(vector<bool> &boolTable, string str)
         if (str.at(i) == ONE)
             boolTable.push_back(true);
         else
-            boolTable.push_back(true);
+            boolTable.push_back(false);
 }
 
 // ------------------------------------ helper for parseIdentifier() ------------------------------------
