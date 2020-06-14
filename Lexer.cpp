@@ -12,7 +12,11 @@ Lexer::Lexer(string path)
 	line = "";
 
 	if (inReader.eof())
+#ifdef LANG_DE
+		lexingError("Datei ist leer");
+#else
 		lexingError("file is empty");
+#endif
 
 	nextChar();
 }
@@ -52,8 +56,11 @@ Token Lexer::next()
 	lexWord();
 	if (!token.value.empty())
 		return token;
-
+#ifdef LANG_DE
+	lexingError("unerwartetes Zeichen" + currentChar);
+#else
 	lexingError("couldn't lex " + currentChar);
+#endif
 	return {};
 }
 
@@ -87,8 +94,11 @@ void Lexer::lexComment()
 		nextChar();
 		return;
 	}
-
+#ifdef LANG_DE
+	lexingError("unerwartetes Zeichen " + token.value);
+#else
 	lexingError("unexpected character " + token.value);
+#endif
 }
 
 void Lexer::lexSymbol()

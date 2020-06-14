@@ -72,8 +72,11 @@ FunctionParser::Bundle FunctionParser::splitBineryOperator(vector<Token> express
     {
         if (expression.at(0).value.at(0) == NOT)
             return splitNot(expression);
-
+#ifdef LANG_DE
+        string msg = "Ausdruck kann nicht geteilt werden ";
+#else
         string msg = "can not split expression: ";
+#endif
         for (Token t : expression)
             msg += t.value;
         parsingError(msg);
@@ -175,7 +178,11 @@ bool FunctionParser::evalNode(Node *node)
     case NOT:
         return !evalNode((*node).left);
     default:
-        parsingError("can not resolve token" + (*node).token.value);
+#ifdef LANG_DE
+        parsingError("Token kann nicht aufgelöst werden " + (*node).token.value);
+#else
+        parsingError("can not resolve token " + (*node).token.value);
+#endif
         return false;
     }
 }
@@ -280,7 +287,11 @@ uint8_t FunctionParser::precedenceOf(char c)
 void FunctionParser::isValide(vector<Token> expression)
 {
     if (expression.size() == 0)
+#ifdef LANG_DE
+        parsingError("Kein Ausdruck übergeben");
+#else
         parsingError("no expression");
+#endif
 
     uint32_t counterParentheses = 0;
     uint32_t counterBinaryOperator = 0;

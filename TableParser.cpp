@@ -1,11 +1,14 @@
 #include "TableParser.h"
-#include <iostream>
 
 vector<TableData> TableParser::getTableData(vector<bool> tableStream, vector<uint32_t> inPins, vector<uint32_t> outPins)
 {
     if (tableStream.size() != pow(2, inPins.size()) * (outPins.size() + inPins.size()))
     {
+#ifdef LANG_DE
+        Error::makeError(Error::Type::parsing, lineIndex, "falsche Tablenform");
+#else
         Error::makeError(Error::Type::parsing, lineIndex, "incorrect table shape");
+#endif
         return {};
     }
 
@@ -25,7 +28,11 @@ vector<TableData> TableParser::getTableDataCount(vector<bool> tableStream, vecto
 
     if (tableStream.size() != pow(2, inPins.size()) * outPins.size())
     {
+#ifdef LANG_DE
+        Error::makeError(Error::Type::parsing, lineIndex, "falsche Tablenform");
+#else
         Error::makeError(Error::Type::parsing, lineIndex, "incorrect table shape");
+#endif
         return {};
     }
 

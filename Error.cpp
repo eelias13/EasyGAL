@@ -3,9 +3,15 @@
 void Error::makeError(Type errorType, uint32_t lineIndex, Token got, string expected)
 {
     string msg = errorType2Str(errorType);
+#ifdef LANG_DE
+    msg += " in Zeile " + to_string(lineIndex + 1);
+    msg += " erwarteter Wert: " + expected;
+    msg += " bekam stattdessen: " + got.type;
+#else
     msg += " at line " + to_string(lineIndex + 1);
     msg += " expected value: " + expected;
-    msg += " got instade: " + got.value;
+    msg += " got instead: " + got.value;
+#endif
     printError(msg);
     exit(1);
 }
@@ -13,9 +19,15 @@ void Error::makeError(Type errorType, uint32_t lineIndex, Token got, string expe
 void Error::makeError(Type errorType, uint32_t lineIndex, Token got, Token::Type expected)
 {
     string msg = errorType2Str(errorType);
+#ifdef LANG_DE
+    msg += " in Zeile " + to_string(lineIndex + 1);
+    msg += " erwarteter type: " + tokenType2Str(expected);
+    msg += " bekam stattdessen: " + tokenType2Str(got.type);
+#else
     msg += " at line " + to_string(lineIndex + 1);
     msg += " expected type: " + tokenType2Str(expected);
-    msg += " got instade: " + tokenType2Str(got.type);
+    msg += " got instead: " + tokenType2Str(got.type);
+#endif
     printError(msg);
     exit(1);
 }
@@ -23,7 +35,11 @@ void Error::makeError(Type errorType, uint32_t lineIndex, Token got, Token::Type
 void Error::makeError(Type errorType, uint32_t lineIndex, string input)
 {
     string msg = errorType2Str(errorType);
+#ifdef LANG_DE
+    msg += " in Zeile " + to_string(lineIndex + 1) + " ";
+#else
     msg += " at line " + to_string(lineIndex + 1) + " ";
+#endif
     msg += input;
     printError(msg);
     exit(1);

@@ -9,7 +9,6 @@ pin 1 = b;
 pin 2 = c;
 
 a = (!b | (c));
-
 a.dff;
 
 
@@ -27,7 +26,10 @@ table(i0, i1 => and) {
 }
 
 table(i0, i1 => xor ).count {
-    0110
+    0
+    1
+    1
+    0
 }
 
 table(i0, i1 => or).fill(1) {
@@ -35,4 +37,3 @@ table(i0, i1 => or).fill(1) {
     01 1
     10 1
 }
-

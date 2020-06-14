@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include "Token.h"
+#include "Symbols.h"
 
 using namespace std;
 

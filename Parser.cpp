@@ -1,5 +1,4 @@
 #include "Parser.h"
-#include <iostream>
 
 Parser::Parser(string path)
 {
@@ -78,6 +77,11 @@ void Parser::parseTable()
     expect("{");
     vector<bool> boolTable = getBooltable();
     expect("}");
+#ifdef WITH_SEMICOLON
+#ifdef WITH_SEMICOLON_TABLE
+    expect(";");
+#endif
+#endif
 
     vector<TableData> temp;
     if (isCount)
@@ -121,9 +125,11 @@ string Parser::pin2Str(uint32_t pin)
         if (p.second == pin)
             return p.first;
 
-    string msg = "pin ";
-    msg += pin;
-    parsingError(msg + " is not diffident");
+#ifdef LANG_DE
+    parsingError("Pin " + to_string(pin) + " ist nicht diffident");
+#else
+    parsingError("pin " + " is not diffident");
+#endif
     return "";
 }
 
@@ -132,8 +138,11 @@ uint32_t Parser::str2Pin(string pinName)
     for (pair<string, uint32_t> p : alias)
         if (p.first == pinName)
             return p.second;
-
+#ifdef LANG_DE
+    parsingError("Pin " + pinName + " ist nicht diffident");
+#else
     parsingError("pin " + pinName + " is not diffident");
+#endif
     return 0;
 }
 
@@ -216,8 +225,11 @@ void Parser::insertDFF(uint32_t pin)
             tables.at(i).m_EnableFlipFlop = true;
             return;
         }
-
+#ifdef LANG_DE
+    parsingError(pin2Str(pin) + " ist kein Ausgangspin oder ist noch nicht definiert");
+#else
     parsingError(pin2Str(pin) + " is not an output pin or not yet defined");
+#endif
 }
 
 vector<Token> Parser::getExpression()
@@ -327,7 +339,11 @@ uint32_t Parser::getInt(char c)
     case '9':
         return 9;
     default:
+#ifdef LANG_DE
+        parsingError(c + " ist keine Zahl");
+#else
         parsingError(c + " is not a number");
+#endif
         return 0;
     }
 }

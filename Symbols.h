@@ -16,5 +16,9 @@
 #define ONE '1'
 
 #define WITH_SEMICOLON
+// #define WITH_SEMICOLON_TABLE
+// #define COUNT_VERTICAL
+
+#define LANG_DE
 
 #endif /* SYMBOLS_H_ */
