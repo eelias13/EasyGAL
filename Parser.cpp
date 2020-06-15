@@ -128,7 +128,7 @@ string Parser::pin2Str(uint32_t pin)
 #ifdef LANG_DE
     parsingError("Pin " + to_string(pin) + " ist nicht diffident");
 #else
-    parsingError("pin " + " is not diffident");
+    parsingError("pin " + to_string(pin) + " is not diffident");
 #endif
     return "";
 }
@@ -237,13 +237,21 @@ vector<Token> Parser::getExpression()
     vector<Token> tokens;
     if (!validExpression())
         syntaxError(Token::Type::identifier);
-    uint32_t lineNum = lexer.getLineIndex();
 
+#ifdef WITH_SEMICOLON
+    while (validExpression())
+    {
+        tokens.push_back(currentToken);
+        nextToken();
+    }
+#else
+    uint32_t lineNum = lexer.getLineIndex();
     while (validExpression() && lineNum == lexer.getLineIndex())
     {
         tokens.push_back(currentToken);
         nextToken();
     }
+#endif
 
     return tokens;
 }
