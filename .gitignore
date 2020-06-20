@@ -1,6 +1,6 @@
 /.vscode
 
-/EasyGal
+Build/EasyGal
 /Main.o
 
 /Compiler/Error.o
