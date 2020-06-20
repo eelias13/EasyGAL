@@ -1,3 +1,10 @@
+/*
+ * FunctionParser.cpp
+ *
+ *  Created on: May 31, 2020
+ *      Author: elias
+ */
+ 
 #define FUNCTIONPARSER_H_
 #ifdef FUNCTIONPARSER_H_
 

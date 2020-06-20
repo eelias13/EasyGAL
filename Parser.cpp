@@ -1,3 +1,10 @@
+/*
+ * Parser.cpp
+ *
+ *  Created on: May 29, 2020
+ *      Author: elias
+ */
+
 #include "Parser.h"
 
 Parser::Parser(string path)

@@ -1,3 +1,10 @@
+/*
+ * TableParser.h
+ *
+ *  Created on: Jun 3, 2020
+ *      Author: elias
+ */
+
 #ifndef TABLE_PARSER_H_
 #define TABLE_PARSER_H_
 

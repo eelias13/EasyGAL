@@ -1,3 +1,10 @@
+ /*
+ * Lexer.h
+ *
+ *  Created on: May 28, 2020
+ *      Author: elias
+ */
+
 #ifndef LEXER_H_
 #define LEXER_H_
 

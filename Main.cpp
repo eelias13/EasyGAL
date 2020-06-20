@@ -1,3 +1,10 @@
+/*
+ * Error.cpp
+ *
+ *  Created on: May 28, 2020
+ *      Author: elias
+ */
+
 #include <iostream>
 #include <string>
 #include <vector>

@@ -1,3 +1,10 @@
+ /*
+ * Lexer.cpp
+ *
+ *  Created on: May 28, 2020
+ *      Author: elias
+ */
+
 #include "Lexer.h"
 
 Lexer::Lexer(string path)

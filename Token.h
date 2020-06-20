@@ -1,3 +1,10 @@
+/*
+ * Token.h
+ *
+ *  Created on: May 29, 2020
+ *      Author: elias
+ */
+
 #ifndef TOKEN_H_
 #define TOKEN_H_
 

@@ -1,3 +1,10 @@
+/*
+ * TableParser.cpp
+ *
+ *  Created on: Jun 3, 2020
+ *      Author: elias
+ */
+
 #include "TableParser.h"
 
 vector<TableData> TableParser::getTableData(vector<bool> tableStream, vector<uint32_t> inPins, vector<uint32_t> outPins)

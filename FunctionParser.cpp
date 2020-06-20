@@ -1,3 +1,10 @@
+/*
+ * FunctionParser.cpp
+ *
+ *  Created on: May 31, 2020
+ *      Author: elias
+ */
+
 #include "FunctionParser.h"
 
 // ------------------------------------ split functions ------------------------------------

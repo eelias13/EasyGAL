@@ -1,3 +1,10 @@
+/*
+ * Error.cpp
+ *
+ *  Created on: May 29, 2020
+ *      Author: elias
+ */
+
 #include "Error.h"
 
 void Error::makeError(Type errorType, uint32_t lineIndex, Token got, string expected)

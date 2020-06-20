@@ -1,3 +1,10 @@
+/*
+ * Symbols.h
+ *
+ *  Created on: May 29, 2020
+ *      Author: elias
+ */
+
 #ifndef SYMBOLS_H_
 #define SYMBOLS_H_
 

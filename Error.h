@@ -1,3 +1,10 @@
+/*
+ * Error.h
+ *
+ *  Created on: May 29, 2020
+ *      Author: elias
+ */
+
 #ifndef ERROR_H_
 #define ERROR_H_
 
