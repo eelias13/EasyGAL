@@ -13,7 +13,7 @@
 #include <utility>
 #include <math.h>
 
-#include "TableData.h"
+#include "../Shared/TableData.h"
 #include "Lexer.h"
 #include "Token.h"
 #include "Symbols.h"

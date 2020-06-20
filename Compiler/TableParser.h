@@ -14,7 +14,7 @@
 #include <cmath>
 #include <math.h>
 
-#include "TableData.h"
+#include "../Shared/TableData.h"
 #include "Error.h"
 
 using namespace std;
