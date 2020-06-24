@@ -2,6 +2,6 @@
 
 void printError(string msg)
 {
-    cout << msg << endl;
+    cerr << msg << endl;
     exit(1);
 }
