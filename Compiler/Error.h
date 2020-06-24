@@ -9,10 +9,10 @@
 #define ERROR_H_
 
 #include <string>
-#include <iostream>
 
 #include "Token.h"
 #include "Symbols.h"
+#include "../Shared/Error.h"
 
 using namespace std;
 
@@ -28,7 +28,7 @@ namespace Error
     void makeError(Type, uint32_t, Token, string);
     void makeError(Type, uint32_t, Token, Token::Type);
     void makeError(Type, uint32_t, string);
-    void printError(string);
+
     string tokenType2Str(Token::Type);
     string errorType2Str(Type);
 } // namespace Error

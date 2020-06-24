@@ -20,7 +20,6 @@ void Error::makeError(Type errorType, uint32_t lineIndex, Token got, string expe
     msg += " got instead: " + got.value;
 #endif
     printError(msg);
-    exit(1);
 }
 
 void Error::makeError(Type errorType, uint32_t lineIndex, Token got, Token::Type expected)
@@ -36,7 +35,6 @@ void Error::makeError(Type errorType, uint32_t lineIndex, Token got, Token::Type
     msg += " got instead: " + tokenType2Str(got.type);
 #endif
     printError(msg);
-    exit(1);
 }
 
 void Error::makeError(Type errorType, uint32_t lineIndex, string input)
@@ -49,7 +47,6 @@ void Error::makeError(Type errorType, uint32_t lineIndex, string input)
 #endif
     msg += input;
     printError(msg);
-    exit(1);
 }
 
 string Error::errorType2Str(Type type)
@@ -88,4 +85,3 @@ string Error::tokenType2Str(Token::Type type)
     }
 }
 
-void Error::printError(string msg) { cout << msg << endl; }

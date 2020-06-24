@@ -8,3 +8,5 @@
 /Compiler/Lexer.o
 /Compiler/Parser.o
 /Compiler/TableParser.o
+
+/Shared/Error.o
