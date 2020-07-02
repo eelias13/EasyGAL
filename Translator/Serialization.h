@@ -43,7 +43,7 @@ public:
 
 	JEDEC(uint32_t iNumPins, uint32_t iNumFuses, std::vector<bool>& FuseStates, std::string Filename) : m_iNumPins(iNumPins), m_iNumFuses(iNumFuses), m_FuseStates(FuseStates), m_Filename(Filename) 
 	{
-		if(!m_iNumPins || !m_iNumFuses || !FuseStates.size())
+		if(!m_iNumPins || !m_iNumFuses || !m_FuseStates.size())
 		{
 			ERROR("%s", "JEDEC object was initialized with invalid parameters");
 			throw std::exception();
