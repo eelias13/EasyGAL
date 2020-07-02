@@ -14,6 +14,7 @@
 #include "Compiler/Parser.h"
 #include "Shared/TableData.h"
 #include "Shared/Error.h"
+#include "Translator/Translator.hpp"
 
 using namespace std;
 
@@ -98,6 +99,5 @@ int main(int argc, char *argv[])
 
 	validate(tableData, inputPins, outputPins);
 
-	for (TableData td : tableData)
-		printTableData(td);
+	Translator::Process(tableData, "out.jedec");
 }

@@ -10,5 +10,11 @@
 /Compiler/Parser.o
 /Compiler/TableParser.o
 
+/Translator/DNF.o
+/Translator/Fuses.o
+/Translator/Helper.o
+/Translator/Serialization.o
+/Translator/Translator.o
+
 /Shared/Error.o
 /.vs/EasyGAL2/v16/ipch/AutoPCH
