@@ -9,11 +9,11 @@
 #include <cmath>
 
 #include "Helper.hpp"
-#include "TableData.hpp"
+#include "../Shared/TableData.h"
 
 //	Maximum allowed inputs for expressions.
 
-#define MAX_INPUTS 12
+constexpr uint32_t MAX_INPUTS = 24;
 
 namespace DNF 
 {
@@ -47,7 +47,11 @@ namespace DNF
 
 	struct Expression 
 	{
-		Expression() {}
+		Expression() 
+		{
+			this->m_OutputPin = 0;
+			this->m_EnableFlipFlop = false;
+		}
 
 		Expression(uint32_t OutputPin, bool EnableFlipFlops, vector<Row> Rows)
 		{

@@ -7,13 +7,15 @@
 
 #include <vector>
 
-#include "DNF.hpp"
+#include "../Shared/TableData.h"
+#include "Serialization.h"
 #include "Helper.hpp"
-#include "TableData.hpp"
+#include "Fuses.h"
+#include "DNF.hpp"
 
 using namespace std;
 
 namespace Translator 
 {
-	bool Process(vector<TableData> TruthTables);
+	bool Process(vector<TableData> TruthTables, std::string Filename);
 }

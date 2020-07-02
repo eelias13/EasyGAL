@@ -1,5 +1,7 @@
 #pragma once
 
+//  Author: Lukas Götz
+
 #include <vector>
 #include <stdint.h>
 

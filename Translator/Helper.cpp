@@ -42,7 +42,7 @@ vector<string> Helper::String::Tokenize(const string &InputString, string Delimi
 /*
 *		String::TokenizeEx splits strings into tokens based on delimiters. This extended version of String::Tokenize 
 *		also returns the delimiters which are found in the string as tokens.
-*/
+*/ 
 
 vector<string> Helper::String::TokenizeEx(const string &InputString, string Delimiters)
 {
