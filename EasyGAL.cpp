@@ -70,7 +70,7 @@ void validate(vector<TableData> tables, vector<uint32_t> inputPins, vector<uint3
 #else
 			printError("table at output pin " + to_string(tables.at(i).m_OutputPin) + " has the wrong shape");
 #endif
-		for (uint32_t j = i+1; j < tables.size(); j++)
+		for (uint32_t j = i + 1; j < tables.size(); j++)
 		{
 			if (tables.at(i).m_OutputPin == tables.at(j).m_OutputPin)
 #ifdef LANG_DE
@@ -84,11 +84,12 @@ void validate(vector<TableData> tables, vector<uint32_t> inputPins, vector<uint3
 
 int main(int argc, char *argv[])
 {
-	if (argc != 2)
+
+	if (argc != 3)
 #ifdef LANG_DE
-		printError("Sie müssen einen Pfad zu ihrem EasyGAL Code angeben");
+		printError("Sie müssen einen Pfad zu ihrem EasyGAL Code angeben und als zweites argument die output datei");
 #else
-		printError("you have to suply a path to your EasyGAL code");
+		printError("you have to suply a path to your EasyGAL code and the name for the output file");
 #endif
 
 	Parser parser = Parser(argv[1]);
@@ -99,5 +100,5 @@ int main(int argc, char *argv[])
 
 	validate(tableData, inputPins, outputPins);
 
-	Translator::Process(tableData, "out.jedec");
+	Translator::Process(tableData, argv[2]);
 }
