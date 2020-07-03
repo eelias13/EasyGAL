@@ -11,7 +11,7 @@
 #include <vector>
 #include <math.h>
 
-#include "Compiler/Parser.h"
+#include "Parser/Parser.h"
 #include "Shared/TableData.h"
 #include "Shared/Error.h"
 #include "Translator/Translator.hpp"

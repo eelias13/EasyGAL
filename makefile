@@ -1,17 +1,17 @@
 CC=g++
 CFLAGS=-c -Wall
 LDFLAGS=
-OTHER=../EasyGAL.cpp  ../Shared/Error.cpp 
-COMPILER=../Compiler/Lexer.cpp ../Compiler/Parser.cpp ../Compiler/Error.cpp ../Compiler/FunctionParser.cpp ../Compiler/TableParser.cpp
-TRANSLATOR=../Translator/DNF.o ../Translator/Fuses.cpp ../Translator/Helper.cpp ../Translator/Serialization.cpp ../Translator/Translator.cpp
-OBJECTS=$(COMPILER:.cpp=.o) $(OTHER:.cpp=.o) $(TRANSLATOR:.cpp=.o)
-EXECUTABLE=../EasyGAL
+OTHER=EasyGAL.cpp  Shared/Error.cpp 
+PARSER=Parser/Lexer.cpp Parser/Parser.cpp Parser/Error.cpp Parser/FunctionParser.cpp Parser/TableParser.cpp
+TRANSLATOR=Translator/DNF.o Translator/Fuses.cpp Translator/Helper.cpp Translator/Serialization.cpp Translator/Translator.cpp
+OBJECTS=$(PARSER:.cpp=.o) $(OTHER:.cpp=.o) $(TRANSLATOR:.cpp=.o)
+EXECUTABLE=EasyGAL
 
-all: other compiler translator
+all: other parser translator
 
 other: $(OTHER) $(EXECUTABLE)
 
-compiler: $(COMPILER) $(EXECUTABLE)
+parser: $(PARSER) $(EXECUTABLE)
 
 translator: $(TRANSLATOR) $(EXECUTABLE)
 
@@ -23,3 +23,4 @@ $(EXECUTABLE): $(OBJECTS)
 
 clean:
 	rm $(OBJECTS)
+	
