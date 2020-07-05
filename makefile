@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS=-c -Wall
 LDFLAGS=
-OTHER=EasyGAL.cpp  Shared/Error.cpp 
+OTHER=EasyGAL.cpp 
 PARSER=Parser/Lexer.cpp Parser/Parser.cpp Parser/Error.cpp Parser/FunctionParser.cpp Parser/TableParser.cpp
 TRANSLATOR=Translator/DNF.o Translator/Fuses.cpp Translator/Helper.cpp Translator/Serialization.cpp Translator/Translator.cpp
 OBJECTS=$(PARSER:.cpp=.o) $(OTHER:.cpp=.o) $(TRANSLATOR:.cpp=.o)
