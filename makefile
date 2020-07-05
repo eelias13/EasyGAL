@@ -7,7 +7,7 @@ TRANSLATOR=Translator/DNF.o Translator/Fuses.cpp Translator/Helper.cpp Translato
 OBJECTS=$(PARSER:.cpp=.o) $(OTHER:.cpp=.o) $(TRANSLATOR:.cpp=.o)
 EXECUTABLE=EasyGAL
 
-all: other parser translator
+all: parser translator other
 
 other: $(OTHER) $(EXECUTABLE)
 
