@@ -1,11 +1,8 @@
 /.vscode
 /.vs
 
+/EasyGAL
 /EasyGAL.o
-/Compiler
-
-/Simulator
-/Sim/Simulator.o
 
 /Compiler/Error.o
 /Compiler/FunctionParser.o
