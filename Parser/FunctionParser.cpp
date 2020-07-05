@@ -148,7 +148,12 @@ struct FunctionParser::Node
 
 struct FunctionParser::Node *FunctionParser::newNode(Token token, FunctionParser::Node *parent)
 {
+    #ifdef _WIN32
     Node* node = new Node();
+    #elif __linux__
+    struct Node *node = (struct Node*)malloc(sizeof(struct Node));
+    #endif
+
     node->token = token;
     node->value = getBoolPtr(token);
     node->parent = parent;
@@ -207,7 +212,13 @@ void FunctionParser::deleteNode(Node *node)
 void FunctionParser::initLookup()
 {
     lookupLength = names.size();
+    
+    #ifdef _WIN32
     lookupValues = new bool[lookupLength];
+    #elif __linux__
+    lookupValues = (bool *)malloc((lookupLength - 1) * sizeof(bool));
+    #endif
+    
     finished = false;
 
     for (uint32_t i = 0; i < lookupLength; i++)
