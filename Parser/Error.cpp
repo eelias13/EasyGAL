@@ -85,3 +85,9 @@ string Error::tokenType2Str(Token::Type type)
     }
 }
 
+void Error::printError(string msg)
+{
+    std::cerr << msg << std::endl;
+    exit(1);
+}
+

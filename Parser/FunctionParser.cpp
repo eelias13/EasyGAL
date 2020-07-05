@@ -148,7 +148,7 @@ struct FunctionParser::Node
 
 struct FunctionParser::Node *FunctionParser::newNode(Token token, FunctionParser::Node *parent)
 {
-    struct Node *node = (struct Node *)malloc(sizeof(struct Node));
+    Node* node = new Node();
     node->token = token;
     node->value = getBoolPtr(token);
     node->parent = parent;
@@ -207,7 +207,7 @@ void FunctionParser::deleteNode(Node *node)
 void FunctionParser::initLookup()
 {
     lookupLength = names.size();
-    lookupValues = (bool *)malloc((lookupLength - 1) * sizeof(bool));
+    lookupValues = new bool[lookupLength];
     finished = false;
 
     for (uint32_t i = 0; i < lookupLength; i++)

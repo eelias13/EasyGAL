@@ -13,7 +13,7 @@
 
 #include "Parser/Parser.h"
 #include "Shared/TableData.h"
-#include "Shared/Error.h"
+#include "Parser/Error.h"
 #include "Translator/Translator.hpp"
 
 using namespace std;
@@ -52,31 +52,31 @@ void validate(vector<TableData> tables, vector<uint32_t> inputPins, vector<uint3
 		for (uint32_t pin : tables.at(i).m_InputPins)
 			if (!inVec(inputPins, pin))
 #ifdef LANG_DE
-				printError("Pin " + to_string(pin) + " ist kein input Pin");
+				Error::printError("Pin " + to_string(pin) + " ist kein input Pin");
 #else
-				printError("pin " + to_string(pin) + " is not an input pin");
+				Error::printError("pin " + to_string(pin) + " is not an input pin");
 #endif
 
 		if (!inVec(outputPins, tables.at(i).m_OutputPin))
 #ifdef LANG_DE
-			printError("pin " + to_string(tables.at(i).m_OutputPin) + " ist kein input Pin");
+			Error::printError("pin " + to_string(tables.at(i).m_OutputPin) + " ist kein input Pin");
 #else
-			printError("pin " + to_string(tables.at(i).m_OutputPin) + " is not an output pin");
+			Error::printError("pin " + to_string(tables.at(i).m_OutputPin) + " is not an output pin");
 #endif
 
 		if (pow(2, tables.at(i).m_InputPins.size()) != tables.at(i).m_Table.size())
 #ifdef LANG_DE
-			printError("Tabelle am output Pin " + to_string(tables.at(i).m_OutputPin) + " hat die falsche Form");
+			Error::printError("Tabelle am output Pin " + to_string(tables.at(i).m_OutputPin) + " hat die falsche Form");
 #else
-			printError("table at output pin " + to_string(tables.at(i).m_OutputPin) + " has the wrong shape");
+			Error::printError("table at output pin " + to_string(tables.at(i).m_OutputPin) + " has the wrong shape");
 #endif
 		for (uint32_t j = i + 1; j < tables.size(); j++)
 		{
 			if (tables.at(i).m_OutputPin == tables.at(j).m_OutputPin)
 #ifdef LANG_DE
-				printError("Tabelle am output Pin " + to_string(tables.at(i).m_OutputPin) + " wurde zweimal definiert");
+				Error::printError("Tabelle am output Pin " + to_string(tables.at(i).m_OutputPin) + " wurde zweimal definiert");
 #else
-				printError("table at output pin " + to_string(tables.at(i).m_OutputPin) + " was defined twice");
+				Error::printError("table at output pin " + to_string(tables.at(i).m_OutputPin) + " was defined twice");
 #endif
 		}
 	}
@@ -87,9 +87,9 @@ int main(int argc, char *argv[])
 
 	if (argc != 3)
 #ifdef LANG_DE
-		printError("Sie müssen einen Pfad zu ihrem EasyGAL Code angeben und als zweites argument die output datei");
+		Error::printError("Sie müssen einen Pfad zu ihrem EasyGAL Code angeben und als zweites argument die output datei");
 #else
-		printError("you have to suply a path to your EasyGAL code and the name for the output file");
+		Error::printError("you have to suply a path to your EasyGAL code and the name for the output file");
 #endif
 
 	Parser parser = Parser(argv[1]);
