@@ -9,13 +9,13 @@ COMPILER_MAIN=EasyGAL.cpp Shared/Validate.cpp
 PARSER=Parser/Lexer.cpp Parser/Parser.cpp Parser/Error.cpp Parser/FunctionParser.cpp Parser/TableParser.cpp
 TRANSLATOR=Translator/DNF.cpp Translator/Fuses.cpp Translator/Helper.cpp Translator/Serialization.cpp Translator/Translator.cpp
 # name of compiler executable
-COMPILER_EXECUTABLE=Compiler 
+COMPILER_EXECUTABLE=EasyGAL 
 
 
 # files for simulator
 SIMULATOR_MAIN=Sim/Simulator.cpp Sim/Gal.cpp Sim/CLI.cpp Shared/Validate.cpp
 # name of simulator executable
-SIMULATOR_EXECUTABLE=Simulator
+SIMULATOR_EXECUTABLE=EasySim
 
 
 # general build instruction 
