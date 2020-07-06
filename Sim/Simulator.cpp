@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include "Gal.h"
+#include "CLI.h"
 
 #include <string>
 #include <cstdint>
@@ -37,8 +38,14 @@ int main()
     Validate::validate(tableData, inputPins, outputPins);
 
     Gal gal = Gal(tableData, inputPins, outputPins);
-    gal.setInputPin(13, true);
-    cout << gal.getOutputPin(1) << endl;
-    gal.setInputPin(14, true);
-    cout << gal.getOutputPin(1) << endl;
+    CLI cli = CLI(gal);
+
+    // while (true)
+    // {
+    //     cout << "EasyGAL simulator >";
+    //     string input;
+    //     cin >> input;
+    //     cout << endl;
+    //     cli.input(input);
+    // }
 }

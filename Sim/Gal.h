@@ -34,14 +34,19 @@ private:
     uint32_t bool2Int(vector<bool> boolVec);
 
 public:
+    Gal();
     Gal(vector<TableData> tables, vector<uint32_t> inputPins, vector<uint32_t> outputPins);
     Gal(vector<TableData> tables, vector<uint32_t> inputPins, vector<uint32_t> outputPins, bool initValue);
+
+public:
+    vector<TableData> getTabels();
+    vector<uint32_t> getInputPins();
+    vector<uint32_t> getOutputPins();
 
 public:
     void setInputPin(uint32_t pin, bool value);
     bool getOutputPin(uint32_t pin);
 
-private:
     void setOutputPin(uint32_t pin, bool value);
     bool getInputPin(uint32_t pin);
 };

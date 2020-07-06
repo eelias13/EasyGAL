@@ -21,6 +21,8 @@ Gal::Gal(vector<TableData> tables, vector<uint32_t> inputPins, vector<uint32_t> 
     eval();
 }
 
+Gal::Gal() {}
+
 Gal::Gal(vector<TableData> tables, vector<uint32_t> inputPins, vector<uint32_t> outputPins, bool initValue)
 {
     this->tables = tables;
@@ -87,6 +89,21 @@ uint32_t Gal::bool2Int(vector<bool> boolVec)
         if (boolVec.at(i))
             result += pow(2, boolVec.size() - i - 1);
     return result;
+}
+
+vector<TableData> Gal::getTabels()
+{
+    return tables;
+}
+
+vector<uint32_t> Gal::getInputPins()
+{
+    return inputPins;
+}
+
+vector<uint32_t> Gal::getOutputPins()
+{
+    return outputPins;
 }
 
 void Gal::error(string msg)
