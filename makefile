@@ -15,7 +15,7 @@ COMPILER_EXECUTABLE=Compiler
 
 
 # files for simulator
-SIMULATOR_MAIN=Sim/Simulator.cpp
+SIMULATOR_MAIN=Sim/Simulator.cpp Sim/Gal.cpp
 # name of simulator executable
 SIMULATOR_EXECUTABLE=Simulator
 

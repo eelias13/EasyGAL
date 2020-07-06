@@ -6,6 +6,7 @@
 
 /Simulator
 /Sim/Simulator.o
+/Sim/Gal.o
 
 /Compiler/Error.o
 /Compiler/FunctionParser.o
