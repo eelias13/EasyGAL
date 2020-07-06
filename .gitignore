@@ -1,11 +1,11 @@
 /.vscode
 /.vs
 
-/EasyGAL.o
-/Compiler
+/EasyGAL
+/Compiler.o
 
 
-/Simulator
+/EasySim
 
 /Sim/Simulator.o
 /Sim/Gal.o

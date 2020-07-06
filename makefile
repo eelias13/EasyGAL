@@ -5,7 +5,7 @@ LDFLAGS=
 
 
 # files for compiler
-COMPILER_MAIN=EasyGAL.cpp Shared/Validate.cpp
+COMPILER_MAIN=Compiler.cpp Shared/Validate.cpp
 PARSER=Parser/Lexer.cpp Parser/Parser.cpp Parser/Error.cpp Parser/FunctionParser.cpp Parser/TableParser.cpp
 TRANSLATOR=Translator/DNF.cpp Translator/Fuses.cpp Translator/Helper.cpp Translator/Serialization.cpp Translator/Translator.cpp
 # name of compiler executable
