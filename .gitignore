@@ -4,9 +4,13 @@
 /EasyGAL.o
 /Compiler
 
+
 /Simulator
+
 /Sim/Simulator.o
 /Sim/Gal.o
+
+/Shared/Validate.o
 
 /Compiler/Error.o
 /Compiler/FunctionParser.o
