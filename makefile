@@ -32,9 +32,6 @@ $(SIMULATOR_EXECUTABLE): $(SIMULATOR_OBJECTS)
 	$(CC) $(CFLAGS) $< -o $@
 
 clean:
-<<<<<<< HEAD
-	rm $(OBJECTS)
-=======
 	rm $(COMPILER_OBJECTS)
 	rm $(SIMULATOR_OBJECTS)
 	
@@ -54,4 +51,3 @@ compiler_main: $(COMPILER_MAIN) $(COMPILER_EXECUTABLE)
 parser: $(PARSER) $(COMPILER_EXECUTABLE)
 
 translator: $(TRANSLATOR) $(COMPILER_EXECUTABLE)
->>>>>>> sim
