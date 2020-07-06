@@ -22,10 +22,19 @@
 #define ZERO '0'
 #define ONE '1'
 
-#define WITH_SEMICOLON
-// #define WITH_SEMICOLON_TABLE
+/*
+* COUNT_VERTICAL adds the abilaty to write tabe.count
+*
+* 0001
+* 0111 
+*
+* instade of 
+*
+* 00
+* 01
+* 01
+* 11
+*/
 // #define COUNT_VERTICAL
-
-// #define LANG_DE
 
 #endif /* SYMBOLS_H_ */

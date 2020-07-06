@@ -7,6 +7,8 @@
 
 #include "Parser.h"
 
+// constructor
+
 Parser::Parser(string path)
 {
     // initialise variables
@@ -20,8 +22,10 @@ Parser::Parser(string path)
     tableParser = TableParser();
 }
 
+// public function
 vector<TableData> Parser::parse()
 {
+    // ignore first token because it is the beginig of the file
     nextToken();
     while (!lexer.isFinished())
         parseNext();
@@ -60,9 +64,8 @@ void Parser::parsePin()
     str = currentToken.value;
     expect(Token::Type::identifier);
     temp.first = str;
-#ifdef WITH_SEMICOLON
     expect(";");
-#endif
+
     alias.push_back(temp);
 }
 
@@ -84,11 +87,6 @@ void Parser::parseTable()
     expect("{");
     vector<bool> boolTable = getBooltable();
     expect("}");
-#ifdef WITH_SEMICOLON
-#ifdef WITH_SEMICOLON_TABLE
-    expect(";");
-#endif
-#endif
 
     vector<TableData> temp;
     if (isCount)
@@ -111,17 +109,15 @@ void Parser::parseIdentifier()
         insertDFF(str2Pin(pinName));
         expect(".");
         expect(DFF);
-#ifdef WITH_SEMICOLON
         expect(";");
-#endif
+
         return;
     }
 
     expect("=");
     vector<Token> expression = getExpression();
-#ifdef WITH_SEMICOLON
     expect(";");
-#endif
+
     tables.push_back(assembleTableFromFunc(pinName, expression));
 }
 
@@ -132,11 +128,8 @@ string Parser::pin2Str(uint32_t pin)
         if (p.second == pin)
             return p.first;
 
-#ifdef LANG_DE
-    parsingError("Pin " + to_string(pin) + " ist nicht diffident");
-#else
     parsingError("pin " + to_string(pin) + " is not diffident");
-#endif
+
     return "";
 }
 
@@ -145,11 +138,9 @@ uint32_t Parser::str2Pin(string pinName)
     for (pair<string, uint32_t> p : alias)
         if (p.first == pinName)
             return p.second;
-#ifdef LANG_DE
-    parsingError("Pin " + pinName + " ist nicht diffident");
-#else
+
     parsingError("pin " + pinName + " is not diffident");
-#endif
+
     return 0;
 }
 
@@ -214,10 +205,12 @@ vector<bool> Parser::getBooltable()
     return boolTable;
 }
 
-void Parser::insertBooltable(vector<bool> &boolTable, string str)
+
+// convert the string in to the vector<bool> and adds it to boolTable
+void Parser::insertBooltable(vector<bool> &boolTable, string strTable)
 {
-    for (uint32_t i = 0; i < str.size(); i++)
-        if (str.at(i) == ONE)
+    for (uint32_t i = 0; i < strTable.size(); i++)
+        if (strTable.at(i) == ONE)
             boolTable.push_back(true);
         else
             boolTable.push_back(false);
@@ -232,11 +225,8 @@ void Parser::insertDFF(uint32_t pin)
             tables.at(i).m_EnableFlipFlop = true;
             return;
         }
-#ifdef LANG_DE
-    parsingError(pin2Str(pin) + " ist kein Ausgangspin oder ist noch nicht definiert");
-#else
+
     parsingError(pin2Str(pin) + " is not an output pin or not yet defined");
-#endif
 }
 
 vector<Token> Parser::getExpression()
@@ -245,20 +235,11 @@ vector<Token> Parser::getExpression()
     if (!validExpression())
         syntaxError(Token::Type::identifier);
 
-#ifdef WITH_SEMICOLON
     while (validExpression())
     {
         tokens.push_back(currentToken);
         nextToken();
     }
-#else
-    uint32_t lineNum = lexer.getLineIndex();
-    while (validExpression() && lineNum == lexer.getLineIndex())
-    {
-        tokens.push_back(currentToken);
-        nextToken();
-    }
-#endif
 
     return tokens;
 }
@@ -301,12 +282,17 @@ TableData Parser::assembleTableFromFunc(string outName, vector<Token> expression
 }
 
 // ------------------------------------ helpful functions ------------------------------------
+
+// requests the next token from the lexer and stors it in currentToken
 void Parser::nextToken() { currentToken = lexer.next(); }
 
+// compares curent token value to the expectad one
 bool Parser::isToken(char expected) { return currentToken.value == "" + expected; }
 bool Parser::isToken(string expected) { return currentToken.value == expected; }
 bool Parser::isToken(Token::Type expected) { return currentToken.type == expected; }
 
+// if it dosn't get the expected value it makes an error
+// if it gets the expected value it requests the next token from the lexer
 void Parser::expect(char expected) { expect("" + expected); }
 void Parser::expect(string expected)
 {
@@ -354,16 +340,13 @@ uint32_t Parser::getInt(char c)
     case '9':
         return 9;
     default:
-#ifdef LANG_DE
-        parsingError(c + " ist keine Zahl");
-#else
+
         parsingError(c + " is not a number");
-#endif
         return 0;
     }
 }
 
 // ------------------------------------ error handling ------------------------------------
-void Parser::parsingError(string input) { Error::makeError(Error::Type::parsing, lexer.getLineIndex(), input); }
+void Parser::parsingError(string msg) { Error::makeError(Error::Type::parsing, lexer.getLineIndex(), msg); }
 void Parser::syntaxError(string expected) { Error::makeError(Error::Type::syntax, lexer.getLineIndex(), currentToken, expected); }
 void Parser::syntaxError(Token::Type expected) { Error::makeError(Error::Type::syntax, lexer.getLineIndex(), currentToken, expected); }
