@@ -12,11 +12,11 @@
 
 /Shared/Validate.o
 
-/Compiler/Error.o
-/Compiler/FunctionParser.o
-/Compiler/Lexer.o
-/Compiler/Parser.o
-/Compiler/TableParser.o
+/Parser/Error.o
+/Parser/FunctionParser.o
+/Parser/Lexer.o
+/Parser/Parser.o
+/Parser/TableParser.o
 
 /Translator/DNF.o
 /Translator/Fuses.o
