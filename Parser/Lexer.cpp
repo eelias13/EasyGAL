@@ -1,4 +1,4 @@
- /*
+/*
  * Lexer.cpp
  *
  *  Created on: May 28, 2020
@@ -7,6 +7,7 @@
 
 #include "Lexer.h"
 
+// ------------------------------------ constructor ------------------------------------
 Lexer::Lexer(string path)
 {
 
@@ -19,20 +20,16 @@ Lexer::Lexer(string path)
 	line = "";
 
 	if (inReader.eof())
-#ifdef LANG_DE
-		lexingError("Datei ist leer");
-#else
 		lexingError("file is empty");
-#endif
 
 	nextChar();
 }
 
 Lexer::Lexer() {}
 
-uint16_t Lexer::getLineIndex() { return lineIndex - 1; }
-bool Lexer::isFinished() { return eof; }
+// ------------------------------------ public function ------------------------------------
 
+// this Lexer works sequentially that mean the token is only generated (lexed) when requested
 Token Lexer::next()
 {
 	if (eof)
@@ -40,6 +37,7 @@ Token Lexer::next()
 
 	token.value = "";
 
+	// commens are ingnorde
 	lexComment();
 	if (!token.value.empty())
 		return next();
@@ -63,13 +61,15 @@ Token Lexer::next()
 	lexWord();
 	if (!token.value.empty())
 		return token;
-#ifdef LANG_DE
-	lexingError("unerwartetes Zeichen" + currentChar);
-#else
+
 	lexingError("couldn't lex " + currentChar);
-#endif
 	return {};
 }
+
+// ------------------------------------ setters and getters ------------------------------------
+
+uint16_t Lexer::getLineIndex() { return lineIndex - 1; }
+bool Lexer::isFinished() { return eof; }
 
 // ------------------------------------ lex functions ------------------------------------
 void Lexer::lexComment()
@@ -80,6 +80,7 @@ void Lexer::lexComment()
 	token.value += currentChar;
 	nextChar();
 
+	// single line comment
 	if (currentChar == '/')
 	{
 		uint16_t lastLine = lineIndex;
@@ -88,6 +89,7 @@ void Lexer::lexComment()
 		return;
 	}
 
+	// multi line comment
 	if (currentChar == '*')
 	{
 		nextChar();
@@ -101,11 +103,8 @@ void Lexer::lexComment()
 		nextChar();
 		return;
 	}
-#ifdef LANG_DE
-	lexingError("unerwartetes Zeichen " + token.value);
-#else
+
 	lexingError("unexpected character " + token.value);
-#endif
 }
 
 void Lexer::lexSymbol()
@@ -167,6 +166,7 @@ void Lexer::lexBool()
 		nextChar();
 	}
 
+	// it could be an nuber sarting with 1 
 	if (isNum())
 		lexNum();
 }
@@ -264,6 +264,7 @@ bool Lexer::isSpecial()
 	}
 }
 
+// reads next cahecter from file. The chalange is to update the line index and realise if a line break acquires
 void Lexer::nextChar()
 {
 	if (eof)

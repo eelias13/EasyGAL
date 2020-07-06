@@ -7,24 +7,37 @@
 
 #include "TableParser.h"
 
+// ------------------------------------ proces table ------------------------------------
 vector<TableData> TableParser::getTableData(vector<bool> tableStream, vector<uint32_t> inPins, vector<uint32_t> outPins)
 {
+    // cheks the size of tableStream.
     if (tableStream.size() != pow(2, inPins.size()) * (outPins.size() + inPins.size()))
     {
-#ifdef LANG_DE
-        Error::makeError(Error::Type::parsing, lineIndex, "falsche Tablenform");
-#else
         Error::makeError(Error::Type::parsing, lineIndex, "incorrect table shape");
-#endif
         return {};
     }
 
+    // the logic is the same as in getTableDataFill the false (on the end) is arbitrarily
     return getTableDataFill(tableStream, inPins, outPins, false);
 }
 
 vector<TableData> TableParser::getTableDataFill(vector<bool> tableStream, vector<uint32_t> inPins, vector<uint32_t> outPins, bool fill)
 {
+    /*
+    * splits the tableStream in to rows
+    * Eaxample tableStream = 111000010100 
+    * tabel is 
+    * 11 1
+    * 00 0
+    * 01 0
+    * 10 0
+    */
     vector<vector<bool>> temp2D = splitRows(tableStream, outPins.size() + inPins.size());
+    /*
+    * sorts the rows like in the example above the first row is the last one 
+    * and completes the table if rows are not defined
+    * and removes the first part of the table
+    */
     vector<vector<bool>> table2D = match(temp2D, outPins.size(), fill);
 
     return buildTableData(table2D, inPins, outPins);
@@ -35,16 +48,13 @@ vector<TableData> TableParser::getTableDataCount(vector<bool> tableStream, vecto
 
     if (tableStream.size() != pow(2, inPins.size()) * outPins.size())
     {
-#ifdef LANG_DE
-        Error::makeError(Error::Type::parsing, lineIndex, "falsche Tablenform");
-#else
         Error::makeError(Error::Type::parsing, lineIndex, "incorrect table shape");
-#endif
         return {};
     }
 
     vector<vector<bool>> table2D;
 
+    // look in Symbols.h for further information
 #ifdef COUNT_VERTICAL
     for (uint32_t i = 0; i < outPins.size(); i++)
     {
@@ -59,12 +69,15 @@ vector<TableData> TableParser::getTableDataCount(vector<bool> tableStream, vecto
     for (uint32_t i = 0; i < tableStream.size(); i++)
         table2D.at(i % outPins.size()).push_back(tableStream.at(i));
 #endif
+
     return buildTableData(table2D, inPins, outPins);
 }
 
+// ------------------------------------ setter function ------------------------------------
+
 void TableParser::setLineIndex(uint32_t lineIndex) { this->lineIndex = lineIndex; }
 
-// Helper
+// ------------------------------------ helper ------------------------------------
 vector<TableData> TableParser::buildTableData(vector<vector<bool>> table2D, vector<uint32_t> inPins, vector<uint32_t> outPins)
 {
 

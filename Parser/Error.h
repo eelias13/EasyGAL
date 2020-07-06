@@ -25,14 +25,14 @@ namespace Error
         lexing
     };
 
-    void makeError(Type, uint32_t, Token, string);
-    void makeError(Type, uint32_t, Token, Token::Type);
-    void makeError(Type, uint32_t, string);
+    void makeError(Type errorType, uint32_t lineIndex, Token got, string expected);
+    void makeError(Type errorType, uint32_t lineIndex, Token got, Token::Type expected);
+    void makeError(Type errorType, uint32_t lineIndex, string input);
 
-    string tokenType2Str(Token::Type);
-    string errorType2Str(Type);
+    string tokenType2Str(Token::Type type);
+    string errorType2Str(Type type);
 
-    void printError(string);
+    void printError(string msg);
 } // namespace Error
 
 #endif /* ERROR_H_ */

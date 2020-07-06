@@ -4,7 +4,7 @@
  *  Created on: May 31, 2020
  *      Author: elias
  */
- 
+
 #define FUNCTIONPARSER_H_
 #ifdef FUNCTIONPARSER_H_
 
@@ -22,27 +22,14 @@ using namespace std;
 
 class FunctionParser
 {
-private:
-    bool finished;
-    uint32_t lineIndex;
+public:
+    // constructor
+    FunctionParser();
 
-private:
-    // split functions
-    struct Bundle;
-    Bundle split(vector<Token>);
-    Bundle splitParentheses(vector<Token>);
-    bool isParentheses(vector<Token> expression);
-    Bundle splitNot(vector<Token>);
-    Bundle splitBineryOperator(vector<Token>);
-    uint32_t splitIndex(vector<Token>);
-
-private:
-    // nodes
-    struct Node;
-    struct Node *newNode(Token, Node *);
-    Node *nextNode(vector<Token>, Node *);
-    bool evalNode(Node *);
-    void deleteNode(Node *);
+public:
+    // public functions
+    vector<bool> parse(vector<Token> expression, uint32_t lineIndex);
+    vector<string> getNames();
 
 private:
     // lookup
@@ -53,37 +40,52 @@ private:
     void initLookup();
     void updateLookup();
     void deleteLookup();
-    bool *getBoolPtr(Token);
+    bool *getBoolPtr(Token token);
 
 private:
     // for getNames
-    void initNames(vector<Token>);
-    vector<string> removeDouble(vector<string>);
-    bool strInVec(vector<string>, string);
+    void initNames(vector<Token> expression);
+    bool strInVec(vector<string> vec, string str);
     vector<string> names;
 
 private:
     // operator precedence
     uint8_t operatorPrecedence[4];
-    uint8_t precedenceOf(char);
+    uint8_t precedenceOf(char c);
 
 private:
     // validate
-    void isValide(vector<Token>);
-    bool isBinary(char);
-    bool valideSymbol(char);
+    void isValide(vector<Token> expression);
+    bool isBinary(char c);
+    bool valideSymbol(char c);
 
 private:
-    void syntaxError(Token, Token::Type);
-    void syntaxError(Token, string);
-    void parsingError(string);
+    // split functions
+    struct Bundle;
+    Bundle split(vector<Token> expression);
+    Bundle splitParentheses(vector<Token> expression);
+    bool isParentheses(vector<Token> expression);
+    Bundle splitNot(vector<Token> expression);
+    Bundle splitBineryOperator(vector<Token> expression);
+    uint32_t splitIndex(vector<Token> expression);
 
-public:
-    FunctionParser();
+private:
+    // nodes
+    struct Node;
+    struct Node *newNode(Token token, FunctionParser::Node *parent);
+    Node *nextNode(vector<Token> expression, Node *pNode);
+    bool evalNode(Node *node);
+    void deleteNode(Node *node);
 
-public:
-    vector<bool> parse(vector<Token>, uint32_t);
-    vector<string> getNames();
+private:
+    // Error handling
+    void syntaxError(Token got, Token::Type expected);
+    void syntaxError(Token got, string expected);
+    void parsingError(string msg);
+
+private:
+    bool finished;
+    uint32_t lineIndex;
 };
 
 #endif /* FUNCTIONPARSER_H_ */
