@@ -40,13 +40,8 @@ void printTableData(TableData tableData)
 
 int main(int argc, char *argv[])
 {
-
 	if (argc != 3)
-#ifdef LANG_DE
-		Error::printError("Sie müssen einen Pfad zu ihrem EasyGAL Code angeben und als zweites argument die output datei");
-#else
 		Error::printError("you have to suply a path to your EasyGAL code and the name for the output file");
-#endif
 
 	Parser parser = Parser(argv[1]);
 	vector<TableData> tableData = parser.parse();

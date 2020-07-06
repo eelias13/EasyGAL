@@ -45,7 +45,6 @@ private:
 private:
     // for getNames
     void initNames(vector<Token> expression);
-    vector<string> removeDouble(vector<string> names);
     bool strInVec(vector<string> vec, string str);
     vector<string> names;
 

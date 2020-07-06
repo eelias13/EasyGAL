@@ -18,4 +18,3 @@ namespace Validate
     bool inVec(vector<uint32_t> vec, uint32_t value);
     void validate(vector<TableData> tables, vector<uint32_t> inputPins, vector<uint32_t> outputPins);
 } // namespace Validate
-

@@ -122,7 +122,6 @@ void FunctionParser::initNames(vector<Token> expression)
     for (Token t : expression)
         if (t.type == Token::Type::identifier && !strInVec(names, t.value))
             names.push_back(t.value);
-    names = removeDouble(names);
 }
 
 bool FunctionParser::strInVec(vector<string> vec, string str)
