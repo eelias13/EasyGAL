@@ -7,101 +7,181 @@
 
 #include "CLI.h"
 
-CLI::CLI(Gal gal)
+CLI::CLI(Gal gal) { this->gal = gal; }
+
+void CLI::run()
 {
-    this->gal = gal;
+    while (true)
+    {
+        cout << "EasySim > ";
+
+        cin >> next;
+
+        if (next == "show")
+        {
+            show();
+            continue;
+        }
+
+        if (next == "set")
+        {
+            set();
+            continue;
+        }
+
+        if (next == "exit" || next == "quit" || next == "q" || next == "end")
+        {
+            cout << "ending simulation" << endl;
+            return;
+        }
+
+        if (next == "help" || next == "h")
+        {
+            help();
+            continue;
+        }
+
+        if (next == "add")
+        {
+            add();
+            continue;
+        }
+
+        cerr << "this is not a valid command" << endl;
+    }
 }
 
-void CLI::input(string input)
+void CLI::help()
 {
-    tokens = lex(input);
-    quit();
-    show();
+    cout << "valid commands are: " << endl;
+
+    cout << '\t' << "show table data" << endl;
+    cout << '\t' << "show all output pins" << endl;
+    cout << '\t' << "show all input pins" << endl;
+    cout << '\t' << "show pin [pin]" << endl;
+
+    cout << '\t' << "set pin [pin] [value]" << endl;
+}
+
+void CLI::add()
+{
+    cin >> next;
+    if (next == "table")
+    {
+        cin >> next;
+        if (next == "data")
+        {
+            return;
+        }
+        cerr << "this is not a valid command" << endl;
+    }
+    cerr << "this is not a valid command" << endl;
+}
+
+void CLI::set()
+{
+    cin >> next;
+    if (next == "pin")
+    {
+        uint32_t pin;
+        cin >> pin;
+        if (!inOutput(pin))
+        {
+            cerr << "pin " << pin << " is not a output pin" << endl;
+            return;
+        }
+        bool value;
+        cin >> value;
+        gal.setOutputPin(pin, value);
+    }
 }
 
 void CLI::show()
 {
-    if (tokens.at(0) != "show")
-        return;
+    cin >> next;
 
-    if (tokens.at(1) == "pin" && str2int(tokens.at(2)) != 0xff)
-
-        if (tokens.at(1) == "output" && tokens.at(2) == "pins")
-            for (uint32_t pin : gal.getOutputPins())
-                cout << pin << " : " << gal.getOutputPin(pin) << ", " << endl;
-
-    if (tokens.at(1) == "input" && tokens.at(2) == "pins")
-        for (uint32_t pin : gal.getInputPins())
-            cout << pin << " : " << gal.getInputPin(pin) << ", " << endl;
-
-    if (tokens.at(1) == "data")
-        for (TableData t : gal.getTabels())
-            printTableData(t);
-}
-
-uint32_t CLI::str2Int(string str)
-{
-    uint32_t result = 0;
-    for (uint32_t i = 0; i < str.size(); i++)
-        if (getInt(str.at(i)) == 0xff)
-            return 0xff;
-        else
-            result += getInt(str.at(i)) * pow(10, str.size() - i - 1);
-    return result;
-}
-
-uint32_t CLI::getInt(char c)
-{
-    switch (c)
+    if (next == "all")
     {
-    case '0':
-        return 0;
-    case '1':
-        return 1;
-    case '2':
-        return 2;
-    case '3':
-        return 3;
-    case '4':
-        return 4;
-    case '5':
-        return 5;
-    case '6':
-        return 6;
-    case '7':
-        return 7;
-    case '8':
-        return 8;
-    case '9':
-        return 9;
-    default:
-        return 0xff;
-    }
-}
-
-void CLI::quit()
-{
-    if (!(tokens.at(0) == "exit" || tokens.at(0) == "quit" || tokens.at(0) == "q" || tokens.at(0) == "end"))
-        return;
-
-    cout << "ending simulation" << endl;
-    exit(0);
-}
-
-vector<string> CLI::lex(string input)
-{
-    vector<string> result;
-
-    string temp = "";
-    for (char c : input)
-        if (c == ' ')
+        cin >> next;
+        if (next == "output")
         {
-            if (!(input.size() == 0 || (input.size() == 1 && input.at(0) == ' ')))
-                result.push_back(temp);
-            temp = "";
+            cin >> next;
+            if (next == "pins")
+            {
+                for (uint32_t pin : gal.getOutputPins())
+                    cout << pin << ":" << gal.getOutputPin(pin) << ", ";
+                cout << endl;
+                return;
+            }
+            cerr << "this is not a valid command" << endl;
         }
-        else
-            temp += c;
+        if (next == "input")
+        {
+            cin >> next;
+            if (next == "pins")
+            {
+                for (uint32_t pin : gal.getInputPins())
+                    cout << pin << ":" << gal.getInputPin(pin) << ", ";
+                cout << endl;
+                return;
+            }
+            cerr << "this is not a valid command" << endl;
+        }
+    }
+
+    if (next == "pin")
+    {
+        uint32_t pin;
+        cin >> pin;
+        if (inInput(pin))
+        {
+            cout << gal.getInputPin(pin) << endl;
+            return;
+        }
+
+        if (inOutput(pin))
+        {
+            cout << gal.getOutputPin(pin) << endl;
+            return;
+        }
+
+        cerr << "pin " << pin << " is not a valid pin" << endl;
+        return;
+    }
+
+    if (next == "table")
+    {
+        cin >> next;
+        if (next == "data")
+        {
+            for (TableData t : gal.getTabels())
+            {
+                printTableData(t);
+                cout << endl;
+            }
+            return;
+        }
+        cerr << "this is not a valid command" << endl;
+    }
+
+    cerr << "this is not a valid command" << endl;
+    return;
+}
+
+bool CLI::inOutput(uint32_t pin)
+{
+    for (uint32_t currentPin : gal.getOutputPins())
+        if (currentPin == pin)
+            return true;
+    return false;
+}
+
+bool CLI::inInput(uint32_t pin)
+{
+    for (uint32_t currentPin : gal.getInputPins())
+        if (currentPin == pin)
+            return true;
+    return false;
 }
 
 void CLI::printTableData(TableData tableData)
@@ -119,6 +199,4 @@ void CLI::printTableData(TableData tableData)
     cout << endl;
 
     cout << "is dff:\t    " << tableData.m_EnableFlipFlop << endl;
-
-    cout << endl;
 }

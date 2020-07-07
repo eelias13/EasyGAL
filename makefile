@@ -26,7 +26,7 @@ $(COMPILER_EXECUTABLE): $(COMPILER_OBJECTS)
 	$(CC) $(LDFLAGS) $(COMPILER_OBJECTS) -o $@
 
 # build instruction for compiler
-compiler: parser translator compiler_shared compiler_main
+compiler: parser translator compiler_main
 compiler_main: $(COMPILER_MAIN) $(COMPILER_EXECUTABLE)
 parser: $(PARSER) $(COMPILER_EXECUTABLE)
 translator: $(TRANSLATOR) $(COMPILER_EXECUTABLE)
@@ -49,7 +49,7 @@ $(SIMULATOR_EXECUTABLE): $(SIMULATOR_OBJECTS)
 
 
 # build instruction for simulator
-simulator: simulator_shared interface simulator_main
+simulator: interface simulator_main
 simulator_main: $(SIMULATOR_MAIN) $(SIMULATOR_EXECUTABLE)
 interface: $(INTERFACE) $(SIMULATOR_EXECUTABLE)
 

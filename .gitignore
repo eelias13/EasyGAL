@@ -9,6 +9,7 @@
 
 /Sim/Simulator.o
 /Sim/Gal.o
+/Sim/CLI.o
 
 /Shared/Validate.o
 

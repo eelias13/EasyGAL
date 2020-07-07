@@ -17,19 +17,23 @@ class CLI
 private:
     Gal gal;
     vector<string> tokens;
+    string next;
 
 private:
     void printTableData(TableData tableData);
-    vector<string> lex(string input);
-    bool isEmpty(string input);
-    void quit();
-    void show();
 
-    uint32_t str2int(string str);
-    uint32_t getInt(char c);
+private:
+    void show();
+    void set();
+    void help();
+    void add();
+
+private:
+    bool inOutput(uint32_t pin);
+    bool inInput(uint32_t pin);
 
 public:
-    void input(string input);
+    void run();
 
 public:
     CLI(Gal gal);
