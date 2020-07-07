@@ -46,7 +46,8 @@ public:
 		if(!m_iNumPins || !m_iNumFuses || !FuseStates.size())
 		{
 			ERROR("%s", "JEDEC object was initialized with invalid parameters");
-			throw std::exception("JEDEC object was initialized with invalid parameters");
+			getchar();
+			exit(1);
 		}
 	}
 
