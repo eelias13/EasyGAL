@@ -1,6 +1,6 @@
 #include "Fuses.h"
 
-bool Fuses::Build(vector<DNF::Expression> Expressions, vector<bool>& FuseListOut)
+bool Fuses::Build(vector<DNF::Expression> Expressions, vector<bool>& FuseListOut, Configs::CircuitConfig* pConfig)
 {
 	if (!Expressions.size())
 	{
@@ -8,34 +8,36 @@ bool Fuses::Build(vector<DNF::Expression> Expressions, vector<bool>& FuseListOut
 		return false;			
 	}
 
+	//	Get row length for one DNF term.
+
+	uint32_t iRowLength = Fuses::GetRowLength(pConfig);
+
 	if (FuseListOut.size())
 		FuseListOut.clear();
 
 	//	Adjust fuselist size to the fuse list size of the integrated circuit.
 
-	FuseListOut.resize(5892);
+	FuseListOut.resize(pConfig->m_iNumFuses);
 	
 	//	Set AR Fuses to zero (we don't need them as of yet)
 
-	std:fill(FuseListOut.begin(), FuseListOut.begin() + 44, false);
+	std:fill(FuseListOut.begin(), FuseListOut.begin() + iRowLength, false);
 	
 	//	Start writing expressions to FuseList.
 
 	for(uint32_t Index = 0; Index < Expressions.size(); Index++)
 	{
-		uint32_t ExpIndexStart = [Expressions, Index]() -> uint32_t
-		{
-			uint32_t FuseIndex = 44;
+		uint32_t ExpIndexStart = Fuses::Output::GetFirstFuseIndex(Expressions[Index].m_OutputPin, pConfig);
 
-			for (uint32_t OLMC = 23; OLMC > Expressions[Index].m_OutputPin; OLMC--)
-				FuseIndex += (Fuses::Output::MaximumTerms(OLMC) + 1) * 44;
-			
-			return FuseIndex;
-		}();
+		if(ExpIndexStart == -1)
+		{
+			ERROR("%s", "Couldn't get fuse index start");
+			return false;
+		}
 
 		vector<bool> ExpressionBuffer;
 
-		if (!Fuses::BuildFromExpression(Expressions[Index], Fuses::Output::MaximumTerms(Expressions[Index].m_OutputPin) + 1, 44, ExpressionBuffer)) 
+		if (!Fuses::BuildFromExpression(Expressions[Index], Fuses::Output::MaximumTerms(Expressions[Index].m_OutputPin, pConfig) + 1, iRowLength, ExpressionBuffer, pConfig)) 
 		{
 			ERROR("%s", "Couldn't build all expression fuses");
 			return false;
@@ -48,7 +50,8 @@ bool Fuses::Build(vector<DNF::Expression> Expressions, vector<bool>& FuseListOut
 
 	//	Set SP fuses to zero because we also don't need them as of yet.
 
-	std::fill(FuseListOut.begin() + 5764, FuseListOut.begin() + 5764 + 44, false);
+	uint32_t iLastFuseIDX = Fuses::Output::GetLastFuseIndex(pConfig->m_Outputs.front().first, pConfig);
+	std::fill(FuseListOut.begin() + iLastFuseIDX, FuseListOut.begin() + iLastFuseIDX + iRowLength, false);
 
 	//	Set S0 & S1 fuses.
 
@@ -56,7 +59,7 @@ bool Fuses::Build(vector<DNF::Expression> Expressions, vector<bool>& FuseListOut
 	{
 		pair<uint32_t, uint32_t> ModeFuses;
 
-		if(!Fuses::Output::ModeFuseIndices(Expression.m_OutputPin, ModeFuses))
+		if(!Fuses::Output::ModeFuseIndices(Expression.m_OutputPin, ModeFuses, pConfig))
 		{
 			ERROR("%s", "Invalid PIN");
 			return false;
@@ -82,9 +85,9 @@ bool Fuses::Build(vector<DNF::Expression> Expressions, vector<bool>& FuseListOut
 *		fuselist. It needs to know the term size and number of rows to correctly pad the fuselist with zeroes. 
 */
 
-bool Fuses::BuildFromExpression(DNF::Expression Expression, uint32_t iNumRows, uint32_t iRowLength, vector<bool>& FuseList)
+bool Fuses::BuildFromExpression(DNF::Expression Expression, uint32_t iNumRows, uint32_t iRowLength, vector<bool>& FuseList, Configs::CircuitConfig* pConfig)
 {
-	if(!Fuses::Output::IsValid(Expression.m_OutputPin))
+	if(!Fuses::Output::IsValid(Expression.m_OutputPin, pConfig))
 	{
 		ERROR("%s", "Expression has invalid output pin");
 		return false;
@@ -94,7 +97,7 @@ bool Fuses::BuildFromExpression(DNF::Expression Expression, uint32_t iNumRows, u
 		ERROR("%s", "Invalid parameters");
 		return false;
 	}
-	else if (Expression.m_Rows.size() > Fuses::Output::MaximumTerms(Expression.m_OutputPin))
+	else if (Expression.m_Rows.size() > Fuses::Output::MaximumTerms(Expression.m_OutputPin, pConfig))
 	{
 		ERROR("%s", "Too many terms for given output pin");
 		return false;
@@ -121,7 +124,8 @@ bool Fuses::BuildFromExpression(DNF::Expression Expression, uint32_t iNumRows, u
 			(
 				Expression.m_Rows[TermIndex].m_Pins[PinIndex].m_PinNumber,
 				Expression.m_Rows[TermIndex].m_Pins[PinIndex].m_Inverted,
-				Expression.m_EnableFlipFlop ? MacrocellMode::MODE_REGISTERED_HIGH : MacrocellMode::MODE_COMBINATORIAL_HIGH
+				Expression.m_EnableFlipFlop ? MacrocellMode::MODE_REGISTERED_HIGH : MacrocellMode::MODE_COMBINATORIAL_HIGH,
+				pConfig
 			);
 
 			if(Index == -1)
@@ -152,64 +156,44 @@ bool Fuses::BuildFromExpression(DNF::Expression Expression, uint32_t iNumRows, u
 *		parameters.
 */
 
-int Fuses::PinToIndex(uint32_t iPinNumber, bool bInverted, MacrocellMode Mode)
+int Fuses::PinToIndex(uint32_t iPinNumber, bool bInverted, MacrocellMode Mode, Configs::CircuitConfig* pConfig)
 {
-	//	INPUT PINS
+	//	Handles special pins.
 
-	switch(iPinNumber)
+	for (auto SpecialPin : pConfig->m_SpecialPins)
+		if (SpecialPin.first == iPinNumber)
+			return bInverted ? SpecialPin.second + 1 : SpecialPin.second;
+	
+	int FuseIndex;
+
+	//	Handles output pins.
+
+	for(uint32_t Index = 0; Index < pConfig->m_Outputs.size(); Index++)
 	{
-		case 1: return bInverted ? 1 : 0;
-		case 2: return bInverted ? 5 : 4;
-		case 3: return bInverted ? 9 : 8;
-		case 4: return bInverted ? 13 : 12;
-		case 5: return bInverted ? 17 : 16;
-		case 6: return bInverted ? 21 : 20;
-		case 7: return bInverted ? 25 : 24;
-		case 8: return bInverted ? 29 : 28;
-		case 9: return bInverted ? 33 : 32;
-		case 10: return bInverted ? 37 : 36;
-		case 11: return bInverted ? 41 : 40;
-		case 13: return bInverted ? 43 : 42;
-	}
-
-	//	OUTPUT PINS
-
-	if(Mode == MacrocellMode::MODE_COMBINATORIAL_HIGH)
-	{
-		switch (iPinNumber)
+		if(pConfig->m_Outputs[Index].first == iPinNumber)
 		{
-			case 14: return bInverted ? 39 : 38;
-			case 15: return bInverted ? 35 : 34;
-			case 16: return bInverted ? 31 : 30;
-			case 17: return bInverted ? 27 : 26;
-			case 18: return bInverted ? 23 : 22;
-			case 19: return bInverted ? 19 : 18;
-			case 20: return bInverted ? 15 : 14;
-			case 21: return bInverted ? 11 : 10;
-			case 22: return bInverted ? 7 : 6;
-			case 23: return bInverted ? 3 : 2;
-		}
-	}
-	else if(Mode != MacrocellMode::MODE_NONE)
-	{
-		switch (iPinNumber)
-		{
-			case 14: return bInverted ? 38 : 39;
-			case 15: return bInverted ? 34 : 35;
-			case 16: return bInverted ? 30 : 31;
-			case 17: return bInverted ? 26 : 27;
-			case 18: return bInverted ? 22 : 23;
-			case 19: return bInverted ? 18 : 19;
-			case 20: return bInverted ? 14 : 15;
-			case 21: return bInverted ? 10 : 11;
-			case 22: return bInverted ? 6 : 7;
-			case 23: return bInverted ? 2 : 3;
+			FuseIndex = 2 + (pConfig->m_Outputs.size() - 1 - Index) * 4;
+		
+			if (Mode == MacrocellMode::MODE_COMBINATORIAL_HIGH)
+				return bInverted ? FuseIndex + 1 : FuseIndex;
+			else if (Mode != MacrocellMode::MODE_NONE)
+				return bInverted ? FuseIndex : FuseIndex + 1;
+			else
+				return -1;
 		}
 	}
 
-	//	Return -1 if we couldn't find an index which fits the given parameters.
+	//	Handles input pins.
 
-	return -1;
+	FuseIndex = (iPinNumber - 1) * 4;
+	return bInverted ? FuseIndex + 1 : FuseIndex;
+}
+
+//	Fuses::GetRowLength returns the length of one DNF term row.
+
+int Fuses::GetRowLength(Configs::CircuitConfig* pConfig)
+{
+	return (pConfig->m_Inputs.size() + pConfig->m_SpecialPins.size()) * 2;
 }
 
 /*
@@ -218,29 +202,24 @@ int Fuses::PinToIndex(uint32_t iPinNumber, bool bInverted, MacrocellMode Mode)
 *		thus the function can't return a valid term number.
 */
 
-int Fuses::Output::MaximumTerms(uint32_t iPinNumber)
+int Fuses::Output::MaximumTerms(uint32_t iPinNumber, Configs::CircuitConfig* pConfig)
 {
-	switch (iPinNumber)
-	{
-		case 14: return 8;
-		case 15: return 10;
-		case 16: return 12;
-		case 17: return 14;
-		case 18: return 16;
-		case 19: return 16;
-		case 20: return 14;
-		case 21: return 12;
-		case 22: return 10;
-		case 23: return 8;
-		default: return -1;
-	}
+	for(auto OutputPin : pConfig->m_Outputs)
+		if (OutputPin.first == iPinNumber)
+			return OutputPin.second;
+	
+	return -1;
 }
 
 //		Fuses::Output::IsValid checks if a given pin is an output pin:
 
-bool Fuses::Output::IsValid(uint32_t iPinNumber)
+bool Fuses::Output::IsValid(uint32_t iPinNumber, Configs::CircuitConfig* pConfig)
 {
-	return iPinNumber >= 14 && iPinNumber <= 23 ? true : false;
+	for (auto OutputPin : pConfig->m_Outputs)
+		if (OutputPin.first == iPinNumber)
+			return true;
+
+	return false;
 }
 
 /*
@@ -250,25 +229,58 @@ bool Fuses::Output::IsValid(uint32_t iPinNumber)
 *		an input pin who has no OLMC connected and therefore no control mode pin.
 */
 
-bool Fuses::Output::ModeFuseIndices(uint32_t iPinNumber, pair<uint32_t, uint32_t>& FusesOut)
+bool Fuses::Output::ModeFuseIndices(uint32_t iPinNumber, pair<uint32_t, uint32_t>& FusesOut, Configs::CircuitConfig* pConfig)
 {
-	if (!Fuses::Output::IsValid(iPinNumber))
+	if (!Fuses::Output::IsValid(iPinNumber, pConfig))
 		return false;
 
-	switch(iPinNumber)
+	//	Get last fuse.
+
+	uint32_t FuseIndex = Fuses::Output::GetLastFuseIndex(pConfig->m_Outputs.front().first, pConfig) + Fuses::GetRowLength(pConfig);
+
+	//	Get OLMC number.
+
+	for(uint32_t Index = 0; Index < pConfig->m_Outputs.size(); Index++)
 	{
-		case 23: FusesOut = pair<uint32_t, uint32_t>(5808, 5809); break;
-		case 22: FusesOut = pair<uint32_t, uint32_t>(5810, 5811); break;
-		case 21: FusesOut = pair<uint32_t, uint32_t>(5812, 5813); break;
-		case 20: FusesOut = pair<uint32_t, uint32_t>(5814, 5815); break;
-		case 19: FusesOut = pair<uint32_t, uint32_t>(5816, 5817); break;
-		case 18: FusesOut = pair<uint32_t, uint32_t>(5818, 5819); break;
-		case 17: FusesOut = pair<uint32_t, uint32_t>(5820, 5821); break;
-		case 16: FusesOut = pair<uint32_t, uint32_t>(5822, 5823); break;
-		case 15: FusesOut = pair<uint32_t, uint32_t>(5824, 5825); break;
-		case 14: FusesOut = pair<uint32_t, uint32_t>(5826, 5827); break;
+		if (pConfig->m_Outputs[Index].first == iPinNumber)
+		{
+			uint32_t FusesStart = FuseIndex + (pConfig->m_Outputs.size() - 1 - Index) * 2;
+			FusesOut = pair<uint32_t, uint32_t>(FusesStart, FusesStart + 1);
+			break;
+		}
 	}
 
 	return true;
+}
+
+//	Fuses::Output::GetFirstFuseIndex returns the first fuse of an OLMC output.
+
+int Fuses::Output::GetFirstFuseIndex(uint32_t iPinNumber, Configs::CircuitConfig* pConfig)
+{
+	if(!Output::IsValid(iPinNumber, pConfig))
+	{
+		ERROR("%s", "Invalid output pin");
+		return -1;
+	}
+
+	uint32_t iFuseIndex = Fuses::GetRowLength(pConfig);
+
+	for (uint32_t OLMC = pConfig->m_Outputs.back().first; OLMC > iPinNumber; OLMC--)
+		iFuseIndex += (Fuses::Output::MaximumTerms(OLMC, pConfig) + 1) * Fuses::GetRowLength(pConfig);
+
+	return iFuseIndex;
+}
+
+//	Fuses::Output::GetLastFuseIndex returns the last fuse of an OLMC output.
+
+int Fuses::Output::GetLastFuseIndex(uint32_t iPinNumber, Configs::CircuitConfig* pConfig)
+{
+	if(!Output::IsValid(iPinNumber, pConfig))
+	{
+		ERROR("%s", "Invalid output pin");
+		return -1;
+	}
+
+	return Output::GetFirstFuseIndex(iPinNumber, pConfig) + (Output::MaximumTerms(iPinNumber, pConfig) + 1) * Fuses::GetRowLength(pConfig);
 }
 

@@ -74,6 +74,7 @@ void JEDEC::Serialize()
 	m_FileBuffer.append("\n");
 	m_FileBuffer.append(1, ASCII_CTRL_ETX);
 
+	/*
 	uint32_t iFileChecksum = 0;
 
 	//	Calculate checksum for complete file buffer.
@@ -82,8 +83,15 @@ void JEDEC::Serialize()
 		iFileChecksum += m_FileBuffer.at(Index);
 
 	//	Write file buffer checksum.
+	*/
 
-	Buffer << std::setw(4) << std::setfill('0') << std::hex << std::uppercase << iFileChecksum;
+	/*
+	*	NOTE: Transmission checksum is disabled due to having different results from WinCupl. 
+	*	It is specified in the JEDEC documentation that a transmission checksum dummy value of '0000' 
+	*	is valid and should be accepted. To be guaranteed to work it is set to zero
+	*/
+
+	Buffer << std::setw(4) << std::setfill('0') << std::hex << std::uppercase << 0;
 	m_FileBuffer.append(Buffer.str());
 	Buffer = std::ostringstream();
 

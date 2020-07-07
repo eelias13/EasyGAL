@@ -12,10 +12,11 @@
 #include "Helper.hpp"
 #include "Fuses.h"
 #include "DNF.hpp"
+#include "Configs.h"
 
 using namespace std;
 
 namespace Translator 
 {
-	bool Process(vector<TableData> TruthTables, std::string Filename);
+	bool Process(vector<TableData> TruthTables, std::string DeviceType, std::string Filename);
 }

@@ -6,11 +6,19 @@
 *		was a success and if the JEDEC file was written to the harddrive.
 */
 
-bool Translator::Process(vector<TableData> TruthTables, std::string Filename)
+bool Translator::Process(vector<TableData> TruthTables, std::string DeviceType, std::string Filename)
 {
+	Configs::CircuitConfig Config;
+
+	if(!Configs::Load(DeviceType.c_str(), &Config))
+	{
+		ERROR("%s", "Couldn't get config for device");
+		return false;
+	}
+
 	vector<DNF::Expression> Expressions;
 
-	if(!DNF::Build(TruthTables, Expressions))
+	if(!DNF::Build(TruthTables, Expressions, &Config))
 	{
 		ERROR("%s", "couldn't build all DNF expressions");
 		return false;
@@ -18,7 +26,7 @@ bool Translator::Process(vector<TableData> TruthTables, std::string Filename)
 
 	std::vector<bool> Fuses;
 
-	if(!Fuses::Build(Expressions, Fuses))
+	if(!Fuses::Build(Expressions, Fuses, &Config))
 	{
 		ERROR("%s", "couldn't generate all fuses for given expressions");
 		return false;
@@ -26,7 +34,7 @@ bool Translator::Process(vector<TableData> TruthTables, std::string Filename)
 	
 	try
 	{
-		JEDEC(24, 5892, Fuses, Filename).Serialize();
+		JEDEC(Config.m_iNumPins, Config.m_iNumFuses, Fuses, Filename).Serialize();
 	}
 	catch(std::exception Error)
 	{
