@@ -84,5 +84,5 @@ int main(int argc, char *argv[])
 
 	validate(tableData, inputPins, outputPins);
 
-	Translator::Process(tableData, argv[2], argv[3]);
+	Translator::Process(tableData, argv[3], argv[2]);
 }
