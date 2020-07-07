@@ -39,8 +39,8 @@ void printTableData(TableData tableData)
 
 int main(int argc, char *argv[])
 {
-	if (argc != 3)
-		Error::printError("you have to suply a path to your EasyGAL code and the name for the output file");
+	if (argc != 4)
+		Error::printError("You have to supply a path to your EasyGAL code and the name for the output file");
 
 	Parser parser = Parser(argv[1]);
 	vector<TableData> tableData = parser.parse();
@@ -50,5 +50,5 @@ int main(int argc, char *argv[])
 
 	validate(tableData, inputPins, outputPins);
 
-	Translator::Process(tableData, argv[2]);
+	Translator::Process(tableData, argv[2], argv[3]);
 }

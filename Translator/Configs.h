@@ -21,7 +21,7 @@
 
 //	JSON serializer: https://github.com/nlohmann/json
 
-#include "Dependencies/json.hpp"
+#include "../Shared/Dependencies/json.hpp"
 
 using namespace std;
 using namespace nlohmann;
