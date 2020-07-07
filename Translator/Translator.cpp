@@ -32,15 +32,7 @@ bool Translator::Process(vector<TableData> TruthTables, std::string DeviceType, 
 		return false;
 	}
 	
-	try
-	{
-		JEDEC(Config.m_iNumPins, Config.m_iNumFuses, Fuses, Filename).Serialize();
-	}
-	catch(std::exception Error)
-	{
-		ERROR("%s", "couldn't serialize data");
-		return false;
-	}
+	JEDEC(Config.m_iNumPins, Config.m_iNumFuses, Fuses, Filename).Serialize();
 
 	return true;
 }
