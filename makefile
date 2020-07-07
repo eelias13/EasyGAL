@@ -13,7 +13,7 @@ LDFLAGS =
 # files for compiler
 COMPILER_MAIN = Compiler.cpp
 PARSER = Parser/Lexer.cpp Parser/Parser.cpp Parser/Error.cpp Parser/FunctionParser.cpp Parser/TableParser.cpp
-TRANSLATOR = Translator/DNF.cpp Translator/Fuses.cpp Translator/Helper.cpp Translator/Serialization.cpp Translator/Configs.cpp Translator/Translator.cpp 
+TRANSLATOR = Translator/DNF.cpp Translator/Fuses.cpp Translator/Helper.cpp Translator/Serialization.cpp  Translator/Translator.cpp  Translator/Configs.cpp
 
 # all object for compiler
 COMPILER_OBJECTS= $(COMPILER_MAIN:.cpp=.o) $(PARSER:.cpp=.o)  $(TRANSLATOR:.cpp=.o)

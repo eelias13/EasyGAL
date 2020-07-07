@@ -24,6 +24,6 @@
 /Translator/Helper.o
 /Translator/Serialization.o
 /Translator/Translator.o
-/Translator/Configs.cpp
+/Translator/Configs.o
 
 /.vs/EasyGAL2/v16/ipch/AutoPCH
