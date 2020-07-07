@@ -10,10 +10,11 @@
 
 #include "Helper.hpp"
 #include "../Shared/TableData.h"
+#include "Configs.h"
 
 //	Maximum allowed inputs for expressions.
 
-constexpr uint32_t MAX_INPUTS = 24;
+constexpr uint32_t MAX_INPUTS = 64;
 
 namespace DNF 
 {
@@ -65,7 +66,7 @@ namespace DNF
 		vector<Row> m_Rows;
 	};
 
-	bool Build(TableData& TruthTable, Expression& ExpressionOut);
-	bool Build(vector<TableData>& TruthTables, vector<Expression>& ExpressionsOut);
+	bool Build(TableData& TruthTable, Expression& ExpressionOut, Configs::CircuitConfig* pConfig);
+	bool Build(vector<TableData>& TruthTables, vector<Expression>& ExpressionsOut, Configs::CircuitConfig* pConfig);
 	Row BuildRow(bitset<MAX_INPUTS> Bits, vector<uint32_t> Inputs);
 }

@@ -18,15 +18,19 @@ enum class MacrocellMode
 
 namespace Fuses
 {
-	bool Build(vector<DNF::Expression> Expressions, vector<bool>& FuseListOut);
-	bool BuildFromExpression(DNF::Expression Expression, uint32_t iNumRows, uint32_t iRowLength, vector<bool>& FuseListOut);
+	bool Build(vector<DNF::Expression> Expressions, vector<bool>& FuseListOut, Configs::CircuitConfig* pConfig);
+	bool BuildFromExpression(DNF::Expression Expression, uint32_t iNumRows, uint32_t iRowLength, vector<bool>& FuseListOut, Configs::CircuitConfig* pConfig);
 
-	int PinToIndex(uint32_t iPinNumber, bool bInverted, MacrocellMode Mode = MacrocellMode::MODE_NONE);
+	int PinToIndex(uint32_t iPinNumber, bool bInverted, MacrocellMode Mode, Configs::CircuitConfig* pConfig);
+	int GetRowLength(Configs::CircuitConfig* pConfig);
 
 	namespace Output
 	{
-		int MaximumTerms(uint32_t iPinNumber);
-		bool IsValid(uint32_t iPinNumber);
-		bool ModeFuseIndices(uint32_t iPinNumber, pair<uint32_t, uint32_t>& FusesOut);
+		int MaximumTerms(uint32_t iPinNumber, Configs::CircuitConfig* pConfig);
+		bool IsValid(uint32_t iPinNumber, Configs::CircuitConfig* pConfig);
+		bool ModeFuseIndices(uint32_t iPinNumber, pair<uint32_t, uint32_t>& FusesOut, Configs::CircuitConfig* pConfig);
+		
+		int GetFirstFuseIndex(uint32_t iPinNumber, Configs::CircuitConfig* pConfig);
+		int GetLastFuseIndex(uint32_t iPinNumber, Configs::CircuitConfig* pConfig);
 	}
 }

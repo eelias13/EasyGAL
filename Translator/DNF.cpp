@@ -8,9 +8,9 @@ using namespace DNF;
 *		TableData structure is faulty. The resulting Expression datastructure is stored in the supplied Expression reference.
 */
 
-bool DNF::Build(TableData& TruthTable, Expression& ExpressionOut)
+bool DNF::Build(TableData& TruthTable, Expression& ExpressionOut, Configs::CircuitConfig* pConfig)
 {
-	if (TruthTable.m_InputPins.size() > MAX_INPUTS)
+	if (TruthTable.m_InputPins.size() > pConfig->m_Inputs.size())
 	{
 		ERROR("%s", "Too many input pins");
 		return false;
@@ -43,7 +43,7 @@ bool DNF::Build(TableData& TruthTable, Expression& ExpressionOut)
 *		returns a boolean which indicates if the building of all expressions was successful.
 */
 
-bool DNF::Build(vector<TableData>& TruthTables, vector<Expression>& ExpressionsOut)
+bool DNF::Build(vector<TableData>& TruthTables, vector<Expression>& ExpressionsOut, Configs::CircuitConfig* pConfig)
 {
 	if(!TruthTables.size())
 	{
@@ -57,7 +57,7 @@ bool DNF::Build(vector<TableData>& TruthTables, vector<Expression>& ExpressionsO
 	{
 		Expression CurExpression;
 
-		if(Build(TruthTable, CurExpression) == false)
+		if(Build(TruthTable, CurExpression, pConfig) == false)
 		{
 			ERROR("%s", "Couldn't build all DNF expressions");
 			return false;
