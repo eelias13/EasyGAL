@@ -2,7 +2,7 @@
 
 # g++ settings
 CC = g++
-CFLAGS = -c -Wall
+CFLAGS = -c -Werror
 LDFLAGS =
 
 .cpp.o:
@@ -13,7 +13,7 @@ LDFLAGS =
 # files for compiler
 COMPILER_MAIN = Compiler.cpp
 PARSER = Parser/Lexer.cpp Parser/Parser.cpp Parser/Error.cpp Parser/FunctionParser.cpp Parser/TableParser.cpp
-TRANSLATOR = Translator/DNF.cpp Translator/Fuses.cpp Translator/Helper.cpp Translator/Serialization.cpp Translator/Translator.cpp
+TRANSLATOR = Translator/DNF.cpp Translator/Fuses.cpp Translator/Helper.cpp Translator/Serialization.cpp  Translator/Translator.cpp  Translator/Configs.cpp
 
 # all object for compiler
 COMPILER_OBJECTS= $(COMPILER_MAIN:.cpp=.o) $(PARSER:.cpp=.o)  $(TRANSLATOR:.cpp=.o)
@@ -26,7 +26,7 @@ $(COMPILER_EXECUTABLE): $(COMPILER_OBJECTS)
 	$(CC) $(LDFLAGS) $(COMPILER_OBJECTS) -o $@
 
 # build instruction for compiler
-compiler: parser translator compiler_shared compiler_main
+compiler: parser translator compiler_main
 compiler_main: $(COMPILER_MAIN) $(COMPILER_EXECUTABLE)
 parser: $(PARSER) $(COMPILER_EXECUTABLE)
 translator: $(TRANSLATOR) $(COMPILER_EXECUTABLE)
@@ -49,7 +49,7 @@ $(SIMULATOR_EXECUTABLE): $(SIMULATOR_OBJECTS)
 
 
 # build instruction for simulator
-simulator: simulator_shared interface simulator_main
+simulator: interface simulator_main
 simulator_main: $(SIMULATOR_MAIN) $(SIMULATOR_EXECUTABLE)
 interface: $(INTERFACE) $(SIMULATOR_EXECUTABLE)
 

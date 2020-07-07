@@ -9,6 +9,7 @@
 
 /Sim/Simulator.o
 /Sim/Gal.o
+/Sim/CLI.o
 
 /Shared/Validate.o
 
@@ -23,6 +24,7 @@
 /Translator/Helper.o
 /Translator/Serialization.o
 /Translator/Translator.o
+/Translator/Configs.o
 
 /.vs/EasyGAL2/v16/ipch/AutoPCH
 Parser/FunctionParser.o
