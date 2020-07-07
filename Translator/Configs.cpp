@@ -17,7 +17,7 @@ bool Configs::Load(const char* szConfigName, CircuitConfig* pConfigOut)
 	}
 
 	string CurPath(szCurPath);
-	
+
 #ifdef _WIN32
 
 	CurPath += R"(\Configs\)";
@@ -31,6 +31,8 @@ bool Configs::Load(const char* szConfigName, CircuitConfig* pConfigOut)
 	CurPath += ".json"; 
 
 #endif 
+
+	std::cout << CurPath.c_str() << std::endl;
 
 	ifstream ConfigStream(CurPath);
 
