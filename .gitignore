@@ -25,3 +25,6 @@
 /Translator/Translator.o
 
 /.vs/EasyGAL2/v16/ipch/AutoPCH
+Parser/FunctionParser.o
+Parser/Lexer.o
+Parser/Parser.o
