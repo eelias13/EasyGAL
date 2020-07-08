@@ -10,10 +10,10 @@
 
 #include "Shared/Validate.h"
 #include "Shared/TableData.h"
+#include "Shared/Dependencies/json.hpp"
 #include "Parser/Parser.h"
 #include "Parser/Error.h"
 #include "Translator/Translator.hpp"
-
 
 using namespace std;
 
@@ -37,10 +37,28 @@ void printTableData(TableData tableData)
 	cout << endl;
 }
 
+void showHelpMenu()
+{
+	cout << "usage of EasyGAL: " << endl;
+	cout << '\t' << "EasyGAL [EasyGAl code] [name of output jedec] [gal type]" << endl;
+	cout << "Exampel:" << endl;
+	cout << '\t' << "EasyGAL code.txt out.jedec g22v10" << endl;
+}
+
 int main(int argc, char *argv[])
 {
+	if (argv[1] == "help")
+	{
+		showHelpMenu();
+		exit(0);
+	}
+
 	if (argc != 4)
-		Error::printError("You have to supply a path to your EasyGAL code and the name for the output file");
+	{
+		cerr << "invalid argument count" << endl;
+		showHelpMenu();
+		exit(1);
+	}
 
 	Parser parser = Parser(argv[1]);
 	vector<TableData> tableData = parser.parse();

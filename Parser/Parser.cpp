@@ -186,7 +186,13 @@ void Parser::extraFunction()
     expect(")");
 
     if (temp.size() != 1)
-        return syntaxError(ZERO + " or " + ONE);
+    {
+        string msg = "";
+        msg += ZERO;
+        msg += " or ";
+        msg += ONE;
+        return syntaxError(msg);
+    }
 
     if (temp.at(0) == ONE)
         fill = true;
@@ -204,7 +210,6 @@ vector<bool> Parser::getBooltable()
     }
     return boolTable;
 }
-
 
 // convert the string in to the vector<bool> and adds it to boolTable
 void Parser::insertBooltable(vector<bool> &boolTable, string strTable)
