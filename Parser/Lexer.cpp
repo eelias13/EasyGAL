@@ -166,7 +166,7 @@ void Lexer::lexBool()
 		nextChar();
 	}
 
-	// it could be an nuber sarting with 1 
+	// it could be an nuber sarting with 1
 	if (isNum())
 		lexNum();
 }
@@ -189,11 +189,15 @@ void Lexer::lexWord()
 	if (isSpecial())
 		return;
 
-	while (!isSpecial())
+	while (!isSpecial() && !eof)
 	{
 		token.value += currentChar;
 		nextChar();
 	}
+
+	if (eof)
+		lexingError("code can't end on word. It must end on ; or }");
+
 	token.type = isKeyword() ? Token::Type::keyword : Token::Type::identifier;
 }
 

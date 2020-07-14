@@ -1,8 +1,8 @@
 #include "Configs.h"
 
-bool Configs::Load(const char* szConfigName, CircuitConfig* pConfigOut)
+bool Configs::Load(const char *szConfigName, CircuitConfig *pConfigOut)
 {
-	if (!pConfigOut) 
+	if (!pConfigOut)
 	{
 		ERROR("%s", "pConfigOut was nullptr");
 		exit(1);
@@ -28,15 +28,13 @@ bool Configs::Load(const char* szConfigName, CircuitConfig* pConfigOut)
 
 	CurPath += "/Configs/";
 	CurPath += szConfigName;
-	CurPath += ".json"; 
+	CurPath += ".json";
 
-#endif 
-
-	std::cout << CurPath.c_str() << std::endl;
+#endif
 
 	ifstream ConfigStream(CurPath);
 
-	if(ConfigStream.good() == false)
+	if (ConfigStream.good() == false)
 	{
 		ERROR("%s", "Provided config doesn't exist");
 		return false;
@@ -45,7 +43,7 @@ bool Configs::Load(const char* szConfigName, CircuitConfig* pConfigOut)
 	json CurConfig = json::parse(ConfigStream);
 
 	//	Get number of fuses.
-	
+
 	if (CurConfig.find("NumFuses") != CurConfig.end())
 	{
 		pConfigOut->m_iNumFuses = CurConfig["NumFuses"];
@@ -58,7 +56,7 @@ bool Configs::Load(const char* szConfigName, CircuitConfig* pConfigOut)
 
 	//	Get total number of pins.
 
-	if(CurConfig.find("TotalNumPins") != CurConfig.end())
+	if (CurConfig.find("TotalNumPins") != CurConfig.end())
 	{
 		pConfigOut->m_iNumPins = CurConfig["TotalNumPins"];
 	}
@@ -70,9 +68,9 @@ bool Configs::Load(const char* szConfigName, CircuitConfig* pConfigOut)
 
 	//	Get input pins.
 
-	if(CurConfig.find("InputPins") != CurConfig.end())
+	if (CurConfig.find("InputPins") != CurConfig.end())
 	{
-		for(uint32_t Index = 0; Index < CurConfig["InputPins"].size(); Index++)
+		for (uint32_t Index = 0; Index < CurConfig["InputPins"].size(); Index++)
 			pConfigOut->m_Inputs.push_back(CurConfig["InputPins"].at(Index));
 	}
 	else
@@ -83,9 +81,9 @@ bool Configs::Load(const char* szConfigName, CircuitConfig* pConfigOut)
 
 	//	Get output pins and their maximum DNF term count
 
-	if(CurConfig.find("OutputPins") != CurConfig.end())
+	if (CurConfig.find("OutputPins") != CurConfig.end())
 	{
-		for(uint32_t Index = 0; Index < CurConfig["OutputPins"].size(); Index++)
+		for (uint32_t Index = 0; Index < CurConfig["OutputPins"].size(); Index++)
 			pConfigOut->m_Outputs.push_back(CurConfig["OutputPins"].at(Index));
 	}
 	else
@@ -96,7 +94,7 @@ bool Configs::Load(const char* szConfigName, CircuitConfig* pConfigOut)
 
 	//	Get special pins
 
-	if(CurConfig.find("SpecialPins") != CurConfig.end())
+	if (CurConfig.find("SpecialPins") != CurConfig.end())
 	{
 		for (uint32_t Index = 0; Index < CurConfig["SpecialPins"].size(); Index++)
 			pConfigOut->m_SpecialPins.push_back(CurConfig["SpecialPins"].at(Index));
@@ -109,4 +107,3 @@ bool Configs::Load(const char* szConfigName, CircuitConfig* pConfigOut)
 
 	return true;
 }
-

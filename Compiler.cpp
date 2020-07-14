@@ -69,4 +69,6 @@ int main(int argc, char *argv[])
 	validate(tableData, inputPins, outputPins);
 
 	Translator::Process(tableData, argv[3], argv[2]);
+
+	cout << "compilation successfully, one new file was created " << argv[2] << endl;
 }

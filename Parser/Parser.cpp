@@ -100,16 +100,18 @@ void Parser::parseTable()
         tables.push_back(t);
 }
 
+#include <iostream>
+
 void Parser::parseIdentifier()
 {
     string pinName = currentToken.value;
     expect(Token::Type::identifier);
     if (isToken("."))
     {
-        insertDFF(str2Pin(pinName));
         expect(".");
-        expect(DFF);
+        expect("dff");
         expect(";");
+        insertDFF(str2Pin(pinName));
 
         return;
     }
