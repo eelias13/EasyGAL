@@ -11,9 +11,12 @@
 #include "Shared/Validate.h"
 #include "Shared/TableData.h"
 #include "Shared/Dependencies/json.hpp"
+
 #include "Parser/Parser.h"
 #include "Parser/Error.h"
+
 #include "Translator/Translator.hpp"
+#include "Translator/Configs.h"
 
 using namespace std;
 
@@ -59,16 +62,29 @@ int main(int argc, char *argv[])
 		showHelpMenu();
 		exit(1);
 	}
+	string easyGALCode = argv[1];
+	string outputFileName = argv[2];
+	string deviceName = argv[3];
 
-	Parser parser = Parser(argv[1]);
+	Parser parser = Parser(easyGALCode);
 	vector<TableData> tableData = parser.parse();
 
-	vector<uint32_t> inputPins = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23};
-	vector<uint32_t> outputPins = {14, 15, 16, 17, 18, 19, 20, 21, 22, 23};
+	Configs::CircuitConfig DeviceType;
+	if (!Configs::Load(deviceName.c_str(), &DeviceType))
+	{
+		cerr << "Couldn't get config for device" << deviceName << endl;
+		exit(1);
+	}
+
+	vector<uint32_t> inputPins = DeviceType.m_Inputs;
+	inputPins.push_back(13);
+	vector<uint32_t> outputPins = {13};
+	for (uint32_t i = 0; i < DeviceType.m_Outputs.size(); i++)
+		outputPins.push_back(DeviceType.m_Outputs.at(i).first);
 
 	validate(tableData, inputPins, outputPins);
 
-	Translator::Process(tableData, argv[3], argv[2]);
+	Translator::Process(tableData, DeviceType, outputFileName);
 
-	cout << "compilation successfully, one new file was created " << argv[2] << endl;
+	cout << "compilation successfully, one new file was created " << outputFileName << endl;
 }

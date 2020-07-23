@@ -16,7 +16,7 @@
 
 using namespace std;
 
-namespace Translator 
+namespace Translator
 {
-	bool Process(vector<TableData> TruthTables, std::string DeviceType, std::string Filename);
+	bool Process(vector<TableData> TruthTables, Configs::CircuitConfig DeviceType, std::string Filename);
 }
