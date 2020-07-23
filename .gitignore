@@ -4,15 +4,6 @@
 /EasyGAL
 /Compiler.o
 
-
-/EasySim
-
-/Sim/Simulator.o
-/Sim/Gal.o
-/Sim/CLI.o
-
-/Shared/Validate.o
-
 /Parser/Error.o
 /Parser/FunctionParser.o
 /Parser/Lexer.o
