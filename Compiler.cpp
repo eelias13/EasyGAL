@@ -77,8 +77,10 @@ int main(int argc, char *argv[])
 	}
 
 	vector<uint32_t> inputPins = DeviceType.m_Inputs;
-	inputPins.push_back(13);
-	vector<uint32_t> outputPins = {13};
+	for (uint32_t i = 0; i < DeviceType.m_SpecialPins.size(); i++)
+		inputPins.push_back(DeviceType.m_SpecialPins.at(i).first);
+
+	vector<uint32_t> outputPins;
 	for (uint32_t i = 0; i < DeviceType.m_Outputs.size(); i++)
 		outputPins.push_back(DeviceType.m_Outputs.at(i).first);
 
