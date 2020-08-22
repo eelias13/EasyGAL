@@ -4,6 +4,10 @@
 /EasyGAL
 /Compiler.o
 
+/Shared/API.o
+/Shared/Utility.o
+/Shared/Validate.o
+
 /Parser/Error.o
 /Parser/FunctionParser.o
 /Parser/Lexer.o

@@ -11,6 +11,8 @@
 #include "Shared/Validate.h"
 #include "Shared/TableData.h"
 #include "Shared/Dependencies/json.hpp"
+#include "Shared/Utility.h"
+#include "Shared/API.h"
 
 #include "Parser/Parser.h"
 #include "Parser/Error.h"
@@ -20,73 +22,89 @@
 
 using namespace std;
 
-// printTableData is for debuging
-void printTableData(TableData tableData)
+void compile(string easyGALCode, string outputFileName, string deviceName)
 {
-	cout << "output pin: " << tableData.m_OutputPin << endl;
+	Parser parser = Parser(easyGALCode);
+	vector<TableData> tableData = parser.parse();
 
-	cout << "input pins:";
-	for (uint32_t pin : tableData.m_InputPins)
-		cout << " " << pin;
-	cout << endl;
+	Configs::CircuitConfig DeviceType;
+	vector<uint32_t> inputPins;
+	vector<uint32_t> outputPins;
+	initDeviceType(DeviceType, deviceName, inputPins, outputPins);
+	validate(tableData, inputPins, outputPins);
 
-	cout << "table:\t    ";
-	for (bool b : tableData.m_Table)
-		cout << b;
-	cout << endl;
+	Translator::Process(tableData, DeviceType, outputFileName);
 
-	cout << "is dff:\t    " << tableData.m_EnableFlipFlop << endl;
-
-	cout << endl;
-}
-
-void showHelpMenu()
-{
-	cout << "usage of EasyGAL: " << endl;
-	cout << '\t' << "EasyGAL [EasyGAl code] [name of output jedec] [gal type]" << endl;
-	cout << "Exampel:" << endl;
-	cout << '\t' << "EasyGAL code.txt out.jedec g22v10" << endl;
+	cout << "compilation successfully, new jedec file was created " << outputFileName << endl;
 }
 
 int main(int argc, char *argv[])
 {
-	if (argv[1] == "help")
-	{
-		showHelpMenu();
-		exit(0);
-	}
 
-	if (argc != 4)
+	if (argc == 1)
 	{
 		cerr << "invalid argument count" << endl;
 		showHelpMenu();
 		exit(1);
 	}
-	string easyGALCode = argv[1];
-	string outputFileName = argv[2];
-	string deviceName = argv[3];
 
-	Parser parser = Parser(easyGALCode);
-	vector<TableData> tableData = parser.parse();
-
-	Configs::CircuitConfig DeviceType;
-	if (!Configs::Load(deviceName.c_str(), &DeviceType))
+	if (strcmp(argv[1], "help") == 0)
 	{
-		cerr << "Couldn't get config for device" << deviceName << endl;
-		exit(1);
+		showHelpMenu();
+		exit(0);
 	}
+	else if (strcmp(argv[1], "api") == 0)
+	{
+		if (argc == 2)
+		{
+			cerr << "invalid argument count" << endl;
+			showHelpMenu();
+			exit(1);
+		}
 
-	vector<uint32_t> inputPins = DeviceType.m_Inputs;
-	for (uint32_t i = 0; i < DeviceType.m_SpecialPins.size(); i++)
-		inputPins.push_back(DeviceType.m_SpecialPins.at(i).first);
-
-	vector<uint32_t> outputPins;
-	for (uint32_t i = 0; i < DeviceType.m_Outputs.size(); i++)
-		outputPins.push_back(DeviceType.m_Outputs.at(i).first);
-
-	validate(tableData, inputPins, outputPins);
-
-	Translator::Process(tableData, DeviceType, outputFileName);
-
-	cout << "compilation successfully, one new file was created " << outputFileName << endl;
+		string fileEnding = getFileEnding(argv[2]);
+		if (fileEnding == "json")
+		{
+			checkFileEnding(argv[3], "jedec");
+			if (argc != 5)
+			{
+				cerr << "invalid argument count" << endl;
+				showHelpMenu();
+				exit(1);
+			}
+			api::tableData2jedec(argv[2], argv[3], argv[4]);
+		}
+		else if (fileEnding == "txt")
+		{
+			checkFileEnding(argv[3], "json");
+			if (argc != 4 && argc != 5)
+			{
+				cerr << "invalid argument count" << endl;
+				showHelpMenu();
+				exit(1);
+			}
+			api::code2TableData(argv[2], argv[3], argc == 5 ? argv[4] : "");
+		}
+		else
+		{
+			cerr << "invalid file extention " + string(argv[2]) << endl;
+			showHelpMenu();
+			exit(1);
+		}
+	}
+	else
+	{
+		if (argc == 4)
+		{
+			checkFileEnding(argv[1], "txt");
+			checkFileEnding(argv[2], "jedec");
+			compile(argv[1], argv[2], argv[3]);
+		}
+		else
+		{
+			cerr << "invalid argument count" << endl;
+			showHelpMenu();
+			exit(1);
+		}
+	}
 }
