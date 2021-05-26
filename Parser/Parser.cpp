@@ -80,7 +80,7 @@ void Parser::parseTable()
     expect(TABLE);
     expect("(");
     vector<uint32_t> inPins = getIdentifier();
-    expect("=>");
+    expect("->");
     vector<uint32_t> outPins = getIdentifier();
     expect(")");
     extraFunction();
