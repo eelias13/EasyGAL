@@ -65,10 +65,8 @@ void FunctionParser::initLookup()
     // for ever reson new doson't work on linux and malloc doson't work on windows, but now idea on other platforms (or compilers)
 #ifdef _WIN32
     lookupValues = new bool[lookupLength];
-#elif __linux__
-    lookupValues = (bool *)malloc((lookupLength - 1) * sizeof(bool));
 #else
-    Error::printError("this platform is not suported plea use linux or Windows");
+    lookupValues = (bool *)malloc((lookupLength - 1) * sizeof(bool));
 #endif
 
     finished = false;
@@ -392,10 +390,8 @@ struct FunctionParser::Node *FunctionParser::newNode(Token token, FunctionParser
     // for ever reson new doson't work on linux and malloc doson't work on windows, but now idea on other platforms (or compilers)
 #ifdef _WIN32
     Node *node = new Node();
-#elif __linux__
+#else 
     struct Node *node = (struct Node *)malloc(sizeof(struct Node));
-#else
-    Error::printError("this platform is not suported plea use linux or Windows");
 #endif
 
     node->token = token;
@@ -430,9 +426,9 @@ bool FunctionParser::evalNode(Node *node)
     switch ((*node).token.value.at(0))
     {
     case AND:
-        return evalNode((*node).left) & evalNode((*node).right);
+        return evalNode((*node).left) && evalNode((*node).right);
     case OR:
-        return evalNode((*node).left) | evalNode((*node).right);
+        return evalNode((*node).left) || evalNode((*node).right);
     case XOR:
         return evalNode((*node).left) ^ evalNode((*node).right);
     case NOT:

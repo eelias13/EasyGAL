@@ -10,6 +10,7 @@
 
 #include <string>
 #include <iostream>
+#include <cstdint>
 
 #include "Token.h"
 #include "Symbols.h"

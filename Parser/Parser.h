@@ -27,7 +27,7 @@ class Parser
 {
 public:
     // constructor
-    Parser(string path);
+    Parser(string);
 
 public:
     // public function

@@ -1,6 +1,6 @@
 #include "Configs.h"
 
-bool Configs::Load(const char *szConfigName, CircuitConfig *pConfigOut)
+bool Configs::Load(string szConfig, CircuitConfig *pConfigOut)
 {
 	if (!pConfigOut)
 	{
@@ -8,39 +8,7 @@ bool Configs::Load(const char *szConfigName, CircuitConfig *pConfigOut)
 		exit(1);
 	}
 
-	char szCurPath[FILENAME_MAX];
-
-	if (GetCurrentDir(szCurPath, FILENAME_MAX) == 0)
-	{
-		ERROR("%s", "Error getting current working directory");
-		exit(1);
-	}
-
-	string CurPath(szCurPath);
-
-#ifdef _WIN32
-
-	CurPath += R"(\Configs\)";
-	CurPath += szConfigName;
-	CurPath += ".json";
-
-#elif __linux__
-
-	CurPath += "/Configs/";
-	CurPath += szConfigName;
-	CurPath += ".json";
-
-#endif
-
-	ifstream ConfigStream(CurPath);
-
-	if (ConfigStream.good() == false)
-	{
-		ERROR("%s", "Provided config doesn't exist");
-		return false;
-	}
-
-	json CurConfig = json::parse(ConfigStream);
+	json CurConfig = json::parse(szConfig);
 
 	//	Get number of fuses.
 

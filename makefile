@@ -1,40 +1,36 @@
-# -------------------------------------------------------- general --------------------------------------------------------
-
-# g++ settings
+# Emscripten compiler
 CC = g++
-CFLAGS = -c -Werror
-LDFLAGS =
 
-.cpp.o:
-	$(CC) $(CFLAGS) $< -o $@
+# Flags for compilation
+CFLAGS = -O3 -Wall -Wno-unused-label -std=c++17 -I./Shared -I./Parser -I./Translator
 
-# -------------------------------------------------------- compiler --------------------------------------------------------
+# Exported functions for Emscripten
+EXTRA_FLAGS = -s EXPORTED_FUNCTIONS='["_tableData2jedec", "_code2TableData", "_compile"]'
 
-# files for compiler
-COMPILER_MAIN = Compiler.cpp
-SHARED = Shared/Utility.cpp Shared/API.cpp Shared/Validate.cpp
-PARSER = Parser/Lexer.cpp Parser/Parser.cpp Parser/Error.cpp Parser/FunctionParser.cpp Parser/TableParser.cpp
-TRANSLATOR = Translator/DNF.cpp Translator/Fuses.cpp Translator/Helper.cpp Translator/Serialization.cpp  Translator/Translator.cpp  Translator/Configs.cpp
+# Source files
+SOURCES = WasmMain.cpp \
+          Shared/Utility.cpp \
+          Shared/API.cpp \
+          Shared/Validate.cpp \
+          Parser/Lexer.cpp \
+          Parser/Parser.cpp \
+          Parser/Error.cpp \
+          Parser/FunctionParser.cpp \
+          Parser/TableParser.cpp \
+          Translator/DNF.cpp \
+          Translator/Fuses.cpp \
+          Translator/Helper.cpp \
+          Translator/Serialization.cpp \
+          Translator/Translator.cpp \
+          Translator/Configs.cpp
 
-# all object for compiler
-OBJECTS= $(COMPILER_MAIN:.cpp=.o) $(SHARED:.cpp=.o) $(PARSER:.cpp=.o)  $(TRANSLATOR:.cpp=.o)
+# Target WebAssembly module
+WASM_MODULE = easy_gal.js
 
-# name of compiler executable
-EXECUTABLE = EasyGAL 
+wasm: $(WASM_MODULE)
 
-# g++ compiler instruction 
-$(EXECUTABLE): $(OBJECTS)
-	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
-
-# build instruction for compiler
-compiler: parser translator shared compiler_main
-compiler_main: $(COMPILER_MAIN) $(COMPILER_EXECUTABLE)
-shared: $(SHARED) $(COMPILER_EXECUTABLE)
-parser: $(PARSER) $(COMPILER_EXECUTABLE)
-translator: $(TRANSLATOR) $(COMPILER_EXECUTABLE)
-
-# -------------------------------------------------------- clean --------------------------------------------------------
+$(WASM_MODULE): $(SOURCES)
+	em++ $(CFLAGS) $(EXTRA_FLAGS) -o $@ $^
 
 clean:
-	rm $(COMPILER_OBJECTS)
-	rm $(SIMULATOR_OBJECTS)
+	rm -f $(WASM_MODULE) easy_gal.wasm

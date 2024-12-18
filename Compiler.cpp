@@ -22,7 +22,7 @@
 
 using namespace std;
 
-void compile(string easyGALCode, string outputFileName, string deviceName)
+string compile(string easyGALCode, string deviceName)
 {
 	Parser parser = Parser(easyGALCode);
 	vector<TableData> tableData = parser.parse();
@@ -33,9 +33,8 @@ void compile(string easyGALCode, string outputFileName, string deviceName)
 	initDeviceType(DeviceType, deviceName, inputPins, outputPins);
 	validate(tableData, inputPins, outputPins);
 
-	Translator::Process(tableData, DeviceType, outputFileName);
-
-	cout << "compilation successfully, new jedec file was created " << outputFileName << endl;
+	return Translator::Process(tableData, DeviceType);
+	// cout << "compilation successfully, new jedec file was created " << outputFileName << endl;
 }
 
 int main(int argc, char *argv[])
@@ -72,7 +71,12 @@ int main(int argc, char *argv[])
 				showHelpMenu();
 				exit(1);
 			}
-			api::tableData2jedec(argv[2], argv[3], argv[4]);
+
+			string output = api::tableData2jedec(argv[2], argv[4]);
+
+			std::ofstream out(argv[3]);
+			out << output;
+			out.close();
 		}
 		else if (fileEnding == "txt")
 		{
@@ -83,7 +87,11 @@ int main(int argc, char *argv[])
 				showHelpMenu();
 				exit(1);
 			}
-			api::code2TableData(argv[2], argv[3], argc == 5 ? argv[4] : "");
+			string output = api::code2TableData(argv[2], argc == 5 ? argv[4] : "");
+
+			std::ofstream out(argv[3]);
+			out << output;
+			out.close();
 		}
 		else
 		{
@@ -98,7 +106,18 @@ int main(int argc, char *argv[])
 		{
 			checkFileEnding(argv[1], "txt");
 			checkFileEnding(argv[2], "jedec");
-			compile(argv[1], argv[2], argv[3]);
+
+			std::ifstream inFile;
+			inFile.open(argv[1]);
+			std::stringstream strStream;
+			strStream << inFile.rdbuf();
+			std::string easyGALCode = strStream.str();
+
+			string output = compile(argv[1], argv[3]);
+
+			std::ofstream out(argv[2]);
+			out << output;
+			out.close();
 		}
 		else
 		{

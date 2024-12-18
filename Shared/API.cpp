@@ -7,7 +7,7 @@
 
 #include "API.h"
 
-void api::code2TableData(string easyGALCode, string outputFileName, string deviceName)
+string api::code2TableData(string easyGALCode, string deviceName)
 {
     Parser parser = Parser(easyGALCode);
     vector<TableData> tableData = parser.parse();
@@ -38,16 +38,14 @@ void api::code2TableData(string easyGALCode, string outputFileName, string devic
     json result = json::object();
     result["TableData"] = out;
 
-    std::ofstream o(outputFileName);
-    o << std::setw(4) << result << std::endl;
-
-    cout << "compilation successfully, new json file was created " << outputFileName << endl;
+    return result.dump();
 }
 
 TableData api::parseTableData(json tdJson)
 {
     // auto glambda = [](auto a, auto &&b) { return a < b; };
-    auto check = [](string expected, json tdJson) {
+    auto check = [](string expected, json tdJson)
+    {
         if (tdJson.find(expected) == tdJson.end())
         {
             cerr << "missing property " << expected << " in json object " << tdJson << endl;
@@ -83,27 +81,16 @@ vector<TableData> api::parseTableDataArray(json array)
     return result;
 }
 
-void api::tableData2jedec(string tableDataJson, string outputFileName, string deviceName)
+string api::tableData2jedec(string tableDataJson, string deviceName)
 {
-    ifstream file(tableDataJson);
-    if (file.good() == false)
-    {
-        cerr << "file " << outputFileName << " doesn't exist" << endl;
-        exit(1);
-    }
-    json jsonFile = json::parse(file);
 
-    if (jsonFile.find("TableData") == jsonFile.end())
-    {
-        cerr << "missing property TableData in json file " << outputFileName << endl;
-        exit(1);
-    }
+    json jsonFile = json::parse(tableDataJson);
 
     vector<TableData> tableData = parseTableDataArray(jsonFile["TableData"]);
 
     if (tableData.empty())
     {
-        cerr << "on TableData found in json file " << outputFileName << endl;
+        cerr << "on TableData found in json " << endl;
         exit(1);
     }
 
@@ -113,7 +100,5 @@ void api::tableData2jedec(string tableDataJson, string outputFileName, string de
     initDeviceType(DeviceType, deviceName, inputPins, outputPins);
     validate(tableData, inputPins, outputPins);
 
-    Translator::Process(tableData, DeviceType, outputFileName);
-
-    cout << "compilation successfully, new jedec file was created " << outputFileName << endl;
+    return Translator::Process(tableData, DeviceType);
 }

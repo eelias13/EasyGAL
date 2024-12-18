@@ -8,6 +8,7 @@
 #include <iomanip>
 #include <sstream>
 #include <bitset>
+#include <cstdint>
 
 //	Version string for JEDEC file
 
@@ -40,10 +41,9 @@ class JEDEC
 {
 
 public:
-
-	JEDEC(uint32_t iNumPins, uint32_t iNumFuses, std::vector<bool>& FuseStates, std::string Filename) : m_iNumPins(iNumPins), m_iNumFuses(iNumFuses), m_FuseStates(FuseStates), m_Filename(Filename) 
+	JEDEC(uint32_t iNumPins, uint32_t iNumFuses, std::vector<bool> &FuseStates) : m_iNumPins(iNumPins), m_iNumFuses(iNumFuses), m_FuseStates(FuseStates)
 	{
-		if(!m_iNumPins || !m_iNumFuses || !FuseStates.size())
+		if (!m_iNumPins || !m_iNumFuses || !FuseStates.size())
 		{
 			ERROR("%s", "JEDEC object was initialized with invalid parameters");
 			getchar();
@@ -55,21 +55,15 @@ public:
 	{
 	}
 
-	void Serialize();
+	string Serialize();
 
 private:
-
 	bool BlockContainsData(uint32_t StartIndex);
 
 private:
-	
-	
 	string m_FileBuffer;
-	string m_Filename;
-	
 	uint32_t m_iNumPins = 0;
 	uint32_t m_iNumFuses = 0;
-	
+
 	vector<bool> m_FuseStates;
 };
-

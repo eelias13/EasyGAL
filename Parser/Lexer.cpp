@@ -8,10 +8,12 @@
 #include "Lexer.h"
 
 // ------------------------------------ constructor ------------------------------------
-Lexer::Lexer(string path)
+Lexer::Lexer(string content)
+
 {
 
-	inReader.open(path);
+	std::istringstream inReader(content);
+
 	currentChar = '\0';
 	charIndex = 0;
 	lineIndex = 0;
@@ -62,7 +64,7 @@ Token Lexer::next()
 	if (!token.value.empty())
 		return token;
 
-	lexingError("couldn't lex " + currentChar);
+	lexingError("couldn't lex " + std::string(1,currentChar));
 	return {};
 }
 

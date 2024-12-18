@@ -11,7 +11,7 @@
 #include <cstdint>
 #include <string>
 #include <vector>
-#include <fstream>
+#include <sstream>
 
 #include "Symbols.h"
 #include "Token.h"
@@ -23,7 +23,7 @@ class Lexer
 {
 public:
 	// constructor
-	Lexer(string path);
+	Lexer(string content);
 	Lexer();
 
 public:
@@ -41,7 +41,7 @@ private:
 	uint16_t charIndex;
 	string line;
 	bool eof;
-	ifstream inReader;
+	istringstream inReader;
 
 private:
 	char currentChar;

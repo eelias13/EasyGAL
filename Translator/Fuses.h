@@ -1,6 +1,8 @@
 #pragma once
 
 #include "DNF.hpp"
+#include <algorithm>
+
 
 //	All OLMC operation modes for the GAL22V10D (http://web.mit.edu/6.115/www/document/gal22v10.pdf)
 //	Only MODE_NONE doesn't exist in the documentation, this is because we only use this internally.

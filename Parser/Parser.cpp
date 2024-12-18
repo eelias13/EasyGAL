@@ -9,10 +9,10 @@
 
 // constructor
 
-Parser::Parser(string path)
+Parser::Parser(string content)
 {
     // initialise variables
-    lexer = Lexer(path);
+    lexer = Lexer(content);
     isFill = false;
     fill = false;
     isCount = false;
@@ -97,7 +97,9 @@ void Parser::parseTable()
         temp = tableParser.getTableData(boolTable, inPins, outPins);
 
     for (TableData t : temp)
+    {
         tables.push_back(t);
+    }
 }
 
 #include <iostream>
@@ -294,13 +296,13 @@ TableData Parser::assembleTableFromFunc(string outName, vector<Token> expression
 void Parser::nextToken() { currentToken = lexer.next(); }
 
 // compares curent token value to the expectad one
-bool Parser::isToken(char expected) { return currentToken.value == "" + expected; }
+bool Parser::isToken(char expected) { return currentToken.value == "" + std::string(1, expected); }
 bool Parser::isToken(string expected) { return currentToken.value == expected; }
 bool Parser::isToken(Token::Type expected) { return currentToken.type == expected; }
 
 // if it dosn't get the expected value it makes an error
 // if it gets the expected value it requests the next token from the lexer
-void Parser::expect(char expected) { expect("" + expected); }
+void Parser::expect(char expected) { expect("" + std::string(1, expected)); }
 void Parser::expect(string expected)
 {
     if (currentToken.value != expected)
@@ -348,7 +350,7 @@ uint32_t Parser::getInt(char c)
         return 9;
     default:
 
-        parsingError(c + " is not a number");
+        parsingError(std::string(1, c) + " is not a number");
         return 0;
     }
 }

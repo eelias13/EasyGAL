@@ -24,10 +24,10 @@ using json = nlohmann::json;
 
 namespace api
 {
-    void code2TableData(string easyGALCode, string outputFileName, string deviceName);
+    string code2TableData(string easyGALCode,  string deviceName);
     TableData parseTableData(json tdJson);
     vector<TableData> parseTableDataArray(json array);
-    void tableData2jedec(string tableDataJson, string outputFileName, string deviceName);
+    string tableData2jedec(string tableDataJson, string deviceName);
 } // namespace api
 
 #endif /* API_H_ */

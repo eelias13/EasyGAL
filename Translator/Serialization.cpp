@@ -4,20 +4,20 @@
 
 ostringstream Buffer;
 
-void JEDEC::Serialize()
+string JEDEC::Serialize()
 {
 	//	Comment section start.
 
-	m_FileBuffer.append({ ASCII_CTRL_STX, '\n' });
+	m_FileBuffer.append({ASCII_CTRL_STX, '\n'});
 	m_FileBuffer.append(string("Created by ") + string(EASYGAL_VERSION) + string(1, '\n'));
 
 	//	Comment section end.
 
-	m_FileBuffer.append({ '*', ID_VALUE, ID_PIN });
+	m_FileBuffer.append({'*', ID_VALUE, ID_PIN});
 	m_FileBuffer.append(to_string(m_iNumPins));
 	m_FileBuffer.append(1, '\n');
 
-	m_FileBuffer.append({ '*', ID_VALUE, ID_DEFAULT_FUSESTATE_FIELD });
+	m_FileBuffer.append({'*', ID_VALUE, ID_DEFAULT_FUSESTATE_FIELD});
 	m_FileBuffer.append(to_string(m_iNumFuses));
 	m_FileBuffer.append(1, '\n');
 
@@ -26,7 +26,7 @@ void JEDEC::Serialize()
 
 	//	Start writing fusestates to file buffer.
 
-	for(uint32_t Index = 0; Index < m_FuseStates.size(); Index++)
+	for (uint32_t Index = 0; Index < m_FuseStates.size(); Index++)
 	{
 		if (Index % FUSE_BLOCKSIZE == false && !BlockContainsData(Index))
 		{
@@ -35,14 +35,14 @@ void JEDEC::Serialize()
 		}
 		else if (Index % FUSE_BLOCKSIZE == false)
 		{
-			if (Index) 
+			if (Index)
 				m_FileBuffer.append("\n");
-			
+
 			Buffer << std::setw(5) << std::setfill('0') << Index;
 			m_FileBuffer.append(string("*L") + Buffer.str() + " ");
 			Buffer = std::ostringstream();
 		}
-		
+
 		m_FileBuffer.append(1, m_FuseStates[Index] ? '1' : '0');
 	}
 
@@ -50,11 +50,11 @@ void JEDEC::Serialize()
 
 	uint32_t iFuseChecksum = 0;
 
-	for(uint32_t FuseIndex = 0; FuseIndex < m_FuseStates.size(); FuseIndex += 8)
+	for (uint32_t FuseIndex = 0; FuseIndex < m_FuseStates.size(); FuseIndex += 8)
 	{
 		bitset<8> FuseBuffer;
 
-		for(uint32_t WordIndex = 0; WordIndex < 8; WordIndex++)
+		for (uint32_t WordIndex = 0; WordIndex < 8; WordIndex++)
 		{
 			if (FuseIndex + WordIndex > m_FuseStates.size() - 1)
 				continue;
@@ -86,27 +86,23 @@ void JEDEC::Serialize()
 	*/
 
 	/*
-	*	NOTE: Transmission checksum is disabled due to having different results from WinCupl. 
-	*	It is specified in the JEDEC documentation that a transmission checksum dummy value of '0000' 
-	*	is valid and should be accepted. To be guaranteed to work it is set to zero
-	*/
+	 *	NOTE: Transmission checksum is disabled due to having different results from WinCupl.
+	 *	It is specified in the JEDEC documentation that a transmission checksum dummy value of '0000'
+	 *	is valid and should be accepted. To be guaranteed to work it is set to zero
+	 */
 
 	Buffer << std::setw(4) << std::setfill('0') << std::hex << std::uppercase << 0;
 	m_FileBuffer.append(Buffer.str());
 	Buffer = std::ostringstream();
 
-	//	Output file to disk.
-
-	ofstream File(m_Filename);
-	File << m_FileBuffer;
-	File.close();
+	return m_FileBuffer;
 }
 
 /*
-*		JEDEC::BlockContainsData checks if a block of fuses contains data which needs to be written,
-*		it returns true if it finds a '1' in a block of fuses. The startindex parameter is used as 
-*		a block starting point in the fuse state list.
-*/
+ *		JEDEC::BlockContainsData checks if a block of fuses contains data which needs to be written,
+ *		it returns true if it finds a '1' in a block of fuses. The startindex parameter is used as
+ *		a block starting point in the fuse state list.
+ */
 
 bool JEDEC::BlockContainsData(uint32_t StartIndex)
 {
