@@ -8,8 +8,7 @@ CFLAGS = -O3 -Wall -Wno-unused-label -std=c++17 -I./Shared -I./Parser -I./Transl
 EXTRA_FLAGS = -s EXPORTED_FUNCTIONS='["_tableData2jedec", "_code2TableData", "_compile"]'
 
 # Source files
-SOURCES = WasmMain.cpp \
-          Shared/Utility.cpp \
+SOURCES = Shared/Utility.cpp \
           Shared/API.cpp \
           Shared/Validate.cpp \
           Parser/Lexer.cpp \
@@ -22,15 +21,22 @@ SOURCES = WasmMain.cpp \
           Translator/Helper.cpp \
           Translator/Serialization.cpp \
           Translator/Translator.cpp \
-          Translator/Configs.cpp
+          Translator/Configs.cpp 
 
 # Target WebAssembly module
 WASM_MODULE = easy_gal.js
+EXECUTABLE = EasyGAL 
+
 
 wasm: $(WASM_MODULE)
+bin: $(EXECUTABLE)
 
-$(WASM_MODULE): $(SOURCES)
+$(EXECUTABLE): $(SOURCES) Compiler.cpp 
+	$(CC) $(CFLAGS) -o $@ $^
+
+$(WASM_MODULE): $(SOURCES) WasmMain.cpp 
 	em++ $(CFLAGS) $(EXTRA_FLAGS) -o $@ $^
 
 clean:
-	rm -f $(WASM_MODULE) easy_gal.wasm
+	rm -f $(WASM_MODULE) $(EXECUTABLE) easy_gal.wasm *.o ./Shared/*.o ./Parser/*.o ./Translator/*.o
+
